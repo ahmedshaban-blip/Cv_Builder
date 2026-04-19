@@ -5,8 +5,10 @@ import 'package:cv_builder/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:google_sign_in/google_sign_in.dart' as g_auth;
 import 'dart:math';
+
+import 'package:google_sign_in/google_sign_in.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -50,7 +52,6 @@ class _LoginScreenState extends State<LoginScreen>
   // 🔥 Firebase Instances
   // ══════════════════════════════════
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   @override
   void initState() {
@@ -166,49 +167,59 @@ class _LoginScreenState extends State<LoginScreen>
   // 🔵 LOGIN WITH GOOGLE
   // ══════════════════════════════════════════
   Future<void> _loginWithGoogle() async {
+    print('DEBUG: Starting Google Sign-In process...');
     setState(() {
       _isGoogleLoading = true;
       _errorMessage = null;
     });
 
     try {
-      // 1. Trigger Google Sign-In
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+  print('DEBUG: Calling authenticate()...');
+  // ✅ Use authenticate() instead of signIn()
+  final GoogleSignInAccount? googleUser =
+      await GoogleSignIn.instance.authenticate();
 
-      if (googleUser == null) {
-        setState(() => _isGoogleLoading = false);
-        return; // User cancelled
-      }
+  if (googleUser == null) {
+    print('DEBUG: Google Sign-In cancelled by user.');
+    setState(() => _isGoogleLoading = false);
+    return;
+  }
 
-      // 2. Get auth details
-      final GoogleSignInAuthentication googleAuth =
-          await googleUser.authentication;
+  print('DEBUG: Google User: ${googleUser.email}');
 
-      // 3. Create credential
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
+  // ✅ No await needed — it's synchronous in v7
+  final GoogleSignInAuthentication googleAuth =
+      googleUser.authentication;
 
-      // 4. Sign in to Firebase
-      UserCredential userCredential = await _auth.signInWithCredential(
-        credential,
-      );
+  print('DEBUG: idToken received: ${googleAuth.idToken != null}');
 
-      // 5. Save user if new
-      if (userCredential.additionalUserInfo?.isNewUser ?? false) {
-        await _saveUserToFirestore(userCredential.user!);
-      }
+  // ✅ Only idToken needed for Firebase credential
+  final credential = GoogleAuthProvider.credential(
+    idToken: googleAuth.idToken,
+  );
 
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
-        );
-      }
-    } catch (e) {
+  print('DEBUG: Signing in to Firebase with credential...');
+  UserCredential userCredential =
+      await _auth.signInWithCredential(credential);
+  print('DEBUG: Firebase sign-in successful: ${userCredential.user?.uid}');
+
+  // ✅ 5. Save User Data to Firestore
+  if (userCredential.user != null) {
+    await _saveUserToFirestore(userCredential.user!);
+  }
+
+  if (mounted) {
+    // ✅ 6. Navigate to Home
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (_) => const HomeScreen()),
+    );
+  }
+    } catch (e, stack) {
+      print('DEBUG: Google Sign-In Error: $e');
+      print('DEBUG: StackTrace: $stack');
       setState(() {
-        _errorMessage = 'Google Sign-In failed. Try again.';
+        _errorMessage = 'Google Sign-In failed: ${e.toString()}';
       });
     } finally {
       if (mounted) {

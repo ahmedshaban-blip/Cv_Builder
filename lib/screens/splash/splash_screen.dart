@@ -192,7 +192,7 @@ class _SplashScreenState extends State<SplashScreen>
   // 🧭 Navigation Logic
   // ══════════════════════════════════
   void _startNavigation() {
-    _navigationTimer = Timer(const Duration(seconds: 4), () {
+    _navigationTimer = Timer(const Duration(seconds: 6), () {
       _navigateToNextScreen();
     });
   }
@@ -242,6 +242,7 @@ class _SplashScreenState extends State<SplashScreen>
       value: SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         systemNavigationBarColor: Colors.transparent,
+        systemNavigationBarContrastEnforced: false,
       ),
       child: Scaffold(
         body: Container(

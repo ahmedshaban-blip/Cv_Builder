@@ -9,6 +9,7 @@ import 'dart:math';
 
 import '../cv_builder/cv_builder_screen.dart';
 import '../preview/cv_preview_screen.dart';
+import '../settings/delete_account_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -134,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     if (confirmed == true) {
       await _auth.signOut();
-      await GoogleSignIn().signOut();
+      await GoogleSignIn.instance.signOut();
 
       if (mounted) {
         Navigator.pushAndRemoveUntil(
@@ -1346,7 +1347,6 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 // Share functionality
               },
             ),
-
             // ── Delete ──
             _buildOptionTile(
               Icons.delete_outline_rounded,
@@ -1403,7 +1403,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       context: context,
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
+        padding: EdgeInsets.only(
+          top: 24,
+          bottom: MediaQuery.of(context).viewPadding.bottom,
+          left: 24,
+          right: 24,
+        ),
         decoration: const BoxDecoration(
           color: Color(0xFF1A1F38),
           borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -1510,6 +1515,32 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   foregroundColor: const Color(0xFFEF5350),
                   elevation: 0,
                   padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // ── Delete Account Button ──
+            SizedBox(
+              width: double.infinity,
+              child: TextButton.icon(
+                onPressed: () {
+                  Navigator.pop(context); // Close sheet
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const DeleteAccountScreen(),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.delete_forever_rounded, size: 18),
+                label: const Text('Delete Account'),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white.withOpacity(0.4),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
                   ),

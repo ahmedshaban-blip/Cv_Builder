@@ -15,6 +15,22 @@
       },
       "oauth_client": [
         {
+          "client_id": "923867099296-8vficgcq7u28hnu1tm26ljkufceiek0j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cv_builder",
+            "certificate_hash": "5cbeb478a89a1ab6f264bedef24aa8a1b8605049"
+          }
+        },
+        {
+          "client_id": "923867099296-cikomqr12cavft509538jelbneqev4or.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cv_builder",
+            "certificate_hash": "5cc17e1cff49435e3b5f9d3c19cb27bc05994ce4"
+          }
+        },
+        {
           "client_id": "923867099296-6tjhq43nu1518f71tgue3pothc1hdg59.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -30,6 +46,49 @@
             {
               "client_id": "923867099296-6tjhq43nu1518f71tgue3pothc1hdg59.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "923867099296-s6gqfb49qktd9jfmm4tmhu8mok8qkphv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cvBuilder"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:923867099296:android:25d54c20c52f193027d9c5",
+        "android_client_info": {
+          "package_name": "com.quvlox.cvbuilder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "923867099296-6tjhq43nu1518f71tgue3pothc1hdg59.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBuyPzsoxypo8MkY2TPgJjhCl2o5QR3mOo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "923867099296-6tjhq43nu1518f71tgue3pothc1hdg59.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "923867099296-s6gqfb49qktd9jfmm4tmhu8mok8qkphv.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cvBuilder"
+              }
             }
           ]
         }

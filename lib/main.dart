@@ -12,6 +12,10 @@ import 'providers/cv_provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+    // ✅ Initialize Google Sign-In BEFORE runApp
+  await AuthService.initializeGoogleSignIn(
+    serverClientId: '923867099296-6tjhq43nu1518f71tgue3pothc1hdg59.apps.googleusercontent.com',
+  );
   runApp(const MyApp());
 }
 
@@ -38,7 +42,7 @@ class MyApp extends StatelessWidget {
             useMaterial3: true,
             fontFamily: 'Poppins',
           ),
-          home: const AuthWrapper(),
+          home: const SplashScreen(),
         ),
       ),
     );
