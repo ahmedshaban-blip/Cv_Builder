@@ -31,11 +31,7 @@ class CVProvider extends ChangeNotifier {
       id: _uuid.v4(),
       userId: userId,
       cvTitle: 'My CV',
-      personalInfo: PersonalInfo(
-        fullName: '',
-        email: '',
-        phone: '',
-      ),
+      personalInfo: PersonalInfo(fullName: '', email: '', phone: ''),
       education: [],
       experience: [],
       skills: [],
@@ -81,9 +77,7 @@ class CVProvider extends ChangeNotifier {
   }
 
   void updateTemplate(String templateId) {
-    _currentCV = _currentCV?.copyWith(
-      templateId: templateId,
-    );
+    _currentCV = _currentCV?.copyWith(templateId: templateId);
     notifyListeners();
   }
 
@@ -127,9 +121,7 @@ class CVProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _currentCV = await _firestoreService.getCVById(
-        userId, cvId,
-      );
+      _currentCV = await _firestoreService.getCVById(userId, cvId);
     } finally {
       _isLoading = false;
       notifyListeners();

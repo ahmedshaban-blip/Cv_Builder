@@ -1,5 +1,6 @@
 // lib/screens/cv_builder/steps/education_step.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:uuid/uuid.dart';
 import '../widgets/builder_widgets.dart';
 
@@ -7,7 +8,7 @@ class EducationStep extends StatefulWidget {
   final List<Map<String, dynamic>> educationList;
   final Function(List<Map<String, dynamic>>) onUpdate;
 
-  const EducationStep({
+  EducationStep({
     super.key,
     required this.educationList,
     required this.onUpdate,
@@ -21,13 +22,13 @@ class _EducationStepState extends State<EducationStep> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+      physics: BouncingScrollPhysics(),
+      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Header ──
-          const StepHeader(
+          StepHeader(
             title: 'Education',
             subtitle: 'Add your academic background',
             icon: Icons.school_outlined,
@@ -45,7 +46,7 @@ class _EducationStepState extends State<EducationStep> {
           // ── Tips ──
           if (widget.educationList.isEmpty) _buildTips(),
 
-          const SizedBox(height: 30),
+          SizedBox(height: 30.h),
         ],
       ),
     );
@@ -53,11 +54,11 @@ class _EducationStepState extends State<EducationStep> {
 
   Widget _buildEducationCard(Map<String, dynamic> edu, int index) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 14.h),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.04),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(color: Colors.white.withOpacity(0.08)),
       ),
       child: Column(
@@ -67,28 +68,28 @@ class _EducationStepState extends State<EducationStep> {
           Row(
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: 40.r,
+                height: 40.r,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF66BB6A).withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(12),
+                  color: Color(0xFF66BB6A).withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.school_outlined,
                   color: Color(0xFF66BB6A),
-                  size: 20,
+                  size: 20.sp,
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       edu['degree'] ?? 'Degree',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w600,
                       ),
                       maxLines: 1,
@@ -98,7 +99,7 @@ class _EducationStepState extends State<EducationStep> {
                       edu['institution'] ?? 'Institution',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.5),
-                        fontSize: 12,
+                        fontSize: 12.sp,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -113,28 +114,28 @@ class _EducationStepState extends State<EducationStep> {
                 icon: Icon(
                   Icons.edit_outlined,
                   color: Colors.white.withOpacity(0.4),
-                  size: 18,
+                  size: 18.sp,
                 ),
               ),
               // Delete
               IconButton(
                 onPressed: () => _deleteEducation(index),
-                icon: const Icon(
+                icon: Icon(
                   Icons.delete_outline_rounded,
                   color: Color(0xFFEF5350),
-                  size: 18,
+                  size: 18.sp,
                 ),
               ),
             ],
           ),
 
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
 
           // ── Details ──
           Row(
             children: [
               _buildDetailChip(Icons.book_outlined, edu['fieldOfStudy'] ?? ''),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               _buildDetailChip(
                 Icons.calendar_today_outlined,
                 '${edu['startDate'] ?? ''} - ${edu['isCurrently'] == true ? 'Present' : edu['endDate'] ?? ''}',
@@ -144,7 +145,7 @@ class _EducationStepState extends State<EducationStep> {
 
           if (edu['gpa'] != null && edu['gpa'].toString().isNotEmpty)
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: EdgeInsets.only(top: 8.h),
               child: _buildDetailChip(
                 Icons.grade_outlined,
                 'GPA: ${edu['gpa']}',
@@ -156,24 +157,24 @@ class _EducationStepState extends State<EducationStep> {
   }
 
   Widget _buildDetailChip(IconData icon, String text) {
-    if (text.isEmpty) return const SizedBox.shrink();
+    if (text.isEmpty) return SizedBox.shrink();
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, color: Colors.white.withOpacity(0.4), size: 12),
-          const SizedBox(width: 6),
+          Icon(icon, color: Colors.white.withOpacity(0.4), size: 12.sp),
+          SizedBox(width: 6.w),
           Flexible(
             child: Text(
               text,
               style: TextStyle(
                 color: Colors.white.withOpacity(0.5),
-                fontSize: 11,
+                fontSize: 11.sp,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -189,25 +190,25 @@ class _EducationStepState extends State<EducationStep> {
       onTap: () => _showEducationForm(),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 18),
+        padding: EdgeInsets.symmetric(vertical: 18.h),
         decoration: BoxDecoration(
-          color: const Color(0xFF66BB6A).withOpacity(0.06),
-          borderRadius: BorderRadius.circular(16),
+          color: Color(0xFF66BB6A).withOpacity(0.06),
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
-            color: const Color(0xFF66BB6A).withOpacity(0.2),
+            color: Color(0xFF66BB6A).withOpacity(0.2),
             style: BorderStyle.solid,
           ),
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.add_rounded, color: Color(0xFF66BB6A), size: 22),
-            SizedBox(width: 8),
+            Icon(Icons.add_rounded, color: Color(0xFF66BB6A), size: 22.sp),
+            SizedBox(width: 8.w),
             Text(
               'Add Education',
               style: TextStyle(
                 color: Color(0xFF66BB6A),
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -219,12 +220,12 @@ class _EducationStepState extends State<EducationStep> {
 
   Widget _buildTips() {
     return Container(
-      margin: const EdgeInsets.only(top: 20),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(top: 20.h),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: const Color(0xFF2196F3).withOpacity(0.06),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFF2196F3).withOpacity(0.15)),
+        color: Color(0xFF2196F3).withOpacity(0.06),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: Color(0xFF2196F3).withOpacity(0.15)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,21 +234,21 @@ class _EducationStepState extends State<EducationStep> {
             children: [
               Icon(
                 Icons.lightbulb_outline,
-                color: const Color(0xFF2196F3).withOpacity(0.8),
-                size: 18,
+                color: Color(0xFF2196F3).withOpacity(0.8),
+                size: 18.sp,
               ),
-              const SizedBox(width: 8),
-              const Text(
+              SizedBox(width: 8.w),
+              Text(
                 'ATS Tips',
                 style: TextStyle(
                   color: Color(0xFF64B5F6),
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           _buildTipItem('List most recent education first'),
           _buildTipItem('Include GPA if above 3.0'),
           _buildTipItem('Use full degree name (not abbreviations)'),
@@ -258,7 +259,7 @@ class _EducationStepState extends State<EducationStep> {
 
   Widget _buildTipItem(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: EdgeInsets.only(bottom: 6.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -266,7 +267,7 @@ class _EducationStepState extends State<EducationStep> {
             '• ',
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
-              fontSize: 12,
+              fontSize: 12.sp,
             ),
           ),
           Expanded(
@@ -274,7 +275,7 @@ class _EducationStepState extends State<EducationStep> {
               text,
               style: TextStyle(
                 color: Colors.white.withOpacity(0.4),
-                fontSize: 12,
+                fontSize: 12.sp,
                 height: 1.4,
               ),
             ),
@@ -319,37 +320,37 @@ class _EducationStepState extends State<EducationStep> {
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Color(0xFF1A1F38),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
             ),
             child: Column(
               children: [
                 // ── Handle & Header ──
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20.r),
                   child: Column(
                     children: [
                       Container(
-                        width: 40,
-                        height: 4,
+                        width: 40.w,
+                        height: 4.h,
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(2),
+                          borderRadius: BorderRadius.circular(2.r),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       Row(
                         children: [
                           Text(
                             isEditing ? 'Edit Education' : 'Add Education',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 20,
+                              fontSize: 20.sp,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          const Spacer(),
+                          Spacer(),
                           IconButton(
                             onPressed: () => Navigator.pop(context),
                             icon: Icon(
@@ -366,7 +367,7 @@ class _EducationStepState extends State<EducationStep> {
                 // ── Form ──
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Form(
                       key: formKey,
                       child: Column(
@@ -381,7 +382,7 @@ class _EducationStepState extends State<EducationStep> {
                                 ? 'Required'
                                 : null,
                           ),
-                          const SizedBox(height: 14),
+                          SizedBox(height: 14.h),
                           CVTextField(
                             controller: degreeCtrl,
                             label: 'Degree',
@@ -392,7 +393,7 @@ class _EducationStepState extends State<EducationStep> {
                                 ? 'Required'
                                 : null,
                           ),
-                          const SizedBox(height: 14),
+                          SizedBox(height: 14.h),
                           CVTextField(
                             controller: fieldCtrl,
                             label: 'Field of Study',
@@ -403,7 +404,7 @@ class _EducationStepState extends State<EducationStep> {
                                 ? 'Required'
                                 : null,
                           ),
-                          const SizedBox(height: 14),
+                          SizedBox(height: 14.h),
                           Row(
                             children: [
                               Expanded(
@@ -419,7 +420,7 @@ class _EducationStepState extends State<EducationStep> {
                                       : null,
                                 ),
                               ),
-                              const SizedBox(width: 12),
+                              SizedBox(width: 12.w),
                               Expanded(
                                 child: CVTextField(
                                   controller: endDateCtrl,
@@ -437,7 +438,7 @@ class _EducationStepState extends State<EducationStep> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10.h),
 
                           // Currently Studying
                           Row(
@@ -449,9 +450,9 @@ class _EducationStepState extends State<EducationStep> {
                                     isCurrently = v ?? false;
                                   });
                                 },
-                                activeColor: const Color(0xFF66BB6A),
+                                activeColor: Color(0xFF66BB6A),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
+                                  borderRadius: BorderRadius.circular(4.r),
                                 ),
                                 side: BorderSide(
                                   color: Colors.white.withOpacity(0.3),
@@ -461,12 +462,12 @@ class _EducationStepState extends State<EducationStep> {
                                 'Currently studying here',
                                 style: TextStyle(
                                   color: Colors.white.withOpacity(0.6),
-                                  fontSize: 13,
+                                  fontSize: 13.sp,
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10.h),
                           CVTextField(
                             controller: gpaCtrl,
                             label: 'GPA (Optional)',
@@ -474,7 +475,7 @@ class _EducationStepState extends State<EducationStep> {
                             icon: Icons.grade_outlined,
                             keyboardType: TextInputType.number,
                           ),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20.h),
                         ],
                       ),
                     ),
@@ -484,19 +485,19 @@ class _EducationStepState extends State<EducationStep> {
                 // ── Save Button ──
                 Padding(
                   padding: EdgeInsets.only(
-                    left: 20,
-                    right: 20,
+                    left: 20.w,
+                    right: 20.w,
                     bottom: MediaQuery.of(context).viewPadding.bottom + 20,
                   ),
                   child: SizedBox(
                     width: double.infinity,
-                    height: 52,
+                    height: 52.h,
                     child: ElevatedButton(
                       onPressed: () {
                         if (!formKey.currentState!.validate()) return;
 
                         final data = {
-                          'id': existingData?['id'] ?? const Uuid().v4(),
+                          'id': existingData?['id'] ?? Uuid().v4(),
                           'institution': institutionCtrl.text.trim(),
                           'degree': degreeCtrl.text.trim(),
                           'fieldOfStudy': fieldCtrl.text.trim(),
@@ -518,16 +519,16 @@ class _EducationStepState extends State<EducationStep> {
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF66BB6A),
+                        backgroundColor: Color(0xFF66BB6A),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(14.r),
                         ),
                       ),
                       child: Text(
                         isEditing ? 'Update Education' : 'Add Education',
-                        style: const TextStyle(
-                          fontSize: 16,
+                        style: TextStyle(
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),

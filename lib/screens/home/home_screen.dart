@@ -1,6 +1,7 @@
 // lib/screens/home/home_screen.dart
 import 'package:cv_builder/screens/auth/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -55,15 +56,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void _initAnimations() {
     _fadeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: Duration(milliseconds: 800),
     );
     _slideController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: Duration(milliseconds: 900),
     );
     _fabController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: Duration(milliseconds: 600),
     );
 
     _fadeAnim = Tween<double>(
@@ -71,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       end: 1,
     ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeIn));
 
-    _slideAnim = Tween<Offset>(begin: const Offset(0, 0.15), end: Offset.zero)
+    _slideAnim = Tween<Offset>(begin: Offset(0, 0.15), end: Offset.zero)
         .animate(
           CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
         );
@@ -82,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
     _fadeController.forward();
     _slideController.forward();
-    Future.delayed(const Duration(milliseconds: 500), () {
+    Future.delayed(Duration(milliseconds: 500), () {
       _fabController.forward();
     });
   }
@@ -114,11 +115,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             .delete();
 
         if (mounted) {
-          _showSnackBar('✅ CV deleted successfully', const Color(0xFF4CAF50));
+          _showSnackBar('✅ CV deleted successfully', Color(0xFF4CAF50));
         }
       } catch (e) {
         if (mounted) {
-          _showSnackBar('❌ Failed to delete CV', const Color(0xFFEF5350));
+          _showSnackBar('❌ Failed to delete CV', Color(0xFFEF5350));
         }
       }
     }
@@ -140,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => const LoginScreen()),
+          MaterialPageRoute(builder: (_) => LoginScreen()),
           (route) => false,
         );
       }
@@ -150,14 +151,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   void _showSnackBar(String message, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          message,
-          style: const TextStyle(fontWeight: FontWeight.w500),
-        ),
+        content: Text(message, style: TextStyle(fontWeight: FontWeight.w500)),
         backgroundColor: color,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        margin: EdgeInsets.all(16.r),
       ),
     );
   }
@@ -168,14 +168,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0E21),
+      backgroundColor: Color(0xFF0A0E21),
       body: SafeArea(
         child: FadeTransition(
           opacity: _fadeAnim,
           child: SlideTransition(
             position: _slideAnim,
             child: CustomScrollView(
-              physics: const BouncingScrollPhysics(),
+              physics: BouncingScrollPhysics(),
               slivers: [
                 // ── App Bar / Header ──
                 SliverToBoxAdapter(child: _buildHeader()),
@@ -196,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 _buildCVList(),
 
                 // ── Bottom Padding ──
-                const SliverToBoxAdapter(child: SizedBox(height: 100)),
+                SliverToBoxAdapter(child: SizedBox(height: 100.h)),
               ],
             ),
           ),
@@ -217,23 +217,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // ╚══════════════════════════════╝
   Widget _buildHeader() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
+      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
       child: Row(
         children: [
           // ── Avatar ──
           GestureDetector(
             onTap: () => _showProfileSheet(),
             child: Container(
-              width: 48,
-              height: 48,
+              width: 48.r,
+              height: 48.r,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                gradient: const LinearGradient(
+                borderRadius: BorderRadius.circular(16.r),
+                gradient: LinearGradient(
                   colors: [Color(0xFF2196F3), Color(0xFF1565C0)],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF2196F3).withOpacity(0.3),
+                    color: Color(0xFF2196F3).withOpacity(0.3),
                     blurRadius: 12,
                     spreadRadius: 1,
                   ),
@@ -241,7 +241,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               ),
               child: _currentUser?.photoURL != null
                   ? ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(16.r),
                       child: Image.network(
                         _currentUser!.photoURL!,
                         fit: BoxFit.cover,
@@ -252,7 +252,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             ),
           ),
 
-          const SizedBox(width: 14),
+          SizedBox(width: 14.w),
 
           // ── Welcome Text ──
           Expanded(
@@ -263,15 +263,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   _getGreeting(),
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.5),
-                    fontSize: 13,
+                    fontSize: 13.sp,
                   ),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2.h),
                 Text(
                   _currentUser?.displayName ?? 'User',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w700,
                   ),
                   maxLines: 1,
@@ -285,11 +285,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           _buildIconButton(
             Icons.notifications_outlined,
             onTap: () {
-              _showSnackBar('🔔 No new notifications', const Color(0xFF2196F3));
+              _showSnackBar('🔔 No new notifications', Color(0xFF2196F3));
             },
           ),
 
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
 
           // ── Settings / Sign Out ──
           _buildIconButton(Icons.logout_rounded, onTap: _signOut),
@@ -311,9 +311,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return Center(
       child: Text(
         initials,
-        style: const TextStyle(
+        style: TextStyle(
           color: Colors.white,
-          fontSize: 18,
+          fontSize: 18.sp,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -324,14 +324,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 42,
-        height: 42,
+        width: 42.r,
+        height: 42.r,
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.06),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(14.r),
           border: Border.all(color: Colors.white.withOpacity(0.08)),
         ),
-        child: Icon(icon, color: Colors.white.withOpacity(0.6), size: 20),
+        child: Icon(icon, color: Colors.white.withOpacity(0.6), size: 20.sp),
       ),
     );
   }
@@ -348,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // ╚══════════════════════════════╝
   Widget _buildStatsSection() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+      padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 0),
       child: StreamBuilder<QuerySnapshot>(
         stream: _firestore
             .collection('users')
@@ -378,21 +378,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                 'Total CVs',
                 '$totalCVs',
                 Icons.description_outlined,
-                const Color(0xFF2196F3),
+                Color(0xFF2196F3),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               _buildStatCard(
                 'Classic',
                 '$classicCount',
                 Icons.article_outlined,
-                const Color(0xFF66BB6A),
+                Color(0xFF66BB6A),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               _buildStatCard(
                 'Modern',
                 '$modernCount',
                 Icons.auto_awesome_outlined,
-                const Color(0xFFFFA726),
+                Color(0xFFFFA726),
               ),
             ],
           );
@@ -409,31 +409,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   ) {
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.r),
         decoration: BoxDecoration(
           color: color.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(16.r),
           border: Border.all(color: color.withOpacity(0.15)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(icon, color: color, size: 22),
-            const SizedBox(height: 10),
+            Icon(icon, color: color, size: 22.sp),
+            SizedBox(height: 10.h),
             Text(
               value,
               style: TextStyle(
                 color: color,
-                fontSize: 24,
+                fontSize: 24.sp,
                 fontWeight: FontWeight.w800,
               ),
             ),
-            const SizedBox(height: 2),
+            SizedBox(height: 2.h),
             Text(
               label,
               style: TextStyle(
                 color: Colors.white.withOpacity(0.5),
-                fontSize: 11,
+                fontSize: 11.sp,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -448,21 +448,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // ╚══════════════════════════════╝
   Widget _buildQuickActions() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+      padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 0),
       child: Container(
-        padding: const EdgeInsets.all(20),
+        padding: EdgeInsets.all(20.r),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
+          gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [Color(0xFF1565C0), Color(0xFF0D47A1)],
           ),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF1565C0).withOpacity(0.3),
+              color: Color(0xFF1565C0).withOpacity(0.3),
               blurRadius: 20,
-              offset: const Offset(0, 8),
+              offset: Offset(0, 8),
             ),
           ],
         ),
@@ -473,25 +473,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Create Your\nProfessional CV',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: 20.sp,
                       fontWeight: FontWeight.w700,
                       height: 1.3,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   Text(
                     'ATS-friendly templates that\nget you noticed',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.7),
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       height: 1.4,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
 
                   // ── Create Button ──
                   GestureDetector(
@@ -499,35 +499,33 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       // ✅ Navigate to CV Builder
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => const CVBuilderScreen(),
-                        ),
+                        MaterialPageRoute(builder: (_) => CVBuilderScreen()),
                       );
                     },
                     child: Container(
-                      padding: const EdgeInsets.symmetric(
+                      padding: EdgeInsets.symmetric(
                         horizontal: 20,
                         vertical: 10,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(
                             Icons.add_rounded,
                             color: Color(0xFF1565C0),
-                            size: 18,
+                            size: 18.sp,
                           ),
-                          SizedBox(width: 6),
+                          SizedBox(width: 6.w),
                           Text(
                             'New CV',
                             style: TextStyle(
                               color: Color(0xFF1565C0),
                               fontWeight: FontWeight.w700,
-                              fontSize: 14,
+                              fontSize: 14.sp,
                             ),
                           ),
                         ],
@@ -540,11 +538,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
             // ── Illustration ──
             Container(
-              width: 90,
-              height: 120,
+              width: 90.w,
+              height: 120.h,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16.r),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -552,33 +550,33 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   Icon(
                     Icons.description_rounded,
                     color: Colors.white.withOpacity(0.8),
-                    size: 40,
+                    size: 40.sp,
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   Container(
-                    width: 40,
-                    height: 3,
+                    width: 40.w,
+                    height: 3.h,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.4),
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(2.r),
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Container(
-                    width: 50,
-                    height: 3,
+                    width: 50.w,
+                    height: 3.h,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(2.r),
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  SizedBox(height: 4.h),
                   Container(
-                    width: 35,
-                    height: 3,
+                    width: 35.w,
+                    height: 3.h,
                     decoration: BoxDecoration(
                       color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(2),
+                      borderRadius: BorderRadius.circular(2.r),
                     ),
                   ),
                 ],
@@ -595,38 +593,35 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // ╚══════════════════════════════╝
   Widget _buildFilterChips() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+      padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 0),
       child: Row(
         children: List.generate(_filters.length, (index) {
           final isSelected = _selectedFilter == index;
           return Padding(
-            padding: const EdgeInsets.only(right: 10),
+            padding: EdgeInsets.only(right: 10.w),
             child: GestureDetector(
               onTap: () {
                 setState(() => _selectedFilter = index);
               },
               child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 10,
-                ),
+                duration: Duration(milliseconds: 300),
+                padding: EdgeInsets.symmetric(horizontal: 18, vertical: 10),
                 decoration: BoxDecoration(
                   color: isSelected
-                      ? const Color(0xFF2196F3)
+                      ? Color(0xFF2196F3)
                       : Colors.white.withOpacity(0.06),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12.r),
                   border: Border.all(
                     color: isSelected
-                        ? const Color(0xFF2196F3)
+                        ? Color(0xFF2196F3)
                         : Colors.white.withOpacity(0.1),
                   ),
                   boxShadow: isSelected
                       ? [
                           BoxShadow(
-                            color: const Color(0xFF2196F3).withOpacity(0.3),
+                            color: Color(0xFF2196F3).withOpacity(0.3),
                             blurRadius: 8,
-                            offset: const Offset(0, 2),
+                            offset: Offset(0, 2),
                           ),
                         ]
                       : null,
@@ -637,7 +632,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     color: isSelected
                         ? Colors.white
                         : Colors.white.withOpacity(0.5),
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
                   ),
                 ),
@@ -654,15 +649,15 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // ╚══════════════════════════════╝
   Widget _buildSectionTitle() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 24, 20, 12),
+      padding: EdgeInsets.fromLTRB(20.w, 24.h, 20.w, 12.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Text(
+          Text(
             'My Resumes',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 18,
+              fontSize: 18.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -670,7 +665,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             'Swipe to delete →',
             style: TextStyle(
               color: Colors.white.withOpacity(0.3),
-              fontSize: 11,
+              fontSize: 11.sp,
             ),
           ),
         ],
@@ -687,10 +682,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       builder: (context, snapshot) {
         // ── Loading ──
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const SliverToBoxAdapter(
+          return SliverToBoxAdapter(
             child: Center(
               child: Padding(
-                padding: EdgeInsets.only(top: 60),
+                padding: EdgeInsets.only(top: 60.h),
                 child: CircularProgressIndicator(color: Color(0xFF2196F3)),
               ),
             ),
@@ -710,7 +705,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         // ── CV Cards ──
         final docs = snapshot.data!.docs;
         return SliverPadding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate((context, index) {
               final data = docs[index].data() as Map<String, dynamic>;
@@ -765,12 +760,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         : 'Just now';
 
     final isClassic = templateId == 'classic';
-    final templateColor = isClassic
-        ? const Color(0xFF66BB6A)
-        : const Color(0xFFFFA726);
+    final templateColor = isClassic ? Color(0xFF66BB6A) : Color(0xFFFFA726);
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
+      padding: EdgeInsets.only(bottom: 14.h),
       child: Dismissible(
         key: Key(cvId),
         direction: DismissDirection.endToStart,
@@ -783,25 +776,25 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         },
         background: Container(
           alignment: Alignment.centerRight,
-          padding: const EdgeInsets.only(right: 24),
+          padding: EdgeInsets.only(right: 24.w),
           decoration: BoxDecoration(
-            color: const Color(0xFFEF5350).withOpacity(0.2),
-            borderRadius: BorderRadius.circular(20),
+            color: Color(0xFFEF5350).withOpacity(0.2),
+            borderRadius: BorderRadius.circular(20.r),
           ),
-          child: const Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
                 Icons.delete_outline_rounded,
                 color: Color(0xFFEF5350),
-                size: 28,
+                size: 28.sp,
               ),
-              SizedBox(height: 4),
+              SizedBox(height: 4.h),
               Text(
                 'Delete',
                 style: TextStyle(
                   color: Color(0xFFEF5350),
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -817,10 +810,10 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             );
           },
           child: Container(
-            padding: const EdgeInsets.all(18),
+            padding: EdgeInsets.all(18.r),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.04),
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(20.r),
               border: Border.all(color: Colors.white.withOpacity(0.08)),
             ),
             child: Column(
@@ -829,11 +822,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   children: [
                     // ── CV Icon ──
                     Container(
-                      width: 52,
-                      height: 64,
+                      width: 52.w,
+                      height: 64.h,
                       decoration: BoxDecoration(
                         color: templateColor.withOpacity(0.1),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(12.r),
                         border: Border.all(
                           color: templateColor.withOpacity(0.2),
                         ),
@@ -846,14 +839,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 ? Icons.article_outlined
                                 : Icons.auto_awesome_outlined,
                             color: templateColor,
-                            size: 24,
+                            size: 24.sp,
                           ),
-                          const SizedBox(height: 4),
+                          SizedBox(height: 4.h),
                           Text(
                             isClassic ? 'Classic' : 'Modern',
                             style: TextStyle(
                               color: templateColor,
-                              fontSize: 8,
+                              fontSize: 8.sp,
                               fontWeight: FontWeight.w600,
                             ),
                           ),
@@ -861,7 +854,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       ),
                     ),
 
-                    const SizedBox(width: 14),
+                    SizedBox(width: 14.w),
 
                     // ── CV Info ──
                     Expanded(
@@ -870,40 +863,40 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         children: [
                           Text(
                             title,
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 16,
+                              fontSize: 16.sp,
                               fontWeight: FontWeight.w600,
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
                           if (jobTitle.isNotEmpty) ...[
-                            const SizedBox(height: 3),
+                            SizedBox(height: 3.h),
                             Text(
                               jobTitle,
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.5),
-                                fontSize: 12,
+                                fontSize: 12.sp,
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ],
-                          const SizedBox(height: 6),
+                          SizedBox(height: 6.h),
                           Row(
                             children: [
                               Icon(
                                 Icons.access_time_rounded,
                                 color: Colors.white.withOpacity(0.3),
-                                size: 12,
+                                size: 12.sp,
                               ),
-                              const SizedBox(width: 4),
+                              SizedBox(width: 4.w),
                               Text(
                                 dateStr,
                                 style: TextStyle(
                                   color: Colors.white.withOpacity(0.3),
-                                  fontSize: 11,
+                                  fontSize: 11.sp,
                                 ),
                               ),
                             ],
@@ -918,7 +911,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                         // Edit Button
                         _buildCardAction(
                           Icons.edit_outlined,
-                          const Color(0xFF2196F3),
+                          Color(0xFF2196F3),
                           () {
                             Navigator.push(
                               context,
@@ -928,7 +921,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                             );
                           },
                         ),
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8.h),
                         // More Button
                         _buildCardAction(
                           Icons.more_vert_rounded,
@@ -942,50 +935,50 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
 
                 // ── Skills Preview ──
                 if (skillsList.isNotEmpty) ...[
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14.h),
                   SizedBox(
-                    height: 28,
+                    height: 28.h,
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: skillsList.length > 4 ? 4 : skillsList.length,
-                      separatorBuilder: (_, __) => const SizedBox(width: 6),
+                      separatorBuilder: (_, __) => SizedBox(width: 6.w),
                       itemBuilder: (_, i) {
                         if (i == 3 && skillsList.length > 4) {
                           return Container(
-                            padding: const EdgeInsets.symmetric(
+                            padding: EdgeInsets.symmetric(
                               horizontal: 10,
                               vertical: 5,
                             ),
                             decoration: BoxDecoration(
                               color: Colors.white.withOpacity(0.06),
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(8.r),
                             ),
                             child: Text(
                               '+${skillsList.length - 3}',
                               style: TextStyle(
                                 color: Colors.white.withOpacity(0.4),
-                                fontSize: 11,
+                                fontSize: 11.sp,
                               ),
                             ),
                           );
                         }
                         return Container(
-                          padding: const EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                             horizontal: 10,
                             vertical: 5,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF2196F3).withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
+                            color: Color(0xFF2196F3).withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8.r),
                             border: Border.all(
-                              color: const Color(0xFF2196F3).withOpacity(0.2),
+                              color: Color(0xFF2196F3).withOpacity(0.2),
                             ),
                           ),
                           child: Text(
                             skillsList[i],
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Color(0xFF64B5F6),
-                              fontSize: 11,
+                              fontSize: 11.sp,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -1006,13 +999,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 34,
-        height: 34,
+        width: 34.r,
+        height: 34.r,
         decoration: BoxDecoration(
           color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(10.r),
         ),
-        child: Icon(icon, color: color, size: 16),
+        child: Icon(icon, color: color, size: 16.sp),
       ),
     );
   }
@@ -1022,62 +1015,62 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // ╚══════════════════════════════╝
   Widget _buildEmptyState() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 60),
+      padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 60.h),
       child: Column(
         children: [
           // ── Icon ──
           Container(
-            width: 100,
-            height: 100,
+            width: 100.r,
+            height: 100.r,
             decoration: BoxDecoration(
-              color: const Color(0xFF2196F3).withOpacity(0.08),
+              color: Color(0xFF2196F3).withOpacity(0.08),
               shape: BoxShape.circle,
             ),
             child: Icon(
               Icons.description_outlined,
-              color: const Color(0xFF2196F3).withOpacity(0.5),
-              size: 44,
+              color: Color(0xFF2196F3).withOpacity(0.5),
+              size: 44.sp,
             ),
           ),
-          const SizedBox(height: 24),
-          const Text(
+          SizedBox(height: 24.h),
+          Text(
             'No CVs Yet',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 20,
+              fontSize: 20.sp,
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Create your first professional CV\n'
             'and stand out from the crowd!',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
-              fontSize: 14,
+              fontSize: 14.sp,
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 28),
+          SizedBox(height: 28.h),
           ElevatedButton.icon(
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (_) => const CVBuilderScreen()),
+                MaterialPageRoute(builder: (_) => CVBuilderScreen()),
               );
             },
-            icon: const Icon(Icons.add_rounded, size: 20),
-            label: const Text(
+            icon: Icon(Icons.add_rounded, size: 20.sp),
+            label: Text(
               'Create CV',
               style: TextStyle(fontWeight: FontWeight.w600),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2196F3),
+              backgroundColor: Color(0xFF2196F3),
               foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+              padding: EdgeInsets.symmetric(horizontal: 28.w, vertical: 14.h),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
               ),
             ),
           ),
@@ -1091,29 +1084,29 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // ╚══════════════════════════════╝
   Widget _buildErrorWidget() {
     return Padding(
-      padding: const EdgeInsets.all(40),
+      padding: EdgeInsets.all(40.r),
       child: Column(
         children: [
           Icon(
             Icons.error_outline_rounded,
-            color: const Color(0xFFEF5350).withOpacity(0.7),
-            size: 48,
+            color: Color(0xFFEF5350).withOpacity(0.7),
+            size: 48.sp,
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             'Something went wrong',
             style: TextStyle(
               color: Colors.white.withOpacity(0.7),
-              fontSize: 16,
+              fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'Please try again later',
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
-              fontSize: 13,
+              fontSize: 13.sp,
             ),
           ),
         ],
@@ -1129,13 +1122,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       scale: _fabScale,
       child: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(18.r),
           boxShadow: [
             BoxShadow(
-              color: const Color(0xFF2196F3).withOpacity(0.4),
+              color: Color(0xFF2196F3).withOpacity(0.4),
               blurRadius: 16,
               spreadRadius: 2,
-              offset: const Offset(0, 4),
+              offset: Offset(0, 4),
             ),
           ],
         ),
@@ -1143,21 +1136,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (_) => const CVBuilderScreen()),
+              MaterialPageRoute(builder: (_) => CVBuilderScreen()),
             );
           },
-          backgroundColor: const Color(0xFF2196F3),
+          backgroundColor: Color(0xFF2196F3),
           foregroundColor: Colors.white,
           elevation: 0,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(18.r),
           ),
-          icon: const Icon(Icons.add_rounded),
-          label: const Text(
+          icon: Icon(Icons.add_rounded),
+          label: Text(
             'New CV',
             style: TextStyle(
               fontWeight: FontWeight.w700,
-              fontSize: 15,
+              fontSize: 15.sp,
               letterSpacing: 0.3,
             ),
           ),
@@ -1173,12 +1166,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // ── Delete Dialog ──
   Widget _buildDeleteDialog() {
     return AlertDialog(
-      backgroundColor: const Color(0xFF1A1F38),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: const Row(
+      backgroundColor: Color(0xFF1A1F38),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+      title: Row(
         children: [
-          Icon(Icons.warning_rounded, color: Color(0xFFEF5350), size: 24),
-          SizedBox(width: 10),
+          Icon(Icons.warning_rounded, color: Color(0xFFEF5350), size: 24.sp),
+          SizedBox(width: 10.w),
           Text(
             'Delete CV',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
@@ -1200,13 +1193,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ElevatedButton(
           onPressed: () => Navigator.pop(context, true),
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFEF5350),
+            backgroundColor: Color(0xFFEF5350),
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(10.r),
             ),
           ),
-          child: const Text('Delete'),
+          child: Text('Delete'),
         ),
       ],
     );
@@ -1215,12 +1208,12 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   // ── Sign Out Dialog ──
   Widget _buildSignOutDialog() {
     return AlertDialog(
-      backgroundColor: const Color(0xFF1A1F38),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      title: const Row(
+      backgroundColor: Color(0xFF1A1F38),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.r)),
+      title: Row(
         children: [
-          Icon(Icons.logout_rounded, color: Color(0xFFFFA726), size: 24),
-          SizedBox(width: 10),
+          Icon(Icons.logout_rounded, color: Color(0xFFFFA726), size: 24.sp),
+          SizedBox(width: 10.w),
           Text(
             'Sign Out',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
@@ -1242,13 +1235,13 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
         ElevatedButton(
           onPressed: () => Navigator.pop(context, true),
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color(0xFFFFA726),
+            backgroundColor: Color(0xFFFFA726),
             foregroundColor: Colors.white,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(10.r),
             ),
           ),
-          child: const Text('Sign Out'),
+          child: Text('Sign Out'),
         ),
       ],
     );
@@ -1261,44 +1254,44 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         padding: EdgeInsets.only(
-          top: 24,
-          left: 24,
-          right: 24,
+          top: 24.h,
+          left: 24.w,
+          right: 24.w,
           bottom: MediaQuery.of(context).viewPadding.bottom + 15,
         ),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: Color(0xFF1A1F38),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Handle
             Container(
-              width: 40,
-              height: 4,
+              width: 40.w,
+              height: 4.h,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(2.r),
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
 
             Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
 
             // ── Edit ──
             _buildOptionTile(
               Icons.edit_outlined,
               'Edit CV',
-              const Color(0xFF2196F3),
+              Color(0xFF2196F3),
               () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -1314,7 +1307,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             _buildOptionTile(
               Icons.visibility_outlined,
               'Preview CV',
-              const Color(0xFF66BB6A),
+              Color(0xFF66BB6A),
               () {
                 Navigator.pop(context);
                 Navigator.push(
@@ -1330,7 +1323,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             _buildOptionTile(
               Icons.copy_outlined,
               'Duplicate CV',
-              const Color(0xFFFFA726),
+              Color(0xFFFFA726),
               () {
                 Navigator.pop(context);
                 _duplicateCV(cvId);
@@ -1341,7 +1334,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             _buildOptionTile(
               Icons.share_outlined,
               'Share as PDF',
-              const Color(0xFF9C27B0),
+              Color(0xFF9C27B0),
               () {
                 Navigator.pop(context);
                 // Share functionality
@@ -1351,14 +1344,14 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
             _buildOptionTile(
               Icons.delete_outline_rounded,
               'Delete CV',
-              const Color(0xFFEF5350),
+              Color(0xFFEF5350),
               () {
                 Navigator.pop(context);
                 _deleteCV(cvId);
               },
             ),
 
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
           ],
         ),
       ),
@@ -1374,26 +1367,23 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     return ListTile(
       onTap: onTap,
       leading: Container(
-        width: 40,
-        height: 40,
+        width: 40.r,
+        height: 40.r,
         decoration: BoxDecoration(
           color: color.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
         ),
-        child: Icon(icon, color: color, size: 20),
+        child: Icon(icon, color: color, size: 20.sp),
       ),
       title: Text(
         label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.w500,
-        ),
+        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
       ),
       trailing: Icon(
         Icons.chevron_right_rounded,
         color: Colors.white.withOpacity(0.3),
       ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
     );
   }
 
@@ -1404,41 +1394,41 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
       backgroundColor: Colors.transparent,
       builder: (context) => Container(
         padding: EdgeInsets.only(
-          top: 24,
+          top: 24.h,
           bottom: MediaQuery.of(context).viewPadding.bottom,
           left: 24,
           right: 24,
         ),
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           color: Color(0xFF1A1F38),
-          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // Handle
             Container(
-              width: 40,
-              height: 4,
+              width: 40.w,
+              height: 4.h,
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(2),
+                borderRadius: BorderRadius.circular(2.r),
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
 
             // Avatar
             Container(
-              width: 80,
-              height: 80,
+              width: 80.r,
+              height: 80.r,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: const LinearGradient(
+                gradient: LinearGradient(
                   colors: [Color(0xFF2196F3), Color(0xFF1565C0)],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF2196F3).withOpacity(0.3),
+                    color: Color(0xFF2196F3).withOpacity(0.3),
                     blurRadius: 16,
                   ),
                 ],
@@ -1454,9 +1444,9 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                     ?.substring(0, 1)
                                     .toUpperCase() ??
                                 'U',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 32,
+                              fontSize: 32.sp,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -1469,36 +1459,36 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                                 ?.substring(0, 1)
                                 .toUpperCase() ??
                             'U',
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
-                          fontSize: 32,
+                          fontSize: 32.sp,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                     ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // Name
             Text(
               _currentUser?.displayName ?? 'User',
-              style: const TextStyle(
+              style: TextStyle(
                 color: Colors.white,
-                fontSize: 22,
+                fontSize: 22.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
 
             // Email
             Text(
               _currentUser?.email ?? '',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.5),
-                fontSize: 14,
+                fontSize: 14.sp,
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
 
             // Sign Out Button
             SizedBox(
@@ -1508,20 +1498,20 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   Navigator.pop(context);
                   _signOut();
                 },
-                icon: const Icon(Icons.logout_rounded, size: 18),
-                label: const Text('Sign Out'),
+                icon: Icon(Icons.logout_rounded, size: 18.sp),
+                label: Text('Sign Out'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFEF5350).withOpacity(0.15),
-                  foregroundColor: const Color(0xFFEF5350),
+                  backgroundColor: Color(0xFFEF5350).withOpacity(0.15),
+                  foregroundColor: Color(0xFFEF5350),
                   elevation: 0,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: EdgeInsets.symmetric(vertical: 14.h),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(14.r),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
 
             // ── Delete Account Button ──
             SizedBox(
@@ -1531,23 +1521,21 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                   Navigator.pop(context); // Close sheet
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => const DeleteAccountScreen(),
-                    ),
+                    MaterialPageRoute(builder: (_) => DeleteAccountScreen()),
                   );
                 },
-                icon: const Icon(Icons.delete_forever_rounded, size: 18),
-                label: const Text('Delete Account'),
+                icon: Icon(Icons.delete_forever_rounded, size: 18.sp),
+                label: Text('Delete Account'),
                 style: TextButton.styleFrom(
                   foregroundColor: Colors.white.withOpacity(0.4),
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  padding: EdgeInsets.symmetric(vertical: 12.h),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(14.r),
                   ),
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
           ],
         ),
       ),
@@ -1587,11 +1575,11 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           .set(data);
 
       if (mounted) {
-        _showSnackBar('✅ CV duplicated successfully', const Color(0xFF4CAF50));
+        _showSnackBar('✅ CV duplicated successfully', Color(0xFF4CAF50));
       }
     } catch (e) {
       if (mounted) {
-        _showSnackBar('❌ Failed to duplicate CV', const Color(0xFFEF5350));
+        _showSnackBar('❌ Failed to duplicate CV', Color(0xFFEF5350));
       }
     }
   }

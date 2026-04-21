@@ -1,5 +1,6 @@
 // lib/screens/auth/register_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,7 +13,7 @@ import '../legal/terms_of_service_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
-  static const routeName = '/register';
+  static const String routeName = '/register';
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -70,19 +71,19 @@ class _RegisterScreenState extends State<RegisterScreen>
   void _initAnimations() {
     _fadeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: Duration(milliseconds: 1000),
     );
     _slideController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 900),
+      duration: Duration(milliseconds: 900),
     );
     _buttonController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 700),
+      duration: Duration(milliseconds: 700),
     );
     _particleController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 4),
+      duration: Duration(seconds: 4),
     )..repeat();
 
     _fadeAnim = Tween<double>(
@@ -90,15 +91,14 @@ class _RegisterScreenState extends State<RegisterScreen>
       end: 1,
     ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeIn));
 
-    _headerSlide = Tween<Offset>(begin: const Offset(0, -0.3), end: Offset.zero)
+    _headerSlide = Tween<Offset>(begin: Offset(0, -0.3), end: Offset.zero)
         .animate(
           CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
         );
 
-    _formSlide = Tween<Offset>(begin: const Offset(0, 0.3), end: Offset.zero)
-        .animate(
-          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
-        );
+    _formSlide = Tween<Offset>(begin: Offset(0, 0.3), end: Offset.zero).animate(
+      CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+    );
 
     _buttonScale = Tween<double>(begin: 0.8, end: 1.0).animate(
       CurvedAnimation(parent: _buttonController, curve: Curves.elasticOut),
@@ -106,7 +106,7 @@ class _RegisterScreenState extends State<RegisterScreen>
 
     _fadeController.forward();
     _slideController.forward();
-    Future.delayed(const Duration(milliseconds: 400), () {
+    Future.delayed(Duration(milliseconds: 400), () {
       _buttonController.forward();
     });
   }
@@ -137,7 +137,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     if (!_agreeToTerms) {
       _showSnackBar(
         '⚠️ Please agree to the Terms & Conditions',
-        const Color(0xFFFFA726),
+        Color(0xFFFFA726),
       );
       return;
     }
@@ -175,7 +175,7 @@ class _RegisterScreenState extends State<RegisterScreen>
         // ✅ Navigate to Home
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
+          MaterialPageRoute(builder: (_) => HomeScreen()),
           (route) => false,
         );
       }
@@ -242,7 +242,7 @@ class _RegisterScreenState extends State<RegisterScreen>
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(builder: (_) => const HomeScreen()),
+          MaterialPageRoute(builder: (_) => HomeScreen()),
           (route) => false,
         );
       }
@@ -302,10 +302,10 @@ class _RegisterScreenState extends State<RegisterScreen>
   }
 
   Color _getStrengthColor(double strength) {
-    if (strength <= 0.25) return const Color(0xFFEF5350);
-    if (strength <= 0.5) return const Color(0xFFFFA726);
-    if (strength <= 0.75) return const Color(0xFFFFEE58);
-    return const Color(0xFF66BB6A);
+    if (strength <= 0.25) return Color(0xFFEF5350);
+    if (strength <= 0.5) return Color(0xFFFFA726);
+    if (strength <= 0.75) return Color(0xFFFFEE58);
+    return Color(0xFF66BB6A);
   }
 
   String _getStrengthText(double strength) {
@@ -341,11 +341,13 @@ class _RegisterScreenState extends State<RegisterScreen>
   void _showSnackBar(String msg, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(msg, style: const TextStyle(fontWeight: FontWeight.w500)),
+        content: Text(msg, style: TextStyle(fontWeight: FontWeight.w500)),
         backgroundColor: color,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        margin: EdgeInsets.all(16.r),
       ),
     );
   }
@@ -361,7 +363,7 @@ class _RegisterScreenState extends State<RegisterScreen>
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -383,50 +385,50 @@ class _RegisterScreenState extends State<RegisterScreen>
                   // ── Content ──
                   Expanded(
                     child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      physics: BouncingScrollPhysics(),
+                      padding: EdgeInsets.symmetric(horizontal: 24.w),
                       child: Column(
                         children: [
                           SizedBox(height: size.height * 0.02),
 
                           // ── Header ──
                           _buildHeader(),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
 
                           // ── Step Indicator ──
                           _buildStepIndicator(),
-                          const SizedBox(height: 24),
+                          SizedBox(height: 24.h),
 
                           // ── Error ──
                           if (_errorMessage != null) _buildErrorBanner(),
 
                           // ── Form ──
                           _buildForm(),
-                          const SizedBox(height: 24),
+                          SizedBox(height: 24.h),
 
                           // ── Register Button ──
                           if (_currentPage == 1) ...[
                             // ── Terms ──
                             _buildTermsCheckbox(),
-                            const SizedBox(height: 16),
+                            SizedBox(height: 16.h),
                           ],
 
                           _buildActionButton(),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20.h),
 
                           // ── Divider ──
                           if (_currentPage == 0) ...[
                             _buildDivider(),
-                            const SizedBox(height: 20),
+                            SizedBox(height: 20.h),
 
                             // ── Google ──
                             _buildGoogleButton(),
-                            const SizedBox(height: 24),
+                            SizedBox(height: 24.h),
                           ],
 
                           // ── Login Link ──
                           _buildLoginLink(),
-                          const SizedBox(height: 30),
+                          SizedBox(height: 30.h),
                         ],
                       ),
                     ),
@@ -445,7 +447,7 @@ class _RegisterScreenState extends State<RegisterScreen>
   // ╚══════════════════════════════╝
   Widget _buildTopBar() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 4, 16, 0),
+      padding: EdgeInsets.fromLTRB(8.w, 4.h, 16.w, 0),
       child: Row(
         children: [
           IconButton(
@@ -456,14 +458,14 @@ class _RegisterScreenState extends State<RegisterScreen>
                 Navigator.pop(context);
               }
             },
-            icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+            icon: Icon(Icons.arrow_back_rounded, color: Colors.white),
           ),
-          const Spacer(),
+          Spacer(),
           Text(
             'Step ${_currentPage + 1} of 2',
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
-              fontSize: 13,
+              fontSize: 13.sp,
             ),
           ),
         ],
@@ -483,49 +485,49 @@ class _RegisterScreenState extends State<RegisterScreen>
           children: [
             // Logo
             Container(
-              width: 70,
-              height: 70,
+              width: 70.r,
+              height: 70.r,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: const LinearGradient(
+                borderRadius: BorderRadius.circular(20.r),
+                gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [Color(0xFF2196F3), Color(0xFF1565C0)],
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF2196F3).withOpacity(0.3),
+                    color: Color(0xFF2196F3).withOpacity(0.3),
                     blurRadius: 16,
                     spreadRadius: 2,
                   ),
                 ],
               ),
-              child: const Center(
+              child: Center(
                 child: Icon(
                   Icons.person_add_rounded,
                   color: Colors.white,
-                  size: 32,
+                  size: 32.sp,
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
             Text(
               _currentPage == 0 ? 'Create Account' : 'Set Password',
-              style: const TextStyle(
-                fontSize: 26,
+              style: TextStyle(
+                fontSize: 26.sp,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
                 letterSpacing: 0.3,
               ),
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: 6.h),
             Text(
               _currentPage == 0
                   ? 'Enter your details to get started'
                   : 'Create a strong password for your account',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 13.sp,
                 color: Colors.white.withOpacity(0.45),
                 height: 1.4,
               ),
@@ -553,14 +555,14 @@ class _RegisterScreenState extends State<RegisterScreen>
   Widget _buildStepDot(int step, String label, IconData icon) {
     final isActive = _currentPage == step;
     final isCompleted = _currentPage > step;
-    final color = const Color(0xFF2196F3);
+    final color = Color(0xFF2196F3);
 
     return Column(
       children: [
         AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          width: 44,
-          height: 44,
+          duration: Duration(milliseconds: 300),
+          width: 44.r,
+          height: 44.r,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: isActive
@@ -579,15 +581,15 @@ class _RegisterScreenState extends State<RegisterScreen>
           ),
           child: Center(
             child: isCompleted
-                ? const Icon(Icons.check_rounded, color: Colors.white, size: 20)
+                ? Icon(Icons.check_rounded, color: Colors.white, size: 20.sp)
                 : Icon(
                     icon,
                     color: isActive ? color : Colors.white.withOpacity(0.3),
-                    size: 20,
+                    size: 20.sp,
                   ),
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         Text(
           label,
           style: TextStyle(
@@ -596,7 +598,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                 : isCompleted
                 ? color.withOpacity(0.7)
                 : Colors.white.withOpacity(0.3),
-            fontSize: 11,
+            fontSize: 11.sp,
             fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
@@ -608,16 +610,16 @@ class _RegisterScreenState extends State<RegisterScreen>
     final isCompleted = _currentPage > 0;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20),
+      padding: EdgeInsets.only(bottom: 20.h),
       child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        width: 60,
-        height: 2,
+        duration: Duration(milliseconds: 300),
+        width: 60.w,
+        height: 2.h,
         decoration: BoxDecoration(
           color: isCompleted
-              ? const Color(0xFF2196F3)
+              ? Color(0xFF2196F3)
               : Colors.white.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(1),
+          borderRadius: BorderRadius.circular(1.r),
         ),
       ),
     );
@@ -628,27 +630,27 @@ class _RegisterScreenState extends State<RegisterScreen>
   // ╚══════════════════════════════╝
   Widget _buildErrorBanner() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(14),
+      margin: EdgeInsets.only(bottom: 16.h),
+      padding: EdgeInsets.all(14.r),
       decoration: BoxDecoration(
-        color: const Color(0xFFEF5350).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFEF5350).withOpacity(0.3)),
+        color: Color(0xFFEF5350).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: Color(0xFFEF5350).withOpacity(0.3)),
       ),
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.error_outline_rounded,
             color: Color(0xFFEF5350),
-            size: 20,
+            size: 20.sp,
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           Expanded(
             child: Text(
               _errorMessage!,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Color(0xFFEF5350),
-                fontSize: 13,
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -659,8 +661,8 @@ class _RegisterScreenState extends State<RegisterScreen>
             },
             child: Icon(
               Icons.close_rounded,
-              color: const Color(0xFFEF5350).withOpacity(0.7),
-              size: 18,
+              color: Color(0xFFEF5350).withOpacity(0.7),
+              size: 18.sp,
             ),
           ),
         ],
@@ -679,13 +681,13 @@ class _RegisterScreenState extends State<RegisterScreen>
         child: Form(
           key: _formKey,
           child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 400),
+            duration: Duration(milliseconds: 400),
             transitionBuilder: (child, animation) {
               return FadeTransition(
                 opacity: animation,
                 child: SlideTransition(
                   position: Tween<Offset>(
-                    begin: const Offset(0.1, 0),
+                    begin: Offset(0.1, 0),
                     end: Offset.zero,
                   ).animate(animation),
                   child: child,
@@ -702,7 +704,7 @@ class _RegisterScreenState extends State<RegisterScreen>
   // ── Page 1: Basic Info ──
   Widget _buildPage1() {
     return Column(
-      key: const ValueKey('page1'),
+      key: ValueKey('page1'),
       children: [
         // Full Name
         _buildTextField(
@@ -724,7 +726,7 @@ class _RegisterScreenState extends State<RegisterScreen>
             return null;
           },
         ),
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         // Email
         _buildTextField(
@@ -756,7 +758,7 @@ class _RegisterScreenState extends State<RegisterScreen>
     final strengthColor = _getStrengthColor(strength);
 
     return Column(
-      key: const ValueKey('page2'),
+      key: ValueKey('page2'),
       children: [
         // Password
         _buildTextField(
@@ -784,13 +786,13 @@ class _RegisterScreenState extends State<RegisterScreen>
 
         // Password Strength
         if (_passwordController.text.isNotEmpty) ...[
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           _buildPasswordStrengthBar(strength, strengthColor),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           _buildPasswordRequirements(),
         ],
 
-        const SizedBox(height: 16),
+        SizedBox(height: 16.h),
 
         // Confirm Password
         _buildTextField(
@@ -843,35 +845,35 @@ class _RegisterScreenState extends State<RegisterScreen>
               label,
               style: TextStyle(
                 color: Colors.white.withOpacity(0.7),
-                fontSize: 13,
+                fontSize: 13.sp,
                 fontWeight: FontWeight.w500,
               ),
             ),
-            const Text(
+            Text(
               ' *',
-              style: TextStyle(color: Color(0xFFEF5350), fontSize: 14),
+              style: TextStyle(color: Color(0xFFEF5350), fontSize: 14.sp),
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         TextFormField(
           controller: controller,
           obscureText: isPassword && !isPasswordVisible,
           keyboardType: keyboardType,
           textInputAction: textInputAction,
           validator: validator,
-          style: const TextStyle(color: Colors.white, fontSize: 15),
-          cursorColor: const Color(0xFF2196F3),
+          style: TextStyle(color: Colors.white, fontSize: 15.sp),
+          cursorColor: Color(0xFF2196F3),
           decoration: InputDecoration(
             hintText: hint,
             hintStyle: TextStyle(
               color: Colors.white.withOpacity(0.2),
-              fontSize: 14,
+              fontSize: 14.sp,
             ),
             prefixIcon: Icon(
               icon,
               color: Colors.white.withOpacity(0.35),
-              size: 20,
+              size: 20.sp,
             ),
             suffixIcon: isPassword
                 ? IconButton(
@@ -880,44 +882,35 @@ class _RegisterScreenState extends State<RegisterScreen>
                           ? Icons.visibility_off_rounded
                           : Icons.visibility_rounded,
                       color: Colors.white.withOpacity(0.35),
-                      size: 20,
+                      size: 20.sp,
                     ),
                     onPressed: onToggleVisibility,
                   )
                 : null,
             filled: true,
             fillColor: Colors.white.withOpacity(0.06),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 16,
-            ),
+            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(14.r),
               borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(14.r),
               borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(
-                color: Color(0xFF2196F3),
-                width: 1.5,
-              ),
+              borderRadius: BorderRadius.circular(14.r),
+              borderSide: BorderSide(color: Color(0xFF2196F3), width: 1.5),
             ),
             errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(color: Color(0xFFEF5350)),
+              borderRadius: BorderRadius.circular(14.r),
+              borderSide: BorderSide(color: Color(0xFFEF5350)),
             ),
             focusedErrorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(
-                color: Color(0xFFEF5350),
-                width: 1.5,
-              ),
+              borderRadius: BorderRadius.circular(14.r),
+              borderSide: BorderSide(color: Color(0xFFEF5350), width: 1.5),
             ),
-            errorStyle: const TextStyle(color: Color(0xFFEF5350), fontSize: 11),
+            errorStyle: TextStyle(color: Color(0xFFEF5350), fontSize: 11.sp),
           ),
         ),
       ],
@@ -935,7 +928,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           children: [
             Expanded(
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(4.r),
                 child: LinearProgressIndicator(
                   value: strength,
                   backgroundColor: Colors.white.withOpacity(0.08),
@@ -944,16 +937,16 @@ class _RegisterScreenState extends State<RegisterScreen>
                 ),
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
 
             // Icon + Text
-            Icon(_getStrengthIcon(strength), color: color, size: 18),
-            const SizedBox(width: 6),
+            Icon(_getStrengthIcon(strength), color: color, size: 18.sp),
+            SizedBox(width: 6.w),
             Text(
               _getStrengthText(strength),
               style: TextStyle(
                 color: color,
-                fontSize: 12,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -968,10 +961,10 @@ class _RegisterScreenState extends State<RegisterScreen>
   // ╚══════════════════════════════╝
   Widget _buildPasswordRequirements() {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(14.r),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.03),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: Colors.white.withOpacity(0.06)),
       ),
       child: Column(
@@ -991,41 +984,39 @@ class _RegisterScreenState extends State<RegisterScreen>
 
   Widget _buildRequirement(String text, bool isMet) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: EdgeInsets.only(bottom: 6.h),
       child: Row(
         children: [
           AnimatedContainer(
-            duration: const Duration(milliseconds: 300),
-            width: 18,
-            height: 18,
+            duration: Duration(milliseconds: 300),
+            width: 18.r,
+            height: 18.r,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: isMet
-                  ? const Color(0xFF66BB6A).withOpacity(0.15)
+                  ? Color(0xFF66BB6A).withOpacity(0.15)
                   : Colors.white.withOpacity(0.06),
               border: Border.all(
                 color: isMet
-                    ? const Color(0xFF66BB6A)
+                    ? Color(0xFF66BB6A)
                     : Colors.white.withOpacity(0.15),
                 width: 1.5,
               ),
             ),
             child: isMet
-                ? const Icon(
+                ? Icon(
                     Icons.check_rounded,
                     color: Color(0xFF66BB6A),
-                    size: 12,
+                    size: 12.sp,
                   )
                 : null,
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           Text(
             text,
             style: TextStyle(
-              color: isMet
-                  ? const Color(0xFF66BB6A)
-                  : Colors.white.withOpacity(0.4),
-              fontSize: 12,
+              color: isMet ? Color(0xFF66BB6A) : Colors.white.withOpacity(0.4),
+              fontSize: 12.sp,
               fontWeight: isMet ? FontWeight.w500 : FontWeight.w400,
             ),
           ),
@@ -1047,28 +1038,26 @@ class _RegisterScreenState extends State<RegisterScreen>
             setState(() => _agreeToTerms = !_agreeToTerms);
           },
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            width: 22,
-            height: 22,
-            margin: const EdgeInsets.only(top: 1),
+            duration: Duration(milliseconds: 200),
+            width: 22.r,
+            height: 22.r,
+            margin: EdgeInsets.only(top: 1.h),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(6),
-              color: _agreeToTerms
-                  ? const Color(0xFF2196F3)
-                  : Colors.transparent,
+              borderRadius: BorderRadius.circular(6.r),
+              color: _agreeToTerms ? Color(0xFF2196F3) : Colors.transparent,
               border: Border.all(
                 color: _agreeToTerms
-                    ? const Color(0xFF2196F3)
+                    ? Color(0xFF2196F3)
                     : Colors.white.withOpacity(0.25),
                 width: 1.5,
               ),
             ),
             child: _agreeToTerms
-                ? const Icon(Icons.check_rounded, color: Colors.white, size: 14)
+                ? Icon(Icons.check_rounded, color: Colors.white, size: 14.sp)
                 : null,
           ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.w),
 
         // ── Text with Clickable Links ──
         Expanded(
@@ -1078,7 +1067,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                 'I agree to the ',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.5),
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   height: 1.5,
                 ),
               ),
@@ -1088,16 +1077,14 @@ class _RegisterScreenState extends State<RegisterScreen>
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => const TermsOfServiceScreen(),
-                    ),
+                    MaterialPageRoute(builder: (_) => TermsOfServiceScreen()),
                   );
                 },
-                child: const Text(
+                child: Text(
                   'Terms of Service',
                   style: TextStyle(
                     color: Color(0xFF64B5F6),
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                     decoration: TextDecoration.underline,
                     decorationColor: Color(0xFF64B5F6),
@@ -1110,7 +1097,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                 ' and ',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.5),
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   height: 1.5,
                 ),
               ),
@@ -1120,16 +1107,14 @@ class _RegisterScreenState extends State<RegisterScreen>
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                      builder: (_) => const PrivacyPolicyScreen(),
-                    ),
+                    MaterialPageRoute(builder: (_) => PrivacyPolicyScreen()),
                   );
                 },
-                child: const Text(
+                child: Text(
                   'Privacy Policy',
                   style: TextStyle(
                     color: Color(0xFF64B5F6),
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                     decoration: TextDecoration.underline,
                     decorationColor: Color(0xFF64B5F6),
@@ -1152,7 +1137,7 @@ class _RegisterScreenState extends State<RegisterScreen>
       scale: _buttonScale,
       child: SizedBox(
         width: double.infinity,
-        height: 54,
+        height: 54.h,
         child: ElevatedButton(
           onPressed: _isLoading
               ? null
@@ -1161,19 +1146,19 @@ class _RegisterScreenState extends State<RegisterScreen>
               : _registerWithEmail,
           style: ElevatedButton.styleFrom(
             backgroundColor: _currentPage == 1
-                ? const Color(0xFF4CAF50)
-                : const Color(0xFF2196F3),
+                ? Color(0xFF4CAF50)
+                : Color(0xFF2196F3),
             foregroundColor: Colors.white,
-            disabledBackgroundColor: const Color(0xFF2196F3).withOpacity(0.5),
+            disabledBackgroundColor: Color(0xFF2196F3).withOpacity(0.5),
             elevation: 0,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(14.r),
             ),
           ),
           child: _isLoading
-              ? const SizedBox(
-                  width: 24,
-                  height: 24,
+              ? SizedBox(
+                  width: 24.r,
+                  height: 24.r,
                   child: CircularProgressIndicator(
                     color: Colors.white,
                     strokeWidth: 2.5,
@@ -1186,13 +1171,13 @@ class _RegisterScreenState extends State<RegisterScreen>
                       _currentPage == 0
                           ? Icons.arrow_forward_rounded
                           : Icons.person_add_rounded,
-                      size: 20,
+                      size: 20.sp,
                     ),
-                    const SizedBox(width: 10),
+                    SizedBox(width: 10.w),
                     Text(
                       _currentPage == 0 ? 'Continue' : 'Create Account',
-                      style: const TextStyle(
-                        fontSize: 16,
+                      style: TextStyle(
+                        fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                         letterSpacing: 0.3,
                       ),
@@ -1237,7 +1222,7 @@ class _RegisterScreenState extends State<RegisterScreen>
         children: [
           Expanded(
             child: Container(
-              height: 1,
+              height: 1.h,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Colors.transparent, Colors.white.withOpacity(0.15)],
@@ -1246,12 +1231,12 @@ class _RegisterScreenState extends State<RegisterScreen>
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 14),
+            padding: EdgeInsets.symmetric(horizontal: 14.w),
             child: Text(
               'OR',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.35),
-                fontSize: 12,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w500,
                 letterSpacing: 1,
               ),
@@ -1259,7 +1244,7 @@ class _RegisterScreenState extends State<RegisterScreen>
           ),
           Expanded(
             child: Container(
-              height: 1,
+              height: 1.h,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [Colors.white.withOpacity(0.15), Colors.transparent],
@@ -1280,21 +1265,21 @@ class _RegisterScreenState extends State<RegisterScreen>
       scale: _buttonScale,
       child: SizedBox(
         width: double.infinity,
-        height: 54,
+        height: 54.h,
         child: OutlinedButton(
           onPressed: _isGoogleLoading ? null : _registerWithGoogle,
           style: OutlinedButton.styleFrom(
             foregroundColor: Colors.white,
             side: BorderSide(color: Colors.white.withOpacity(0.12), width: 1.5),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(14.r),
             ),
             backgroundColor: Colors.white.withOpacity(0.04),
           ),
           child: _isGoogleLoading
-              ? const SizedBox(
-                  width: 24,
-                  height: 24,
+              ? SizedBox(
+                  width: 24.r,
+                  height: 24.r,
                   child: CircularProgressIndicator(
                     color: Colors.white,
                     strokeWidth: 2.5,
@@ -1304,28 +1289,28 @@ class _RegisterScreenState extends State<RegisterScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                      width: 24,
-                      height: 24,
+                      width: 24.r,
+                      height: 24.r,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius: BorderRadius.circular(6),
+                        borderRadius: BorderRadius.circular(6.r),
                       ),
-                      padding: const EdgeInsets.all(3),
-                      child: const Text(
+                      padding: EdgeInsets.all(3.r),
+                      child: Text(
                         'G',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF4285F4),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    const Text(
+                    SizedBox(width: 12.w),
+                    Text(
                       'Sign up with Google',
                       style: TextStyle(
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -1349,16 +1334,16 @@ class _RegisterScreenState extends State<RegisterScreen>
             'Already have an account? ',
             style: TextStyle(
               color: Colors.white.withOpacity(0.45),
-              fontSize: 14,
+              fontSize: 14.sp,
             ),
           ),
           GestureDetector(
             onTap: () => Navigator.pop(context),
-            child: const Text(
+            child: Text(
               'Sign In',
               style: TextStyle(
                 color: Color(0xFF64B5F6),
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -1408,7 +1393,7 @@ class _RegisterParticlePainter extends CustomPainter {
       final y = (baseY + progress * speed * size.height) % size.height;
 
       final paint = Paint()
-        ..color = const Color(0xFF2196F3).withOpacity(opacity)
+        ..color = Color(0xFF2196F3).withOpacity(opacity)
         ..style = PaintingStyle.fill;
 
       canvas.drawCircle(Offset(x, y), radius, paint);

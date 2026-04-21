@@ -1,16 +1,13 @@
 // lib/screens/cv_builder/steps/skills_step.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/builder_widgets.dart';
 
 class SkillsStep extends StatefulWidget {
   final List<String> skillsList;
   final Function(List<String>) onUpdate;
 
-  const SkillsStep({
-    super.key,
-    required this.skillsList,
-    required this.onUpdate,
-  });
+  SkillsStep({super.key, required this.skillsList, required this.onUpdate});
 
   @override
   State<SkillsStep> createState() => _SkillsStepState();
@@ -22,34 +19,79 @@ class _SkillsStepState extends State<SkillsStep> {
   // ── Suggested Skills Categories ──
   final Map<String, List<String>> _suggestedSkills = {
     '💻 Programming': [
-      'Python', 'Java', 'JavaScript', 'TypeScript',
-      'C++', 'C#', 'Dart', 'Kotlin', 'Swift', 'Go',
-      'Rust', 'PHP', 'Ruby',
+      'Python',
+      'Java',
+      'JavaScript',
+      'TypeScript',
+      'C++',
+      'C#',
+      'Dart',
+      'Kotlin',
+      'Swift',
+      'Go',
+      'Rust',
+      'PHP',
+      'Ruby',
     ],
     '📱 Mobile': [
-      'Flutter', 'React Native', 'Android', 'iOS',
-      'SwiftUI', 'Jetpack Compose', 'Xamarin',
+      'Flutter',
+      'React Native',
+      'Android',
+      'iOS',
+      'SwiftUI',
+      'Jetpack Compose',
+      'Xamarin',
     ],
     '🌐 Web': [
-      'React', 'Angular', 'Vue.js', 'Next.js',
-      'Node.js', 'Express.js', 'HTML', 'CSS',
-      'Tailwind CSS', 'Bootstrap', 'WordPress',
+      'React',
+      'Angular',
+      'Vue.js',
+      'Next.js',
+      'Node.js',
+      'Express.js',
+      'HTML',
+      'CSS',
+      'Tailwind CSS',
+      'Bootstrap',
+      'WordPress',
     ],
     '🗄️ Backend & DB': [
-      'Firebase', 'MongoDB', 'PostgreSQL', 'MySQL',
-      'Redis', 'GraphQL', 'REST API', 'Docker',
-      'Kubernetes', 'AWS', 'Azure', 'GCP',
+      'Firebase',
+      'MongoDB',
+      'PostgreSQL',
+      'MySQL',
+      'Redis',
+      'GraphQL',
+      'REST API',
+      'Docker',
+      'Kubernetes',
+      'AWS',
+      'Azure',
+      'GCP',
     ],
     '🛠️ Tools': [
-      'Git', 'GitHub', 'GitLab', 'Jira', 'Figma',
-      'VS Code', 'Android Studio', 'Xcode', 'Postman',
-      'CI/CD', 'Linux',
+      'Git',
+      'GitHub',
+      'GitLab',
+      'Jira',
+      'Figma',
+      'VS Code',
+      'Android Studio',
+      'Xcode',
+      'Postman',
+      'CI/CD',
+      'Linux',
     ],
     '📊 Other': [
-      'Agile', 'Scrum', 'Problem Solving',
-      'Team Leadership', 'Communication',
-      'Project Management', 'Data Analysis',
-      'Machine Learning', 'UI/UX Design',
+      'Agile',
+      'Scrum',
+      'Problem Solving',
+      'Team Leadership',
+      'Communication',
+      'Project Management',
+      'Data Analysis',
+      'Machine Learning',
+      'UI/UX Design',
     ],
   };
 
@@ -62,8 +104,7 @@ class _SkillsStepState extends State<SkillsStep> {
   }
 
   void _addSkill(String skill) {
-    if (skill.trim().isNotEmpty &&
-        !widget.skillsList.contains(skill.trim())) {
+    if (skill.trim().isNotEmpty && !widget.skillsList.contains(skill.trim())) {
       setState(() {
         widget.skillsList.add(skill.trim());
       });
@@ -82,13 +123,13 @@ class _SkillsStepState extends State<SkillsStep> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+      physics: BouncingScrollPhysics(),
+      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Header ──
-          const StepHeader(
+          StepHeader(
             title: 'Skills',
             subtitle: 'Showcase your abilities',
             icon: Icons.psychology_outlined,
@@ -97,26 +138,26 @@ class _SkillsStepState extends State<SkillsStep> {
 
           // ── Add Skill Input ──
           _buildSkillInput(),
-          const SizedBox(height: 20),
+          SizedBox(height: 20.h),
 
           // ── Added Skills ──
           if (widget.skillsList.isNotEmpty) ...[
             _buildAddedSkills(),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
           ],
 
           // ── Category Selector ──
           _buildCategorySelector(),
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
 
           // ── Suggested Skills ──
           _buildSuggestedSkills(),
 
           // ── Tips ──
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
           _buildTips(),
 
-          const SizedBox(height: 30),
+          SizedBox(height: 30.h),
         ],
       ),
     );
@@ -131,75 +172,58 @@ class _SkillsStepState extends State<SkillsStep> {
         Expanded(
           child: TextFormField(
             controller: _skillController,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-            ),
-            cursorColor: const Color(0xFF9C27B0),
+            style: TextStyle(color: Colors.white, fontSize: 15.sp),
+            cursorColor: Color(0xFF9C27B0),
             textInputAction: TextInputAction.done,
             onFieldSubmitted: (value) => _addSkill(value),
             decoration: InputDecoration(
               hintText: 'Type a skill and press add...',
               hintStyle: TextStyle(
                 color: Colors.white.withOpacity(0.2),
-                fontSize: 14,
+                fontSize: 14.sp,
               ),
               prefixIcon: Icon(
                 Icons.add_circle_outline,
                 color: Colors.white.withOpacity(0.3),
-                size: 20,
+                size: 20.sp,
               ),
               filled: true,
               fillColor: Colors.white.withOpacity(0.05),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide(
-                  color: Colors.white.withOpacity(0.08),
-                ),
+                borderRadius: BorderRadius.circular(14.r),
+                borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide(
-                  color: Colors.white.withOpacity(0.08),
-                ),
+                borderRadius: BorderRadius.circular(14.r),
+                borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(
-                  color: Color(0xFF9C27B0),
-                ),
+                borderRadius: BorderRadius.circular(14.r),
+                borderSide: BorderSide(color: Color(0xFF9C27B0)),
               ),
             ),
           ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.w),
         GestureDetector(
           onTap: () => _addSkill(_skillController.text),
           child: Container(
-            width: 52,
-            height: 52,
+            width: 52.r,
+            height: 52.r,
             decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [
-                  Color(0xFF9C27B0),
-                  Color(0xFF7B1FA2),
-                ],
+              gradient: LinearGradient(
+                colors: [Color(0xFF9C27B0), Color(0xFF7B1FA2)],
               ),
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(14.r),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF9C27B0)
-                      .withOpacity(0.3),
+                  color: Color(0xFF9C27B0).withOpacity(0.3),
                   blurRadius: 8,
-                  offset: const Offset(0, 2),
+                  offset: Offset(0, 2),
                 ),
               ],
             ),
-            child: const Icon(
-              Icons.add_rounded,
-              color: Colors.white,
-              size: 24,
-            ),
+            child: Icon(Icons.add_rounded, color: Colors.white, size: 24.sp),
           ),
         ),
       ],
@@ -219,44 +243,34 @@ class _SkillsStepState extends State<SkillsStep> {
               'Your Skills',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.7),
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(width: 8),
+            SizedBox(width: 8.w),
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 2,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
-                color: const Color(0xFF9C27B0)
-                    .withOpacity(0.2),
-                borderRadius: BorderRadius.circular(8),
+                color: Color(0xFF9C27B0).withOpacity(0.2),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Text(
                 '${widget.skillsList.length}',
-                style: const TextStyle(
+                style: TextStyle(
                   color: Color(0xFF9C27B0),
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
                 ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
         Wrap(
           spacing: 8,
           runSpacing: 8,
-          children: widget.skillsList
-              .asMap()
-              .entries
-              .map((entry) {
-            return _buildSkillChip(
-              entry.value,
-              entry.key,
-            );
+          children: widget.skillsList.asMap().entries.map((entry) {
+            return _buildSkillChip(entry.value, entry.key);
           }).toList(),
         ),
       ],
@@ -265,35 +279,30 @@ class _SkillsStepState extends State<SkillsStep> {
 
   Widget _buildSkillChip(String skill, int index) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 8,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFF9C27B0).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: const Color(0xFF9C27B0).withOpacity(0.25),
-        ),
+        color: Color(0xFF9C27B0).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: Color(0xFF9C27B0).withOpacity(0.25)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
             skill,
-            style: const TextStyle(
+            style: TextStyle(
               color: Color(0xFFCE93D8),
-              fontSize: 13,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(width: 6),
+          SizedBox(width: 6.w),
           GestureDetector(
             onTap: () => _removeSkill(index),
-            child: const Icon(
+            child: Icon(
               Icons.close_rounded,
               color: Color(0xFFCE93D8),
-              size: 16,
+              size: 16.sp,
             ),
           ),
         ],
@@ -312,20 +321,19 @@ class _SkillsStepState extends State<SkillsStep> {
           'Suggested Skills',
           style: TextStyle(
             color: Colors.white.withOpacity(0.7),
-            fontSize: 14,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(height: 10),
+        SizedBox(height: 10.h),
         SizedBox(
-          height: 38,
+          height: 38.h,
           child: ListView(
             scrollDirection: Axis.horizontal,
             children: _suggestedSkills.keys.map((category) {
-              final isSelected =
-                  _selectedCategory == category;
+              final isSelected = _selectedCategory == category;
               return Padding(
-                padding: const EdgeInsets.only(right: 8),
+                padding: EdgeInsets.only(right: 8.w),
                 child: GestureDetector(
                   onTap: () {
                     setState(() {
@@ -333,37 +341,26 @@ class _SkillsStepState extends State<SkillsStep> {
                     });
                   },
                   child: AnimatedContainer(
-                    duration: const Duration(
-                      milliseconds: 250,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 8,
-                    ),
+                    duration: Duration(milliseconds: 250),
+                    padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? const Color(0xFF9C27B0)
-                              .withOpacity(0.2)
-                          : Colors.white
-                              .withOpacity(0.04),
-                      borderRadius:
-                          BorderRadius.circular(10),
+                          ? Color(0xFF9C27B0).withOpacity(0.2)
+                          : Colors.white.withOpacity(0.04),
+                      borderRadius: BorderRadius.circular(10.r),
                       border: Border.all(
                         color: isSelected
-                            ? const Color(0xFF9C27B0)
-                                .withOpacity(0.4)
-                            : Colors.white
-                                .withOpacity(0.08),
+                            ? Color(0xFF9C27B0).withOpacity(0.4)
+                            : Colors.white.withOpacity(0.08),
                       ),
                     ),
                     child: Text(
                       category,
                       style: TextStyle(
                         color: isSelected
-                            ? const Color(0xFFCE93D8)
-                            : Colors.white
-                                .withOpacity(0.5),
-                        fontSize: 12,
+                            ? Color(0xFFCE93D8)
+                            : Colors.white.withOpacity(0.5),
+                        fontSize: 12.sp,
                         fontWeight: isSelected
                             ? FontWeight.w600
                             : FontWeight.w400,
@@ -383,8 +380,7 @@ class _SkillsStepState extends State<SkillsStep> {
   // 💡 Suggested Skills Grid
   // ══════════════════════════════════════════
   Widget _buildSuggestedSkills() {
-    final skills =
-        _suggestedSkills[_selectedCategory] ?? [];
+    final skills = _suggestedSkills[_selectedCategory] ?? [];
 
     return Wrap(
       spacing: 8,
@@ -393,25 +389,18 @@ class _SkillsStepState extends State<SkillsStep> {
         final isAdded = widget.skillsList.contains(skill);
 
         return GestureDetector(
-          onTap: isAdded
-              ? null
-              : () => _addSkill(skill),
+          onTap: isAdded ? null : () => _addSkill(skill),
           child: AnimatedContainer(
-            duration: const Duration(milliseconds: 200),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
+            duration: Duration(milliseconds: 200),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
               color: isAdded
-                  ? const Color(0xFF4CAF50)
-                      .withOpacity(0.1)
+                  ? Color(0xFF4CAF50).withOpacity(0.1)
                   : Colors.white.withOpacity(0.04),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(10.r),
               border: Border.all(
                 color: isAdded
-                    ? const Color(0xFF4CAF50)
-                        .withOpacity(0.3)
+                    ? Color(0xFF4CAF50).withOpacity(0.3)
                     : Colors.white.withOpacity(0.1),
               ),
             ),
@@ -419,24 +408,22 @@ class _SkillsStepState extends State<SkillsStep> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 if (isAdded)
-                  const Padding(
-                    padding: EdgeInsets.only(right: 4),
+                  Padding(
+                    padding: EdgeInsets.only(right: 4.w),
                     child: Icon(
                       Icons.check_rounded,
                       color: Color(0xFF4CAF50),
-                      size: 14,
+                      size: 14.sp,
                     ),
                   ),
                 Text(
                   skill,
                   style: TextStyle(
                     color: isAdded
-                        ? const Color(0xFF4CAF50)
+                        ? Color(0xFF4CAF50)
                         : Colors.white.withOpacity(0.6),
-                    fontSize: 12,
-                    fontWeight: isAdded
-                        ? FontWeight.w600
-                        : FontWeight.w400,
+                    fontSize: 12.sp,
+                    fontWeight: isAdded ? FontWeight.w600 : FontWeight.w400,
                   ),
                 ),
               ],
@@ -452,13 +439,11 @@ class _SkillsStepState extends State<SkillsStep> {
   // ══════════════════════════════════════════
   Widget _buildTips() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: const Color(0xFF2196F3).withOpacity(0.06),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: const Color(0xFF2196F3).withOpacity(0.15),
-        ),
+        color: Color(0xFF2196F3).withOpacity(0.06),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: Color(0xFF2196F3).withOpacity(0.15)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -467,22 +452,21 @@ class _SkillsStepState extends State<SkillsStep> {
             children: [
               Icon(
                 Icons.lightbulb_outline,
-                color: const Color(0xFF2196F3)
-                    .withOpacity(0.8),
-                size: 18,
+                color: Color(0xFF2196F3).withOpacity(0.8),
+                size: 18.sp,
               ),
-              const SizedBox(width: 8),
-              const Text(
+              SizedBox(width: 8.w),
+              Text(
                 'ATS Tips for Skills',
                 style: TextStyle(
                   color: Color(0xFF64B5F6),
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           _tipItem('Match skills from the job description'),
           _tipItem('Include both technical and soft skills'),
           _tipItem('Use standard skill names (not abbreviations)'),
@@ -494,19 +478,17 @@ class _SkillsStepState extends State<SkillsStep> {
 
   Widget _tipItem(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: EdgeInsets.only(bottom: 6.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('• ',
-              style: TextStyle(
-                  color: Colors.white.withOpacity(0.4))),
+          Text('• ', style: TextStyle(color: Colors.white.withOpacity(0.4))),
           Expanded(
             child: Text(
               text,
               style: TextStyle(
                 color: Colors.white.withOpacity(0.4),
-                fontSize: 12,
+                fontSize: 12.sp,
                 height: 1.4,
               ),
             ),

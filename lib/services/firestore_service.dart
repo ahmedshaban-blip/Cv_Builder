@@ -7,10 +7,7 @@ class FirestoreService {
 
   // ✅ Reference to user's CVs collection
   CollectionReference _cvsCollection(String userId) {
-    return _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('cvs');
+    return _firestore.collection('users').doc(userId).collection('cvs');
   }
 
   // ══════════════════════════════════════
@@ -18,8 +15,7 @@ class FirestoreService {
   // ══════════════════════════════════════
   Future<String> createCV(CVModel cv) async {
     try {
-      DocumentReference docRef =
-          _cvsCollection(cv.userId).doc(cv.id);
+      DocumentReference docRef = _cvsCollection(cv.userId).doc(cv.id);
       await docRef.set(cv.toMap());
       return cv.id;
     } catch (e) {
@@ -31,10 +27,9 @@ class FirestoreService {
   // 📖 READ - Get All CVs for User
   // ══════════════════════════════════════
   Stream<List<CVModel>> getUserCVs(String userId) {
-    return _cvsCollection(userId)
-        .orderBy('updatedAt', descending: true)
-        .snapshots()
-        .map((snapshot) {
+    return _cvsCollection(
+      userId,
+    ).orderBy('updatedAt', descending: true).snapshots().map((snapshot) {
       return snapshot.docs.map((doc) {
         return CVModel.fromMap(doc.data() as Map<String, dynamic>);
       }).toList();
@@ -46,8 +41,7 @@ class FirestoreService {
   // ══════════════════════════════════════
   Future<CVModel?> getCVById(String userId, String cvId) async {
     try {
-      DocumentSnapshot doc =
-          await _cvsCollection(userId).doc(cvId).get();
+      DocumentSnapshot doc = await _cvsCollection(userId).doc(cvId).get();
       if (doc.exists) {
         return CVModel.fromMap(doc.data() as Map<String, dynamic>);
       }
@@ -62,9 +56,9 @@ class FirestoreService {
   // ══════════════════════════════════════
   Future<void> updateCV(CVModel cv) async {
     try {
-      await _cvsCollection(cv.userId).doc(cv.id).update(
-        cv.toMap()..['updatedAt'] = FieldValue.serverTimestamp(),
-      );
+      await _cvsCollection(cv.userId)
+          .doc(cv.id)
+          .update(cv.toMap()..['updatedAt'] = FieldValue.serverTimestamp());
     } catch (e) {
       throw Exception('Failed to update CV: $e');
     }
@@ -85,8 +79,9 @@ class FirestoreService {
   // 📊 Get CV Count for User
   // ══════════════════════════════════════
   Future<int> getCVCount(String userId) async {
-    AggregateQuerySnapshot snapshot =
-        await _cvsCollection(userId).count().get();
+    AggregateQuerySnapshot snapshot = await _cvsCollection(
+      userId,
+    ).count().get();
     return snapshot.count ?? 0;
   }
 }

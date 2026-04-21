@@ -8,8 +8,7 @@ class AuthService {
   final GoogleSignIn _googleSignIn = GoogleSignIn.instance; // ✅ Singleton
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-
-    // ✅ MUST be called before using Google Sign-In (e.g., in main.dart)
+  // ✅ MUST be called before using Google Sign-In (e.g., in main.dart)
   static Future<void> initializeGoogleSignIn({
     String? clientId,
     String? serverClientId,
@@ -19,6 +18,7 @@ class AuthService {
       serverClientId: serverClientId,
     );
   }
+
   // ✅ Current User Stream
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
@@ -78,17 +78,16 @@ class AuthService {
   // ══════════════════════════════════════
   // 🔵 Google Sign In
   // ══════════════════════════════════════
-    Future<UserCredential?> signInWithGoogle() async {
+  Future<UserCredential?> signInWithGoogle() async {
     try {
       // 1. Trigger Google Sign-In flow — ✅ authenticate() replaces signIn()
-      final GoogleSignInAccount? googleUser =
-          await _googleSignIn.authenticate();
+      final GoogleSignInAccount? googleUser = await _googleSignIn
+          .authenticate();
 
       if (googleUser == null) return null; // User cancelled
 
       // 2. Get auth details — ✅ Now SYNCHRONOUS (no await!)
-      final GoogleSignInAuthentication googleAuth =
-          googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
       // 3. Create credential — ✅ Only idToken needed
       final credential = GoogleAuthProvider.credential(
@@ -96,15 +95,13 @@ class AuthService {
       );
 
       // 4. Sign in to Firebase
-      UserCredential userCredential =
-          await _auth.signInWithCredential(credential);
+      UserCredential userCredential = await _auth.signInWithCredential(
+        credential,
+      );
 
       // 5. Save new user to Firestore
       if (userCredential.additionalUserInfo?.isNewUser ?? false) {
-        await _firestore
-            .collection('users')
-            .doc(userCredential.user!.uid)
-            .set({
+        await _firestore.collection('users').doc(userCredential.user!.uid).set({
           'uid': userCredential.user!.uid,
           'fullName': userCredential.user!.displayName,
           'email': userCredential.user!.email,
@@ -120,11 +117,10 @@ class AuthService {
     }
   }
 
-
   // ══════════════════════════════════════
   // 🔑 Forgot Password
   // ══════════════════════════════════════
- Future<void> resetPassword(String email) async {
+  Future<void> resetPassword(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
@@ -135,7 +131,7 @@ class AuthService {
   // ══════════════════════════════════════
   // 🚪 Sign Out
   // ══════════════════════════════════════
-   Future<void> signOut() async {
+  Future<void> signOut() async {
     await Future.wait([_auth.signOut(), _googleSignIn.disconnect()]);
   }
 

@@ -1,5 +1,6 @@
 // lib/screens/cv_builder/steps/summary_step.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/builder_widgets.dart';
 
 class SummaryStep extends StatefulWidget {
@@ -7,7 +8,7 @@ class SummaryStep extends StatefulWidget {
   final String jobTitle;
   final List<String> skills;
 
-  const SummaryStep({
+  SummaryStep({
     super.key,
     required this.summaryController,
     required this.jobTitle,
@@ -23,17 +24,17 @@ class _SummaryStepState extends State<SummaryStep> {
   // 📝 Pre-built Summary Templates
   // ══════════════════════════════════
   List<String> get _summaryTemplates => [
-        'Results-driven ${widget.jobTitle.isNotEmpty ? widget.jobTitle : "[Job Title]"} with a proven track record of delivering high-quality solutions. Skilled in ${widget.skills.take(3).join(", ")}${widget.skills.length > 3 ? " and more" : ""}. Passionate about building scalable applications and collaborating with cross-functional teams to achieve business goals.',
-        'Dedicated ${widget.jobTitle.isNotEmpty ? widget.jobTitle : "[Job Title]"} with extensive experience in developing and maintaining robust applications. Proficient in ${widget.skills.take(3).join(", ")}${widget.skills.length > 3 ? " among other technologies" : ""}. Strong problem-solving abilities with a focus on writing clean, maintainable code.',
-        'Innovative ${widget.jobTitle.isNotEmpty ? widget.jobTitle : "[Job Title]"} with a passion for creating efficient and user-friendly solutions. Experienced in ${widget.skills.take(3).join(", ")}${widget.skills.length > 3 ? " and related technologies" : ""}. Committed to continuous learning and staying up-to-date with the latest industry trends.',
-        'Detail-oriented ${widget.jobTitle.isNotEmpty ? widget.jobTitle : "[Job Title]"} experienced in full software development lifecycle. Expertise in ${widget.skills.take(3).join(", ")}${widget.skills.length > 3 ? " and additional tools" : ""}. Known for strong analytical skills and ability to work effectively in fast-paced environments.',
-      ];
+    'Results-driven ${widget.jobTitle.isNotEmpty ? widget.jobTitle : "[Job Title]"} with a proven track record of delivering high-quality solutions. Skilled in ${widget.skills.take(3).join(", ")}${widget.skills.length > 3 ? " and more" : ""}. Passionate about building scalable applications and collaborating with cross-functional teams to achieve business goals.',
+    'Dedicated ${widget.jobTitle.isNotEmpty ? widget.jobTitle : "[Job Title]"} with extensive experience in developing and maintaining robust applications. Proficient in ${widget.skills.take(3).join(", ")}${widget.skills.length > 3 ? " among other technologies" : ""}. Strong problem-solving abilities with a focus on writing clean, maintainable code.',
+    'Innovative ${widget.jobTitle.isNotEmpty ? widget.jobTitle : "[Job Title]"} with a passion for creating efficient and user-friendly solutions. Experienced in ${widget.skills.take(3).join(", ")}${widget.skills.length > 3 ? " and related technologies" : ""}. Committed to continuous learning and staying up-to-date with the latest industry trends.',
+    'Detail-oriented ${widget.jobTitle.isNotEmpty ? widget.jobTitle : "[Job Title]"} experienced in full software development lifecycle. Expertise in ${widget.skills.take(3).join(", ")}${widget.skills.length > 3 ? " and additional tools" : ""}. Known for strong analytical skills and ability to work effectively in fast-paced environments.',
+  ];
 
   int? _selectedTemplateIndex;
   int _charCount = 0;
-  static const int _maxChars = 500;
-  static const int _recommendedMin = 150;
-  static const int _recommendedMax = 300;
+  static int _maxChars = 500;
+  static int _recommendedMin = 150;
+  static int _recommendedMax = 300;
 
   @override
   void initState() {
@@ -57,15 +58,15 @@ class _SummaryStepState extends State<SummaryStep> {
   Color get _charCountColor {
     if (_charCount == 0) return Colors.white.withOpacity(0.3);
     if (_charCount < _recommendedMin) {
-      return const Color(0xFFFFA726);
+      return Color(0xFFFFA726);
     }
     if (_charCount <= _recommendedMax) {
-      return const Color(0xFF66BB6A);
+      return Color(0xFF66BB6A);
     }
     if (_charCount <= _maxChars) {
-      return const Color(0xFFFFA726);
+      return Color(0xFFFFA726);
     }
-    return const Color(0xFFEF5350);
+    return Color(0xFFEF5350);
   }
 
   String get _charCountHint {
@@ -85,13 +86,13 @@ class _SummaryStepState extends State<SummaryStep> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+      physics: BouncingScrollPhysics(),
+      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Header ──
-          const StepHeader(
+          StepHeader(
             title: 'Professional Summary',
             subtitle: 'Write a brief overview about yourself',
             icon: Icons.text_snippet_outlined,
@@ -100,24 +101,24 @@ class _SummaryStepState extends State<SummaryStep> {
 
           // ── Summary Text Field ──
           _buildSummaryField(),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
 
           // ── Character Count ──
           _buildCharacterCount(),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // ── Quick Templates ──
           _buildTemplatesSection(),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // ── Writing Guide ──
           _buildWritingGuide(),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // ── ATS Tips ──
           _buildTips(),
 
-          const SizedBox(height: 30),
+          SizedBox(height: 30.h),
         ],
       ),
     );
@@ -129,10 +130,10 @@ class _SummaryStepState extends State<SummaryStep> {
   Widget _buildSummaryField() {
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
           color: _charCount > _maxChars
-              ? const Color(0xFFEF5350).withOpacity(0.5)
+              ? Color(0xFFEF5350).withOpacity(0.5)
               : Colors.white.withOpacity(0.08),
         ),
       ),
@@ -140,43 +141,34 @@ class _SummaryStepState extends State<SummaryStep> {
         controller: widget.summaryController,
         maxLines: 8,
         maxLength: _maxChars + 50, // soft limit
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 15,
-          height: 1.6,
-        ),
-        cursorColor: const Color(0xFFFF7043),
-        buildCounter: (context,
-            {required currentLength,
-            required isFocused,
-            maxLength}) {
-          return const SizedBox.shrink();
-        },
+        style: TextStyle(color: Colors.white, fontSize: 15.sp, height: 1.6),
+        cursorColor: Color(0xFFFF7043),
+        buildCounter:
+            (context, {required currentLength, required isFocused, maxLength}) {
+              return SizedBox.shrink();
+            },
         decoration: InputDecoration(
           hintText:
               'Write a compelling 2-3 sentence summary that highlights your key qualifications, experience, and career goals...',
           hintStyle: TextStyle(
             color: Colors.white.withOpacity(0.2),
-            fontSize: 14,
+            fontSize: 14.sp,
             height: 1.5,
           ),
           filled: true,
           fillColor: Colors.white.withOpacity(0.04),
-          contentPadding: const EdgeInsets.all(18),
+          contentPadding: EdgeInsets.all(18.r),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             borderSide: BorderSide.none,
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             borderSide: BorderSide.none,
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(
-              color: Color(0xFFFF7043),
-              width: 1.5,
-            ),
+            borderRadius: BorderRadius.circular(16.r),
+            borderSide: BorderSide(color: Color(0xFFFF7043), width: 1.5),
           ),
         ),
       ),
@@ -192,27 +184,23 @@ class _SummaryStepState extends State<SummaryStep> {
         // Progress Bar
         Expanded(
           child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(4.r),
             child: LinearProgressIndicator(
-              value: (_charCount / _recommendedMax)
-                  .clamp(0.0, 1.0),
-              backgroundColor:
-                  Colors.white.withOpacity(0.06),
-              valueColor: AlwaysStoppedAnimation(
-                _charCountColor,
-              ),
+              value: (_charCount / _recommendedMax).clamp(0.0, 1.0),
+              backgroundColor: Colors.white.withOpacity(0.06),
+              valueColor: AlwaysStoppedAnimation(_charCountColor),
               minHeight: 4,
             ),
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12.w),
 
         // Count
         Text(
           '$_charCount / $_recommendedMax',
           style: TextStyle(
             color: _charCountColor,
-            fontSize: 12,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -231,33 +219,33 @@ class _SummaryStepState extends State<SummaryStep> {
         Row(
           children: [
             Container(
-              width: 4,
-              height: 20,
+              width: 4.w,
+              height: 20.h,
               decoration: BoxDecoration(
-                color: const Color(0xFFFF7043),
-                borderRadius: BorderRadius.circular(2),
+                color: Color(0xFFFF7043),
+                borderRadius: BorderRadius.circular(2.r),
               ),
             ),
-            const SizedBox(width: 10),
+            SizedBox(width: 10.w),
             Text(
               'Quick Templates',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.7),
-                fontSize: 15,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const Spacer(),
+            Spacer(),
             Text(
               'Tap to use',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.3),
-                fontSize: 11,
+                fontSize: 11.sp,
               ),
             ),
           ],
         ),
-        const SizedBox(height: 14),
+        SizedBox(height: 14.h),
 
         ...List.generate(_summaryTemplates.length, (index) {
           final isSelected = _selectedTemplateIndex == index;
@@ -265,65 +253,56 @@ class _SummaryStepState extends State<SummaryStep> {
             onTap: () {
               setState(() {
                 _selectedTemplateIndex = index;
-                widget.summaryController.text =
-                    _summaryTemplates[index];
+                widget.summaryController.text = _summaryTemplates[index];
               });
             },
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              margin: const EdgeInsets.only(bottom: 10),
-              padding: const EdgeInsets.all(14),
+              duration: Duration(milliseconds: 250),
+              margin: EdgeInsets.only(bottom: 10.h),
+              padding: EdgeInsets.all(14.r),
               decoration: BoxDecoration(
                 color: isSelected
-                    ? const Color(0xFFFF7043)
-                        .withOpacity(0.08)
+                    ? Color(0xFFFF7043).withOpacity(0.08)
                     : Colors.white.withOpacity(0.03),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
                 border: Border.all(
                   color: isSelected
-                      ? const Color(0xFFFF7043)
-                          .withOpacity(0.3)
+                      ? Color(0xFFFF7043).withOpacity(0.3)
                       : Colors.white.withOpacity(0.06),
                   width: isSelected ? 1.5 : 1,
                 ),
               ),
               child: Row(
-                crossAxisAlignment:
-                    CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Template Number
                   Container(
-                    width: 28,
-                    height: 28,
+                    width: 28.r,
+                    height: 28.r,
                     decoration: BoxDecoration(
                       color: isSelected
-                          ? const Color(0xFFFF7043)
-                              .withOpacity(0.15)
-                          : Colors.white
-                              .withOpacity(0.06),
-                      borderRadius:
-                          BorderRadius.circular(8),
+                          ? Color(0xFFFF7043).withOpacity(0.15)
+                          : Colors.white.withOpacity(0.06),
+                      borderRadius: BorderRadius.circular(8.r),
                     ),
                     child: Center(
                       child: isSelected
-                          ? const Icon(
+                          ? Icon(
                               Icons.check_rounded,
                               color: Color(0xFFFF7043),
-                              size: 16,
+                              size: 16.sp,
                             )
                           : Text(
                               '${index + 1}',
                               style: TextStyle(
-                                color: Colors.white
-                                    .withOpacity(0.4),
-                                fontSize: 12,
-                                fontWeight:
-                                    FontWeight.w600,
+                                color: Colors.white.withOpacity(0.4),
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  SizedBox(width: 12.w),
 
                   // Template Text
                   Expanded(
@@ -331,11 +310,9 @@ class _SummaryStepState extends State<SummaryStep> {
                       _summaryTemplates[index],
                       style: TextStyle(
                         color: isSelected
-                            ? Colors.white
-                                .withOpacity(0.8)
-                            : Colors.white
-                                .withOpacity(0.4),
-                        fontSize: 12,
+                            ? Colors.white.withOpacity(0.8)
+                            : Colors.white.withOpacity(0.4),
+                        fontSize: 12.sp,
                         height: 1.5,
                       ),
                       maxLines: 3,
@@ -356,13 +333,11 @@ class _SummaryStepState extends State<SummaryStep> {
   // ══════════════════════════════════════════
   Widget _buildWritingGuide() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: const Color(0xFFFF7043).withOpacity(0.06),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: const Color(0xFFFF7043).withOpacity(0.15),
-        ),
+        color: Color(0xFFFF7043).withOpacity(0.06),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: Color(0xFFFF7043).withOpacity(0.15)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -371,22 +346,21 @@ class _SummaryStepState extends State<SummaryStep> {
             children: [
               Icon(
                 Icons.edit_note_rounded,
-                color: const Color(0xFFFF7043)
-                    .withOpacity(0.8),
-                size: 20,
+                color: Color(0xFFFF7043).withOpacity(0.8),
+                size: 20.sp,
               ),
-              const SizedBox(width: 8),
-              const Text(
+              SizedBox(width: 8.w),
+              Text(
                 'Writing Guide',
                 style: TextStyle(
                   color: Color(0xFFFF7043),
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
 
           _buildGuideItem(
             '1️⃣',
@@ -413,40 +387,32 @@ class _SummaryStepState extends State<SummaryStep> {
     );
   }
 
-  Widget _buildGuideItem(
-    String number,
-    String title,
-    String example,
-  ) {
+  Widget _buildGuideItem(String number, String title, String example) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: EdgeInsets.only(bottom: 12.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            number,
-            style: const TextStyle(fontSize: 14),
-          ),
-          const SizedBox(width: 10),
+          Text(number, style: TextStyle(fontSize: 14.sp)),
+          SizedBox(width: 10.w),
           Expanded(
             child: Column(
-              crossAxisAlignment:
-                  CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.7),
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 2),
+                SizedBox(height: 2.h),
                 Text(
                   example,
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.3),
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     fontStyle: FontStyle.italic,
                   ),
                 ),
@@ -463,13 +429,11 @@ class _SummaryStepState extends State<SummaryStep> {
   // ══════════════════════════════════════════
   Widget _buildTips() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: const Color(0xFF2196F3).withOpacity(0.06),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: const Color(0xFF2196F3).withOpacity(0.15),
-        ),
+        color: Color(0xFF2196F3).withOpacity(0.06),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: Color(0xFF2196F3).withOpacity(0.15)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -478,22 +442,21 @@ class _SummaryStepState extends State<SummaryStep> {
             children: [
               Icon(
                 Icons.lightbulb_outline,
-                color: const Color(0xFF2196F3)
-                    .withOpacity(0.8),
-                size: 18,
+                color: Color(0xFF2196F3).withOpacity(0.8),
+                size: 18.sp,
               ),
-              const SizedBox(width: 8),
-              const Text(
+              SizedBox(width: 8.w),
+              Text(
                 'ATS Tips for Summary',
                 style: TextStyle(
                   color: Color(0xFF64B5F6),
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           _tipItem('Keep it 2-4 sentences (150-300 characters)'),
           _tipItem('Include keywords from the job posting'),
           _tipItem('Avoid personal pronouns (I, me, my)'),
@@ -506,22 +469,17 @@ class _SummaryStepState extends State<SummaryStep> {
 
   Widget _tipItem(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: EdgeInsets.only(bottom: 6.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '• ',
-            style: TextStyle(
-              color: Colors.white.withOpacity(0.4),
-            ),
-          ),
+          Text('• ', style: TextStyle(color: Colors.white.withOpacity(0.4))),
           Expanded(
             child: Text(
               text,
               style: TextStyle(
                 color: Colors.white.withOpacity(0.4),
-                fontSize: 12,
+                fontSize: 12.sp,
                 height: 1.4,
               ),
             ),

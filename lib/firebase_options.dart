@@ -65,7 +65,8 @@ class DefaultFirebaseOptions {
     projectId: 'web-test-b8d96',
     databaseURL: 'https://web-test-b8d96-default-rtdb.firebaseio.com',
     storageBucket: 'web-test-b8d96.firebasestorage.app',
-    iosClientId: '923867099296-s6gqfb49qktd9jfmm4tmhu8mok8qkphv.apps.googleusercontent.com',
+    iosClientId:
+        '923867099296-s6gqfb49qktd9jfmm4tmhu8mok8qkphv.apps.googleusercontent.com',
     iosBundleId: 'com.example.cvBuilder',
   );
 }

@@ -38,9 +38,7 @@ class Experience {
       startDate: map['startDate'] ?? '',
       endDate: map['endDate'],
       isCurrently: map['isCurrently'] ?? false,
-      responsibilities: List<String>.from(
-        map['responsibilities'] ?? [],
-      ),
+      responsibilities: List<String>.from(map['responsibilities'] ?? []),
       location: map['location'],
     );
   }

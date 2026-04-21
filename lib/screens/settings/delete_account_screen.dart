@@ -1,19 +1,18 @@
 // lib/screens/settings/delete_account_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../../services/account_deletion_service.dart';
 import '../auth/login_screen.dart';
 
 class DeleteAccountScreen extends StatefulWidget {
-  const DeleteAccountScreen({super.key});
+  DeleteAccountScreen({super.key});
 
   @override
-  State<DeleteAccountScreen> createState() =>
-      _DeleteAccountScreenState();
+  State<DeleteAccountScreen> createState() => _DeleteAccountScreenState();
 }
 
-class _DeleteAccountScreenState
-    extends State<DeleteAccountScreen>
+class _DeleteAccountScreenState extends State<DeleteAccountScreen>
     with SingleTickerProviderStateMixin {
   // ══════════════════════════════════
   // Services & State
@@ -43,8 +42,7 @@ class _DeleteAccountScreenState
       _confirmCheck1 &&
       _confirmCheck2 &&
       _confirmCheck3 &&
-      _confirmTextController.text.trim().toUpperCase() ==
-          'DELETE';
+      _confirmTextController.text.trim().toUpperCase() == 'DELETE';
 
   // ══════════════════════════════════
   // Animation
@@ -57,14 +55,12 @@ class _DeleteAccountScreenState
     super.initState();
     _fadeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: Duration(milliseconds: 600),
     );
-    _fadeAnim = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(
-        parent: _fadeController,
-        curve: Curves.easeIn,
-      ),
-    );
+    _fadeAnim = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeIn));
     _fadeController.forward();
     _loadAccountData();
   }
@@ -81,8 +77,7 @@ class _DeleteAccountScreenState
   // 📊 Load Account Data
   // ══════════════════════════════════════════
   Future<void> _loadAccountData() async {
-    final summary =
-        await _deletionService.getAccountDataSummary();
+    final summary = await _deletionService.getAccountDataSummary();
     setState(() {
       _dataSummary = summary;
       _isLoading = false;
@@ -135,8 +130,7 @@ class _DeleteAccountScreenState
     ReauthResult reauthResult;
 
     if (authProvider == 'google') {
-      reauthResult =
-          await _deletionService.reauthenticateWithGoogle();
+      reauthResult = await _deletionService.reauthenticateWithGoogle();
     } else {
       if (_passwordController.text.isEmpty) {
         setState(() {
@@ -145,8 +139,7 @@ class _DeleteAccountScreenState
         });
         return;
       }
-      reauthResult =
-          await _deletionService.reauthenticateWithEmail(
+      reauthResult = await _deletionService.reauthenticateWithEmail(
         _passwordController.text,
       );
     }
@@ -160,8 +153,7 @@ class _DeleteAccountScreenState
     }
 
     // Re-auth successful → retry deletion
-    final deleteResult =
-        await _deletionService.deleteAccount();
+    final deleteResult = await _deletionService.deleteAccount();
 
     if (deleteResult.success) {
       if (mounted) _showSuccessAndNavigate();
@@ -181,62 +173,59 @@ class _DeleteAccountScreenState
       context: context,
       barrierDismissible: false,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1F38),
+        backgroundColor: Color(0xFF1A1F38),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(20.r),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             Container(
-              width: 64,
-              height: 64,
+              width: 64.r,
+              height: 64.r,
               decoration: BoxDecoration(
-                color: const Color(0xFF4CAF50)
-                    .withOpacity(0.15),
+                color: Color(0xFF4CAF50).withOpacity(0.15),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.check_circle_rounded,
                 color: Color(0xFF4CAF50),
-                size: 40,
+                size: 40.sp,
               ),
             ),
-            const SizedBox(height: 20),
-            const Text(
+            SizedBox(height: 20.h),
+            Text(
               'Account Deleted',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 20,
+                fontSize: 20.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               'Your account and all associated data\n'
               'have been permanently deleted.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white.withOpacity(0.5),
-                fontSize: 13,
+                fontSize: 13.sp,
                 height: 1.5,
               ),
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 20.h),
           ],
         ),
       ),
     );
 
     // Navigate after delay
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(Duration(seconds: 2), () {
       if (mounted) {
         Navigator.pushAndRemoveUntil(
           context,
-          MaterialPageRoute(
-            builder: (_) => const LoginScreen(),
-          ),
+          MaterialPageRoute(builder: (_) => LoginScreen()),
           (route) => false,
         );
       }
@@ -246,18 +235,13 @@ class _DeleteAccountScreenState
   void _showSnackBar(String msg, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          msg,
-          style: const TextStyle(
-            fontWeight: FontWeight.w500,
-          ),
-        ),
+        content: Text(msg, style: TextStyle(fontWeight: FontWeight.w500)),
         backgroundColor: color,
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
         ),
-        margin: const EdgeInsets.all(16),
+        margin: EdgeInsets.all(16.r),
       ),
     );
   }
@@ -268,7 +252,7 @@ class _DeleteAccountScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0E21),
+      backgroundColor: Color(0xFF0A0E21),
       body: SafeArea(
         child: _isLoading
             ? _buildLoading()
@@ -279,12 +263,8 @@ class _DeleteAccountScreenState
                     _buildAppBar(),
                     Expanded(
                       child: SingleChildScrollView(
-                        physics:
-                            const BouncingScrollPhysics(),
-                        padding:
-                            const EdgeInsets.fromLTRB(
-                          20, 8, 20, 40,
-                        ),
+                        physics: BouncingScrollPhysics(),
+                        padding: EdgeInsets.fromLTRB(20, 8, 20, 40),
                         child: _buildCurrentStep(),
                       ),
                     ),
@@ -296,11 +276,7 @@ class _DeleteAccountScreenState
   }
 
   Widget _buildLoading() {
-    return const Center(
-      child: CircularProgressIndicator(
-        color: Color(0xFFEF5350),
-      ),
-    );
+    return Center(child: CircularProgressIndicator(color: Color(0xFFEF5350)));
   }
 
   Widget _buildCurrentStep() {
@@ -323,15 +299,14 @@ class _DeleteAccountScreenState
   // ╚══════════════════════════════╝
   Widget _buildAppBar() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 8, 16, 0),
+      padding: EdgeInsets.fromLTRB(8.w, 8.h, 16.w, 0),
       child: Row(
         children: [
           IconButton(
             onPressed: _isDeleting
                 ? null
                 : () {
-                    if (_currentStep > 0 &&
-                        _currentStep < 3) {
+                    if (_currentStep > 0 && _currentStep < 3) {
                       setState(() => _currentStep--);
                     } else {
                       Navigator.pop(context);
@@ -339,17 +314,15 @@ class _DeleteAccountScreenState
                   },
             icon: Icon(
               Icons.arrow_back_rounded,
-              color: _isDeleting
-                  ? Colors.white.withOpacity(0.3)
-                  : Colors.white,
+              color: _isDeleting ? Colors.white.withOpacity(0.3) : Colors.white,
             ),
           ),
-          const Expanded(
+          Expanded(
             child: Text(
               'Delete Account',
               style: TextStyle(
                 color: Color(0xFFEF5350),
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -357,20 +330,16 @@ class _DeleteAccountScreenState
           // Step indicator
           if (_currentStep < 3)
             Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 10,
-                vertical: 5,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               decoration: BoxDecoration(
-                color: const Color(0xFFEF5350)
-                    .withOpacity(0.1),
-                borderRadius: BorderRadius.circular(8),
+                color: Color(0xFFEF5350).withOpacity(0.1),
+                borderRadius: BorderRadius.circular(8.r),
               ),
               child: Text(
                 'Step ${_currentStep + 1}/3',
-                style: const TextStyle(
+                style: TextStyle(
                   color: Color(0xFFEF5350),
-                  fontSize: 11,
+                  fontSize: 11.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -389,77 +358,70 @@ class _DeleteAccountScreenState
       children: [
         // ── Warning Header ──
         _buildWarningHeader(),
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
 
         // ── Account Summary ──
         _buildAccountSummary(),
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
 
         // ── What Will Be Deleted ──
         _buildDeletionDetails(),
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
 
         // ── Important Notice ──
         _buildImportantNotice(),
-        const SizedBox(height: 32),
+        SizedBox(height: 32.h),
 
         // ── Proceed Button ──
         SizedBox(
           width: double.infinity,
-          height: 52,
+          height: 52.h,
           child: ElevatedButton(
             onPressed: () {
               setState(() => _currentStep = 1);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor:
-                  const Color(0xFFEF5350).withOpacity(0.15),
-              foregroundColor: const Color(0xFFEF5350),
+              backgroundColor: Color(0xFFEF5350).withOpacity(0.15),
+              foregroundColor: Color(0xFFEF5350),
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-                side: BorderSide(
-                  color: const Color(0xFFEF5350)
-                      .withOpacity(0.3),
-                ),
+                borderRadius: BorderRadius.circular(14.r),
+                side: BorderSide(color: Color(0xFFEF5350).withOpacity(0.3)),
               ),
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
                   'I Understand, Continue',
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                SizedBox(width: 8),
-                Icon(Icons.arrow_forward_rounded, size: 18),
+                SizedBox(width: 8.w),
+                Icon(Icons.arrow_forward_rounded, size: 18.sp),
               ],
             ),
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
 
         // ── Cancel Button ──
         SizedBox(
           width: double.infinity,
-          height: 52,
+          height: 52.h,
           child: TextButton(
             onPressed: () => Navigator.pop(context),
             style: TextButton.styleFrom(
               foregroundColor: Colors.white.withOpacity(0.6),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
               ),
             ),
-            child: const Text(
+            child: Text(
               'Cancel, Keep My Account',
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.w500),
             ),
           ),
         ),
@@ -470,54 +432,51 @@ class _DeleteAccountScreenState
   Widget _buildWarningHeader() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            const Color(0xFFEF5350).withOpacity(0.12),
-            const Color(0xFFC62828).withOpacity(0.06),
+            Color(0xFFEF5350).withOpacity(0.12),
+            Color(0xFFC62828).withOpacity(0.06),
           ],
         ),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: const Color(0xFFEF5350).withOpacity(0.2),
-        ),
+        borderRadius: BorderRadius.circular(18.r),
+        border: Border.all(color: Color(0xFFEF5350).withOpacity(0.2)),
       ),
       child: Column(
         children: [
           Container(
-            width: 64,
-            height: 64,
+            width: 64.r,
+            height: 64.r,
             decoration: BoxDecoration(
-              color: const Color(0xFFEF5350)
-                  .withOpacity(0.15),
+              color: Color(0xFFEF5350).withOpacity(0.15),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
+            child: Icon(
               Icons.warning_rounded,
               color: Color(0xFFEF5350),
-              size: 34,
+              size: 34.sp,
             ),
           ),
-          const SizedBox(height: 16),
-          const Text(
+          SizedBox(height: 16.h),
+          Text(
             'Delete Your Account?',
             style: TextStyle(
               color: Color(0xFFEF5350),
-              fontSize: 22,
+              fontSize: 22.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'This action is permanent and cannot be undone.\n'
             'All your data will be permanently removed.',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.white.withOpacity(0.5),
-              fontSize: 13,
+              fontSize: 13.sp,
               height: 1.5,
             ),
           ),
@@ -528,13 +487,11 @@ class _DeleteAccountScreenState
 
   Widget _buildAccountSummary() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.04),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.06),
-        ),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: Colors.white.withOpacity(0.06)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -544,30 +501,22 @@ class _DeleteAccountScreenState
               Icon(
                 Icons.account_circle_outlined,
                 color: Colors.white.withOpacity(0.5),
-                size: 20,
+                size: 20.sp,
               ),
-              const SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Text(
                 'Account Summary',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.7),
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 14),
-          _buildSummaryRow(
-            '👤',
-            'Name',
-            _dataSummary?.displayName ?? 'N/A',
-          ),
-          _buildSummaryRow(
-            '📧',
-            'Email',
-            _dataSummary?.email ?? 'N/A',
-          ),
+          SizedBox(height: 14.h),
+          _buildSummaryRow('👤', 'Name', _dataSummary?.displayName ?? 'N/A'),
+          _buildSummaryRow('📧', 'Email', _dataSummary?.email ?? 'N/A'),
           _buildSummaryRow(
             '🔑',
             'Auth Method',
@@ -591,22 +540,18 @@ class _DeleteAccountScreenState
     );
   }
 
-  Widget _buildSummaryRow(
-    String emoji,
-    String label,
-    String value,
-  ) {
+  Widget _buildSummaryRow(String emoji, String label, String value) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.only(bottom: 10.h),
       child: Row(
         children: [
-          Text(emoji, style: const TextStyle(fontSize: 14)),
-          const SizedBox(width: 10),
+          Text(emoji, style: TextStyle(fontSize: 14.sp)),
+          SizedBox(width: 10.w),
           Text(
             '$label: ',
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
-              fontSize: 12,
+              fontSize: 12.sp,
             ),
           ),
           Expanded(
@@ -614,7 +559,7 @@ class _DeleteAccountScreenState
               value,
               style: TextStyle(
                 color: Colors.white.withOpacity(0.7),
-                fontSize: 12,
+                fontSize: 12.sp,
                 fontWeight: FontWeight.w500,
               ),
               textAlign: TextAlign.right,
@@ -628,54 +573,40 @@ class _DeleteAccountScreenState
 
   Widget _buildDeletionDetails() {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: const Color(0xFFEF5350).withOpacity(0.04),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFFEF5350).withOpacity(0.1),
-        ),
+        color: Color(0xFFEF5350).withOpacity(0.04),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: Color(0xFFEF5350).withOpacity(0.1)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
               Icon(
                 Icons.delete_forever_rounded,
                 color: Color(0xFFEF5350),
-                size: 20,
+                size: 20.sp,
               ),
-              SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Text(
                 'What Will Be Deleted',
                 style: TextStyle(
                   color: Color(0xFFEF5350),
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 14),
-          _buildDeleteItem(
-            'Your account and login credentials',
-          ),
-          _buildDeleteItem(
-            'All ${_dataSummary?.cvCount ?? 0} CVs you created',
-          ),
-          _buildDeleteItem(
-            'Personal information (name, email, phone)',
-          ),
-          _buildDeleteItem(
-            'Professional data (education, experience, skills)',
-          ),
-          _buildDeleteItem(
-            'All saved drafts and templates preferences',
-          ),
-          _buildDeleteItem(
-            'Profile data and settings',
-          ),
+          SizedBox(height: 14.h),
+          _buildDeleteItem('Your account and login credentials'),
+          _buildDeleteItem('All ${_dataSummary?.cvCount ?? 0} CVs you created'),
+          _buildDeleteItem('Personal information (name, email, phone)'),
+          _buildDeleteItem('Professional data (education, experience, skills)'),
+          _buildDeleteItem('All saved drafts and templates preferences'),
+          _buildDeleteItem('Profile data and settings'),
         ],
       ),
     );
@@ -683,25 +614,25 @@ class _DeleteAccountScreenState
 
   Widget _buildDeleteItem(String text) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
+      padding: EdgeInsets.only(bottom: 8.h),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(top: 2),
+          Padding(
+            padding: EdgeInsets.only(top: 2.h),
             child: Icon(
               Icons.close_rounded,
               color: Color(0xFFEF5350),
-              size: 14,
+              size: 14.sp,
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           Expanded(
             child: Text(
               text,
               style: TextStyle(
                 color: Colors.white.withOpacity(0.6),
-                fontSize: 13,
+                fontSize: 13.sp,
                 height: 1.3,
               ),
             ),
@@ -713,36 +644,34 @@ class _DeleteAccountScreenState
 
   Widget _buildImportantNotice() {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(14.r),
       decoration: BoxDecoration(
-        color: const Color(0xFFFFA726).withOpacity(0.06),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: const Color(0xFFFFA726).withOpacity(0.15),
-        ),
+        color: Color(0xFFFFA726).withOpacity(0.06),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: Color(0xFFFFA726).withOpacity(0.15)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
               Icon(
                 Icons.info_outline_rounded,
                 color: Color(0xFFFFA726),
-                size: 18,
+                size: 18.sp,
               ),
-              SizedBox(width: 8),
+              SizedBox(width: 8.w),
               Text(
                 'Before You Delete',
                 style: TextStyle(
                   color: Color(0xFFFFA726),
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   fontWeight: FontWeight.w600,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Text(
             '• Download any CVs you want to keep as PDF\n'
             '• This action cannot be reversed\n'
@@ -750,7 +679,7 @@ class _DeleteAccountScreenState
             '  but your data will not be recovered',
             style: TextStyle(
               color: Colors.white.withOpacity(0.5),
-              fontSize: 12,
+              fontSize: 12.sp,
               height: 1.6,
             ),
           ),
@@ -768,33 +697,29 @@ class _DeleteAccountScreenState
       children: [
         // ── Header ──
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.r),
           decoration: BoxDecoration(
-            color: const Color(0xFFEF5350).withOpacity(0.06),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: const Color(0xFFEF5350)
-                  .withOpacity(0.12),
-            ),
+            color: Color(0xFFEF5350).withOpacity(0.06),
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: Color(0xFFEF5350).withOpacity(0.12)),
           ),
           child: Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.checklist_rounded,
                 color: Color(0xFFEF5350),
-                size: 24,
+                size: 24.sp,
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Confirm Deletion',
                       style: TextStyle(
                         color: Color(0xFFEF5350),
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -802,7 +727,7 @@ class _DeleteAccountScreenState
                       'Please confirm each item below',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.4),
-                        fontSize: 12,
+                        fontSize: 12.sp,
                       ),
                     ),
                   ],
@@ -811,13 +736,10 @@ class _DeleteAccountScreenState
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
 
         // ── Error Banner ──
-        if (_errorMessage != null) ...[
-          _buildError(),
-          const SizedBox(height: 16),
-        ],
+        if (_errorMessage != null) ...[_buildError(), SizedBox(height: 16.h)],
 
         // ── Confirmation Checkboxes ──
         _buildConfirmCheckbox(
@@ -829,17 +751,16 @@ class _DeleteAccountScreenState
             setState(() => _confirmCheck1 = v ?? false);
           },
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
 
         _buildConfirmCheckbox(
           value: _confirmCheck2,
-          text:
-              'I have downloaded any CVs I want to keep',
+          text: 'I have downloaded any CVs I want to keep',
           onChanged: (v) {
             setState(() => _confirmCheck2 = v ?? false);
           },
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
 
         _buildConfirmCheckbox(
           value: _confirmCheck3,
@@ -850,98 +771,84 @@ class _DeleteAccountScreenState
             setState(() => _confirmCheck3 = v ?? false);
           },
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
 
         // ── Type DELETE ──
         Text(
           'Type "DELETE" to confirm',
           style: TextStyle(
             color: Colors.white.withOpacity(0.7),
-            fontSize: 13,
+            fontSize: 13.sp,
             fontWeight: FontWeight.w500,
           ),
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         TextFormField(
           controller: _confirmTextController,
           onChanged: (_) => setState(() {}),
           textCapitalization: TextCapitalization.characters,
-          style: const TextStyle(
+          style: TextStyle(
             color: Color(0xFFEF5350),
-            fontSize: 18,
+            fontSize: 18.sp,
             fontWeight: FontWeight.w700,
             letterSpacing: 4,
           ),
-          cursorColor: const Color(0xFFEF5350),
+          cursorColor: Color(0xFFEF5350),
           decoration: InputDecoration(
             hintText: 'DELETE',
             hintStyle: TextStyle(
               color: Colors.white.withOpacity(0.15),
-              fontSize: 18,
+              fontSize: 18.sp,
               letterSpacing: 4,
             ),
             filled: true,
-            fillColor: const Color(0xFFEF5350)
-                .withOpacity(0.04),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 16,
-              vertical: 16,
-            ),
+            fillColor: Color(0xFFEF5350).withOpacity(0.04),
+            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(14.r),
               borderSide: BorderSide(
-                color: const Color(0xFFEF5350)
-                    .withOpacity(0.15),
+                color: Color(0xFFEF5350).withOpacity(0.15),
               ),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(14.r),
               borderSide: BorderSide(
-                color: const Color(0xFFEF5350)
-                    .withOpacity(0.15),
+                color: Color(0xFFEF5350).withOpacity(0.15),
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(14),
-              borderSide: const BorderSide(
-                color: Color(0xFFEF5350),
-                width: 1.5,
-              ),
+              borderRadius: BorderRadius.circular(14.r),
+              borderSide: BorderSide(color: Color(0xFFEF5350), width: 1.5),
             ),
           ),
         ),
-        const SizedBox(height: 32),
+        SizedBox(height: 32.h),
 
         // ── Delete Button ──
         SizedBox(
           width: double.infinity,
-          height: 54,
+          height: 54.h,
           child: ElevatedButton(
-            onPressed: _allConfirmed
-                ? _executeAccountDeletion
-                : null,
+            onPressed: _allConfirmed ? _executeAccountDeletion : null,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFEF5350),
+              backgroundColor: Color(0xFFEF5350),
               foregroundColor: Colors.white,
-              disabledBackgroundColor:
-                  const Color(0xFFEF5350).withOpacity(0.2),
-              disabledForegroundColor:
-                  Colors.white.withOpacity(0.3),
+              disabledBackgroundColor: Color(0xFFEF5350).withOpacity(0.2),
+              disabledForegroundColor: Colors.white.withOpacity(0.3),
               elevation: 0,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
               ),
             ),
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.delete_forever_rounded,
-                    size: 20),
-                SizedBox(width: 10),
+                Icon(Icons.delete_forever_rounded, size: 20.sp),
+                SizedBox(width: 10.w),
                 Text(
                   'Permanently Delete Account',
                   style: TextStyle(
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -949,19 +856,19 @@ class _DeleteAccountScreenState
             ),
           ),
         ),
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
 
         // ── Cancel ──
         SizedBox(
           width: double.infinity,
-          height: 48,
+          height: 48.h,
           child: TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text(
               'Cancel',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.5),
-                fontSize: 14,
+                fontSize: 14.sp,
               ),
             ),
           ),
@@ -978,15 +885,15 @@ class _DeleteAccountScreenState
     return GestureDetector(
       onTap: () => onChanged(!value),
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: EdgeInsets.all(14.r),
         decoration: BoxDecoration(
           color: value
-              ? const Color(0xFFEF5350).withOpacity(0.06)
+              ? Color(0xFFEF5350).withOpacity(0.06)
               : Colors.white.withOpacity(0.03),
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(14.r),
           border: Border.all(
             color: value
-                ? const Color(0xFFEF5350).withOpacity(0.25)
+                ? Color(0xFFEF5350).withOpacity(0.25)
                 : Colors.white.withOpacity(0.06),
           ),
         ),
@@ -994,31 +901,25 @@ class _DeleteAccountScreenState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 22,
-              height: 22,
-              margin: const EdgeInsets.only(top: 1),
+              duration: Duration(milliseconds: 200),
+              width: 22.r,
+              height: 22.r,
+              margin: EdgeInsets.only(top: 1.h),
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                color: value
-                    ? const Color(0xFFEF5350)
-                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(6.r),
+                color: value ? Color(0xFFEF5350) : Colors.transparent,
                 border: Border.all(
                   color: value
-                      ? const Color(0xFFEF5350)
+                      ? Color(0xFFEF5350)
                       : Colors.white.withOpacity(0.25),
                   width: 1.5,
                 ),
               ),
               child: value
-                  ? const Icon(
-                      Icons.check_rounded,
-                      color: Colors.white,
-                      size: 14,
-                    )
+                  ? Icon(Icons.check_rounded, color: Colors.white, size: 14.sp)
                   : null,
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: Text(
                 text,
@@ -1026,7 +927,7 @@ class _DeleteAccountScreenState
                   color: value
                       ? Colors.white.withOpacity(0.8)
                       : Colors.white.withOpacity(0.5),
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   height: 1.4,
                 ),
               ),
@@ -1041,41 +942,36 @@ class _DeleteAccountScreenState
   // ║   STEP 2: RE-AUTH           ║
   // ╚══════════════════════════════╝
   Widget _buildReauthStep() {
-    final isGoogle =
-        _dataSummary?.authProvider == 'google';
+    final isGoogle = _dataSummary?.authProvider == 'google';
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // ── Header ──
         Container(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.r),
           decoration: BoxDecoration(
-            color: const Color(0xFFFFA726).withOpacity(0.06),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: const Color(0xFFFFA726)
-                  .withOpacity(0.12),
-            ),
+            color: Color(0xFFFFA726).withOpacity(0.06),
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: Color(0xFFFFA726).withOpacity(0.12)),
           ),
           child: Row(
             children: [
-              const Icon(
+              Icon(
                 Icons.lock_outline_rounded,
                 color: Color(0xFFFFA726),
-                size: 24,
+                size: 24.sp,
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Verify Your Identity',
                       style: TextStyle(
                         color: Color(0xFFFFA726),
-                        fontSize: 18,
+                        fontSize: 18.sp,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -1083,7 +979,7 @@ class _DeleteAccountScreenState
                       'For security, please verify your identity',
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.4),
-                        fontSize: 12,
+                        fontSize: 12.sp,
                       ),
                     ),
                   ],
@@ -1092,13 +988,10 @@ class _DeleteAccountScreenState
             ],
           ),
         ),
-        const SizedBox(height: 24),
+        SizedBox(height: 24.h),
 
         // ── Error ──
-        if (_errorMessage != null) ...[
-          _buildError(),
-          const SizedBox(height: 16),
-        ],
+        if (_errorMessage != null) ...[_buildError(), SizedBox(height: 16.h)],
 
         if (isGoogle) ...[
           // ── Google Re-auth ──
@@ -1106,65 +999,59 @@ class _DeleteAccountScreenState
             'You signed in with Google.\nPlease verify by signing in again.',
             style: TextStyle(
               color: Colors.white.withOpacity(0.6),
-              fontSize: 14,
+              fontSize: 14.sp,
               height: 1.5,
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           SizedBox(
             width: double.infinity,
-            height: 54,
+            height: 54.h,
             child: OutlinedButton(
-              onPressed:
-                  _isDeleting ? null : _reauthAndDelete,
+              onPressed: _isDeleting ? null : _reauthAndDelete,
               style: OutlinedButton.styleFrom(
                 foregroundColor: Colors.white,
-                side: BorderSide(
-                  color: Colors.white.withOpacity(0.15),
-                ),
+                side: BorderSide(color: Colors.white.withOpacity(0.15)),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(14.r),
                 ),
               ),
               child: _isDeleting
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
+                  ? SizedBox(
+                      width: 24.r,
+                      height: 24.r,
                       child: CircularProgressIndicator(
                         color: Colors.white,
                         strokeWidth: 2.5,
                       ),
                     )
                   : Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          width: 24,
-                          height: 24,
+                          width: 24.r,
+                          height: 24.r,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            borderRadius:
-                                BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(6.r),
                           ),
-                          padding:
-                              const EdgeInsets.all(3),
-                          child: const Text(
+                          padding: EdgeInsets.all(3.r),
+                          child: Text(
                             'G',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 14,
+                              fontSize: 14.sp,
                               fontWeight: FontWeight.w700,
                               color: Color(0xFF4285F4),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 12),
-                        const Text(
+                        SizedBox(width: 12.w),
+                        Text(
                           'Verify with Google',
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 15.sp,
                             fontWeight: FontWeight.w500,
                           ),
                         ),
@@ -1178,59 +1065,51 @@ class _DeleteAccountScreenState
             'Enter your password to verify:',
             style: TextStyle(
               color: Colors.white.withOpacity(0.6),
-              fontSize: 14,
+              fontSize: 14.sp,
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
 
           // Email display
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 14,
-              vertical: 10,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(0.04),
-              borderRadius: BorderRadius.circular(10),
+              borderRadius: BorderRadius.circular(10.r),
             ),
             child: Row(
               children: [
                 Icon(
                   Icons.email_outlined,
                   color: Colors.white.withOpacity(0.4),
-                  size: 18,
+                  size: 18.sp,
                 ),
-                const SizedBox(width: 8),
+                SizedBox(width: 8.w),
                 Text(
                   _dataSummary?.email ?? '',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.6),
-                    fontSize: 13,
+                    fontSize: 13.sp,
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
 
           // Password
           TextFormField(
             controller: _passwordController,
             obscureText: !_isPasswordVisible,
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 15,
-            ),
-            cursorColor: const Color(0xFFEF5350),
+            style: TextStyle(color: Colors.white, fontSize: 15.sp),
+            cursorColor: Color(0xFFEF5350),
             decoration: InputDecoration(
               hintText: 'Enter your password',
-              hintStyle: TextStyle(
-                color: Colors.white.withOpacity(0.2),
-              ),
+              hintStyle: TextStyle(color: Colors.white.withOpacity(0.2)),
               prefixIcon: Icon(
                 Icons.lock_outline_rounded,
                 color: Colors.white.withOpacity(0.35),
-                size: 20,
+                size: 20.sp,
               ),
               suffixIcon: IconButton(
                 icon: Icon(
@@ -1238,80 +1117,65 @@ class _DeleteAccountScreenState
                       ? Icons.visibility_off_rounded
                       : Icons.visibility_rounded,
                   color: Colors.white.withOpacity(0.35),
-                  size: 20,
+                  size: 20.sp,
                 ),
                 onPressed: () {
                   setState(() {
-                    _isPasswordVisible =
-                        !_isPasswordVisible;
+                    _isPasswordVisible = !_isPasswordVisible;
                   });
                 },
               ),
               filled: true,
               fillColor: Colors.white.withOpacity(0.06),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide(
-                  color: Colors.white.withOpacity(0.08),
-                ),
+                borderRadius: BorderRadius.circular(14.r),
+                borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: BorderSide(
-                  color: Colors.white.withOpacity(0.08),
-                ),
+                borderRadius: BorderRadius.circular(14.r),
+                borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
-                borderSide: const BorderSide(
-                  color: Color(0xFFEF5350),
-                  width: 1.5,
-                ),
+                borderRadius: BorderRadius.circular(14.r),
+                borderSide: BorderSide(color: Color(0xFFEF5350), width: 1.5),
               ),
             ),
           ),
-          const SizedBox(height: 24),
+          SizedBox(height: 24.h),
 
           // Verify & Delete Button
           SizedBox(
             width: double.infinity,
-            height: 54,
+            height: 54.h,
             child: ElevatedButton(
-              onPressed:
-                  _isDeleting ? null : _reauthAndDelete,
+              onPressed: _isDeleting ? null : _reauthAndDelete,
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFFEF5350),
+                backgroundColor: Color(0xFFEF5350),
                 foregroundColor: Colors.white,
-                disabledBackgroundColor:
-                    const Color(0xFFEF5350)
-                        .withOpacity(0.5),
+                disabledBackgroundColor: Color(0xFFEF5350).withOpacity(0.5),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(14.r),
                 ),
               ),
               child: _isDeleting
-                  ? const SizedBox(
-                      width: 24,
-                      height: 24,
+                  ? SizedBox(
+                      width: 24.r,
+                      height: 24.r,
                       child: CircularProgressIndicator(
                         color: Colors.white,
                         strokeWidth: 2.5,
                       ),
                     )
-                  : const Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.center,
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
-                          Icons.delete_forever_rounded,
-                          size: 20,
-                        ),
-                        SizedBox(width: 10),
+                        Icon(Icons.delete_forever_rounded, size: 20.sp),
+                        SizedBox(width: 10.w),
                         Text(
                           'Verify & Delete Account',
                           style: TextStyle(
-                            fontSize: 15,
+                            fontSize: 15.sp,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -1321,21 +1185,19 @@ class _DeleteAccountScreenState
           ),
         ],
 
-        const SizedBox(height: 12),
+        SizedBox(height: 12.h),
 
         // Cancel
         SizedBox(
           width: double.infinity,
-          height: 48,
+          height: 48.h,
           child: TextButton(
-            onPressed: _isDeleting
-                ? null
-                : () => Navigator.pop(context),
+            onPressed: _isDeleting ? null : () => Navigator.pop(context),
             child: Text(
               'Cancel',
               style: TextStyle(
                 color: Colors.white.withOpacity(0.5),
-                fontSize: 14,
+                fontSize: 14.sp,
               ),
             ),
           ),
@@ -1354,35 +1216,35 @@ class _DeleteAccountScreenState
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const SizedBox(
-              width: 60,
-              height: 60,
+            SizedBox(
+              width: 60.r,
+              height: 60.r,
               child: CircularProgressIndicator(
                 color: Color(0xFFEF5350),
                 strokeWidth: 3,
               ),
             ),
-            const SizedBox(height: 24),
-            const Text(
+            SizedBox(height: 24.h),
+            Text(
               'Deleting Your Account...',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               'Please wait while we remove all your data.\n'
               'This may take a few moments.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white.withOpacity(0.5),
-                fontSize: 13,
+                fontSize: 13.sp,
                 height: 1.5,
               ),
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
             _buildDeletionProgress(),
           ],
         ),
@@ -1403,32 +1265,32 @@ class _DeleteAccountScreenState
 
   Widget _buildProgressItem(String text, bool done) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: EdgeInsets.only(bottom: 10.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           done
-              ? const Icon(
+              ? Icon(
                   Icons.check_circle_rounded,
                   color: Color(0xFF4CAF50),
-                  size: 18,
+                  size: 18.sp,
                 )
               : SizedBox(
-                  width: 18,
-                  height: 18,
+                  width: 18.r,
+                  height: 18.r,
                   child: CircularProgressIndicator(
                     color: Colors.white.withOpacity(0.3),
                     strokeWidth: 2,
                   ),
                 ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           Text(
             text,
             style: TextStyle(
               color: done
                   ? Colors.white.withOpacity(0.6)
                   : Colors.white.withOpacity(0.3),
-              fontSize: 13,
+              fontSize: 13.sp,
             ),
           ),
         ],
@@ -1441,39 +1303,34 @@ class _DeleteAccountScreenState
   // ╚══════════════════════════════╝
   Widget _buildError() {
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(14.r),
       decoration: BoxDecoration(
-        color: const Color(0xFFEF5350).withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFFEF5350).withOpacity(0.3),
-        ),
+        color: Color(0xFFEF5350).withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12.r),
+        border: Border.all(color: Color(0xFFEF5350).withOpacity(0.3)),
       ),
       child: Row(
         children: [
-          const Icon(
+          Icon(
             Icons.error_outline_rounded,
             color: Color(0xFFEF5350),
-            size: 20,
+            size: 20.sp,
           ),
-          const SizedBox(width: 10),
+          SizedBox(width: 10.w),
           Expanded(
             child: Text(
               _errorMessage!,
-              style: const TextStyle(
-                color: Color(0xFFEF5350),
-                fontSize: 13,
-              ),
+              style: TextStyle(color: Color(0xFFEF5350), fontSize: 13.sp),
             ),
           ),
           GestureDetector(
             onTap: () {
               setState(() => _errorMessage = null);
             },
-            child: const Icon(
+            child: Icon(
               Icons.close_rounded,
               color: Color(0xFFEF5350),
-              size: 18,
+              size: 18.sp,
             ),
           ),
         ],
@@ -1483,8 +1340,18 @@ class _DeleteAccountScreenState
 
   String _formatDate(DateTime date) {
     final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }

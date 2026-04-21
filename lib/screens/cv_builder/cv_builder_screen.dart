@@ -1,5 +1,6 @@
 // lib/screens/cv_builder/cv_builder_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
@@ -17,7 +18,7 @@ import 'steps/template_step.dart';
 class CVBuilderScreen extends StatefulWidget {
   final String? cvId; // null = new, value = edit
 
-  const CVBuilderScreen({super.key, this.cvId});
+  CVBuilderScreen({super.key, this.cvId});
 
   @override
   State<CVBuilderScreen> createState() => _CVBuilderScreenState();
@@ -139,7 +140,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
     super.initState();
     _initAnimations();
 
-    _cvId = widget.cvId ?? const Uuid().v4();
+    _cvId = widget.cvId ?? Uuid().v4();
     _isEditMode = widget.cvId != null;
 
     if (_isEditMode) {
@@ -152,21 +153,20 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
 
     _fadeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 600),
+      duration: Duration(milliseconds: 600),
     );
     _slideController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: Duration(milliseconds: 500),
     );
 
     _fadeAnim = Tween<double>(
       begin: 0,
       end: 1,
     ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeIn));
-    _slideAnim = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero)
-        .animate(
-          CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
-        );
+    _slideAnim = Tween<Offset>(begin: Offset(0, 0.1), end: Offset.zero).animate(
+      CurvedAnimation(parent: _slideController, curve: Curves.easeOutCubic),
+    );
 
     _fadeController.forward();
     _slideController.forward();
@@ -254,7 +254,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
       });
     } catch (e) {
       if (mounted) {
-        _showSnackBar('❌ Failed to load CV', const Color(0xFFEF5350));
+        _showSnackBar('❌ Failed to load CV', Color(0xFFEF5350));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -308,7 +308,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
           .set(cvData, SetOptions(merge: true));
 
       if (mounted) {
-        _showSnackBar('✅ CV saved successfully!', const Color(0xFF4CAF50));
+        _showSnackBar('✅ CV saved successfully!', Color(0xFF4CAF50));
 
         // Navigate to Preview
         Navigator.pushReplacement(
@@ -318,7 +318,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
       }
     } catch (e) {
       if (mounted) {
-        _showSnackBar('❌ Failed to save CV: $e', const Color(0xFFEF5350));
+        _showSnackBar('❌ Failed to save CV: $e', Color(0xFFEF5350));
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -345,7 +345,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
       setState(() => _currentStep++);
       _pageController.animateToPage(
         _currentStep,
-        duration: const Duration(milliseconds: 400),
+        duration: Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
     }
@@ -356,7 +356,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
       setState(() => _currentStep--);
       _pageController.animateToPage(
         _currentStep,
-        duration: const Duration(milliseconds: 400),
+        duration: Duration(milliseconds: 400),
         curve: Curves.easeInOut,
       );
     }
@@ -366,7 +366,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
     setState(() => _currentStep = step);
     _pageController.animateToPage(
       step,
-      duration: const Duration(milliseconds: 400),
+      duration: Duration(milliseconds: 400),
       curve: Curves.easeInOut,
     );
   }
@@ -374,11 +374,13 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
   void _showSnackBar(String msg, Color color) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(msg, style: const TextStyle(fontWeight: FontWeight.w500)),
+        content: Text(msg, style: TextStyle(fontWeight: FontWeight.w500)),
         backgroundColor: color,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        margin: EdgeInsets.all(16.r),
       ),
     );
   }
@@ -397,7 +399,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
         return await _showExitDialog() ?? false;
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF0A0E21),
+        backgroundColor: Color(0xFF0A0E21),
         body: _isLoading
             ? _buildLoadingState()
             : SafeArea(
@@ -431,15 +433,15 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
   // ║     LOADING STATE           ║
   // ╚══════════════════════════════╝
   Widget _buildLoadingState() {
-    return const Center(
+    return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           CircularProgressIndicator(color: Color(0xFF2196F3)),
-          SizedBox(height: 16),
+          SizedBox(height: 16.h),
           Text(
             'Loading CV...',
-            style: TextStyle(color: Colors.white54, fontSize: 14),
+            style: TextStyle(color: Colors.white54, fontSize: 14.sp),
           ),
         ],
       ),
@@ -451,7 +453,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
   // ╚══════════════════════════════╝
   Widget _buildAppBar() {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 8, 16, 0),
+      padding: EdgeInsets.fromLTRB(8.w, 8.h, 16.w, 0),
       child: Row(
         children: [
           // Back Button
@@ -466,7 +468,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
                 }
               }
             },
-            icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+            icon: Icon(Icons.arrow_back_rounded, color: Colors.white),
           ),
 
           // Title
@@ -476,9 +478,9 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
               children: [
                 Text(
                   _isEditMode ? 'Edit CV' : 'Create CV',
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -486,7 +488,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
                   'Step ${_currentStep + 1} of ${_steps.length}',
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.4),
-                    fontSize: 12,
+                    fontSize: 12.sp,
                   ),
                 ),
               ],
@@ -497,10 +499,10 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
           GestureDetector(
             onTap: _isSaving ? null : _saveDraft,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
               decoration: BoxDecoration(
                 color: Colors.white.withOpacity(0.06),
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
                 border: Border.all(color: Colors.white.withOpacity(0.1)),
               ),
               child: Row(
@@ -509,14 +511,14 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
                   Icon(
                     Icons.save_outlined,
                     color: Colors.white.withOpacity(0.6),
-                    size: 16,
+                    size: 16.sp,
                   ),
-                  const SizedBox(width: 6),
+                  SizedBox(width: 6.w),
                   Text(
                     'Draft',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.6),
-                      fontSize: 12,
+                      fontSize: 12.sp,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -565,11 +567,11 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
           .set(cvData, SetOptions(merge: true));
 
       if (mounted) {
-        _showSnackBar('💾 Draft saved!', const Color(0xFF2196F3));
+        _showSnackBar('💾 Draft saved!', Color(0xFF2196F3));
       }
     } catch (e) {
       if (mounted) {
-        _showSnackBar('❌ Failed to save draft', const Color(0xFFEF5350));
+        _showSnackBar('❌ Failed to save draft', Color(0xFFEF5350));
       }
     } finally {
       if (mounted) setState(() => _isSaving = false);
@@ -581,11 +583,11 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
   // ╚══════════════════════════════╝
   Widget _buildStepIndicator() {
     return Container(
-      height: 90,
-      margin: const EdgeInsets.only(top: 12),
+      height: 90.h,
+      margin: EdgeInsets.only(top: 12.h),
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.symmetric(horizontal: 16.w),
         itemCount: _steps.length,
         itemBuilder: (context, index) {
           final step = _steps[index];
@@ -596,16 +598,16 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
           return GestureDetector(
             onTap: () => _goToStep(index),
             child: AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              margin: const EdgeInsets.only(right: 10),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              duration: Duration(milliseconds: 300),
+              margin: EdgeInsets.only(right: 10.w),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
               decoration: BoxDecoration(
                 color: isActive
                     ? color.withOpacity(0.15)
                     : isCompleted
                     ? color.withOpacity(0.06)
                     : Colors.white.withOpacity(0.03),
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(16.r),
                 border: Border.all(
                   color: isActive
                       ? color.withOpacity(0.5)
@@ -628,29 +630,29 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
                             : isCompleted
                             ? color.withOpacity(0.7)
                             : Colors.white.withOpacity(0.3),
-                        size: 24,
+                        size: 24.sp,
                       ),
                       if (isCompleted)
                         Positioned(
                           right: -2,
                           top: -2,
                           child: Container(
-                            width: 12,
-                            height: 12,
+                            width: 12.r,
+                            height: 12.r,
                             decoration: BoxDecoration(
                               color: color,
                               shape: BoxShape.circle,
                             ),
-                            child: const Icon(
+                            child: Icon(
                               Icons.check,
                               color: Colors.white,
-                              size: 8,
+                              size: 8.sp,
                             ),
                           ),
                         ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   Text(
                     step['title'] as String,
                     style: TextStyle(
@@ -659,7 +661,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
                           : isCompleted
                           ? color.withOpacity(0.7)
                           : Colors.white.withOpacity(0.3),
-                      fontSize: 11,
+                      fontSize: 11.sp,
                       fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                     ),
                   ),
@@ -678,7 +680,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
   Widget _buildPageView() {
     return PageView(
       controller: _pageController,
-      physics: const NeverScrollableScrollPhysics(),
+      physics: NeverScrollableScrollPhysics(),
       onPageChanged: (index) {
         setState(() => _currentStep = index);
       },
@@ -768,9 +770,9 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
     final stepColor = _steps[_currentStep]['color'] as Color;
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+      padding: EdgeInsets.fromLTRB(20.w, 12.h, 20.w, 20.h),
       decoration: BoxDecoration(
-        color: const Color(0xFF0A0E21),
+        color: Color(0xFF0A0E21),
         border: Border(top: BorderSide(color: Colors.white.withOpacity(0.06))),
       ),
       child: Row(
@@ -779,29 +781,29 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
           if (!isFirstStep)
             Expanded(
               child: SizedBox(
-                height: 52,
+                height: 52.h,
                 child: OutlinedButton.icon(
                   onPressed: _previousStep,
-                  icon: const Icon(Icons.arrow_back_rounded, size: 18),
-                  label: const Text('Back'),
+                  icon: Icon(Icons.arrow_back_rounded, size: 18.sp),
+                  label: Text('Back'),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.white.withOpacity(0.7),
                     side: BorderSide(color: Colors.white.withOpacity(0.15)),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(14.r),
                     ),
                   ),
                 ),
               ),
             ),
 
-          if (!isFirstStep) const SizedBox(width: 12),
+          if (!isFirstStep) SizedBox(width: 12.w),
 
           // ── Next / Save Button ──
           Expanded(
             flex: isFirstStep ? 1 : 1,
             child: SizedBox(
-              height: 52,
+              height: 52.h,
               child: ElevatedButton(
                 onPressed: _isSaving
                     ? null
@@ -809,44 +811,45 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
                     ? _saveCV
                     : _nextStep,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isLastStep
-                      ? const Color(0xFF4CAF50)
-                      : stepColor,
+                  backgroundColor: isLastStep ? Color(0xFF4CAF50) : stepColor,
                   foregroundColor: Colors.white,
                   disabledBackgroundColor: stepColor.withOpacity(0.5),
                   elevation: 0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(14.r),
                   ),
                 ),
                 child: _isSaving
-                    ? const SizedBox(
-                        width: 22,
-                        height: 22,
+                    ? SizedBox(
+                        width: 22.r,
+                        height: 22.r,
                         child: CircularProgressIndicator(
                           color: Colors.white,
                           strokeWidth: 2.5,
                         ),
                       )
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            isLastStep ? 'Save & Preview' : 'Continue',
-                            style: const TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w600,
+                    : FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              isLastStep ? 'Save & Preview' : 'Continue',
+                              style: TextStyle(
+                                fontSize: 15.sp,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                          const SizedBox(width: 6),
-                          Icon(
-                            isLastStep
-                                ? Icons.check_rounded
-                                : Icons.arrow_forward_rounded,
-                            size: 18,
-                          ),
-                        ],
-                      ),
+                            SizedBox(width: 6.w),
+                            Icon(
+                              isLastStep
+                                  ? Icons.check_rounded
+                                  : Icons.arrow_forward_rounded,
+                              size: 18.sp,
+                            ),
+                          ],
+                        ),
+                    ),
               ),
             ),
           ),
@@ -862,12 +865,14 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1F38),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Row(
+        backgroundColor: Color(0xFF1A1F38),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20.r),
+        ),
+        title: Row(
           children: [
-            Icon(Icons.warning_rounded, color: Color(0xFFFFA726), size: 24),
-            SizedBox(width: 10),
+            Icon(Icons.warning_rounded, color: Color(0xFFFFA726), size: 24.sp),
+            SizedBox(width: 10.w),
             Text(
               'Discard Changes?',
               style: TextStyle(
@@ -885,10 +890,7 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text(
-              'Discard',
-              style: TextStyle(color: Color(0xFFEF5350)),
-            ),
+            child: Text('Discard', style: TextStyle(color: Color(0xFFEF5350))),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -898,13 +900,13 @@ class _CVBuilderScreenState extends State<CVBuilderScreen>
               }
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF2196F3),
+              backgroundColor: Color(0xFF2196F3),
               foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
             ),
-            child: const Text('Save Draft'),
+            child: Text('Save Draft'),
           ),
         ],
       ),

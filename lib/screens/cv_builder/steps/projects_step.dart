@@ -1,5 +1,6 @@
 // lib/screens/cv_builder/steps/projects_step.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:uuid/uuid.dart';
 import '../widgets/builder_widgets.dart';
 
@@ -7,11 +8,7 @@ class ProjectsStep extends StatefulWidget {
   final List<Map<String, dynamic>> projectsList;
   final Function(List<Map<String, dynamic>>) onUpdate;
 
-  const ProjectsStep({
-    super.key,
-    required this.projectsList,
-    required this.onUpdate,
-  });
+  ProjectsStep({super.key, required this.projectsList, required this.onUpdate});
 
   @override
   State<ProjectsStep> createState() => _ProjectsStepState();
@@ -21,13 +18,13 @@ class _ProjectsStepState extends State<ProjectsStep> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+      physics: BouncingScrollPhysics(),
+      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // ── Header ──
-          const StepHeader(
+          StepHeader(
             title: 'Projects',
             subtitle: 'Showcase your work (Optional)',
             icon: Icons.folder_outlined,
@@ -36,29 +33,27 @@ class _ProjectsStepState extends State<ProjectsStep> {
 
           // ── Optional Note ──
           Container(
-            padding: const EdgeInsets.all(12),
-            margin: const EdgeInsets.only(bottom: 16),
+            padding: EdgeInsets.all(12.r),
+            margin: EdgeInsets.only(bottom: 16.h),
             decoration: BoxDecoration(
-              color: const Color(0xFF00BCD4).withOpacity(0.06),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: const Color(0xFF00BCD4).withOpacity(0.15),
-              ),
+              color: Color(0xFF00BCD4).withOpacity(0.06),
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(color: Color(0xFF00BCD4).withOpacity(0.15)),
             ),
             child: Row(
               children: [
                 Icon(
                   Icons.info_outline_rounded,
-                  color: const Color(0xFF00BCD4).withOpacity(0.7),
-                  size: 18,
+                  color: Color(0xFF00BCD4).withOpacity(0.7),
+                  size: 18.sp,
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: 10.w),
                 Expanded(
                   child: Text(
                     'This section is optional but highly recommended for developers',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.5),
-                      fontSize: 12,
+                      fontSize: 12.sp,
                     ),
                   ),
                 ),
@@ -74,7 +69,7 @@ class _ProjectsStepState extends State<ProjectsStep> {
           // ── Add Button ──
           _buildAddButton(),
 
-          const SizedBox(height: 30),
+          SizedBox(height: 30.h),
         ],
       ),
     );
@@ -84,11 +79,11 @@ class _ProjectsStepState extends State<ProjectsStep> {
     final technologies = List<String>.from(project['technologies'] ?? []);
 
     return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      padding: const EdgeInsets.all(16),
+      margin: EdgeInsets.only(bottom: 14.h),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.04),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(color: Colors.white.withOpacity(0.08)),
       ),
       child: Column(
@@ -97,28 +92,28 @@ class _ProjectsStepState extends State<ProjectsStep> {
           Row(
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: 40.r,
+                height: 40.r,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF00BCD4).withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(12),
+                  color: Color(0xFF00BCD4).withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(12.r),
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.folder_outlined,
                   color: Color(0xFF00BCD4),
-                  size: 20,
+                  size: 20.sp,
                 ),
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       project['title'] ?? 'Project',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Colors.white,
-                        fontSize: 15,
+                        fontSize: 15.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -126,9 +121,9 @@ class _ProjectsStepState extends State<ProjectsStep> {
                         project['link'].toString().isNotEmpty)
                       Text(
                         project['link'],
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Color(0xFF00BCD4),
-                          fontSize: 11,
+                          fontSize: 11.sp,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -142,15 +137,15 @@ class _ProjectsStepState extends State<ProjectsStep> {
                 icon: Icon(
                   Icons.edit_outlined,
                   color: Colors.white.withOpacity(0.4),
-                  size: 18,
+                  size: 18.sp,
                 ),
               ),
               IconButton(
                 onPressed: () => _deleteProject(index),
-                icon: const Icon(
+                icon: Icon(
                   Icons.delete_outline_rounded,
                   color: Color(0xFFEF5350),
-                  size: 18,
+                  size: 18.sp,
                 ),
               ),
             ],
@@ -158,12 +153,12 @@ class _ProjectsStepState extends State<ProjectsStep> {
 
           if (project['description'] != null &&
               project['description'].toString().isNotEmpty) ...[
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             Text(
               project['description'],
               style: TextStyle(
                 color: Colors.white.withOpacity(0.5),
-                fontSize: 12,
+                fontSize: 12.sp,
                 height: 1.4,
               ),
               maxLines: 3,
@@ -172,25 +167,22 @@ class _ProjectsStepState extends State<ProjectsStep> {
           ],
 
           if (technologies.isNotEmpty) ...[
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             Wrap(
               spacing: 6,
               runSpacing: 6,
               children: technologies.map((tech) {
                 return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                    color: const Color(0xFF00BCD4).withOpacity(0.08),
-                    borderRadius: BorderRadius.circular(6),
+                    color: Color(0xFF00BCD4).withOpacity(0.08),
+                    borderRadius: BorderRadius.circular(6.r),
                   ),
                   child: Text(
                     tech,
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Color(0xFF4DD0E1),
-                      fontSize: 10,
+                      fontSize: 10.sp,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -208,22 +200,22 @@ class _ProjectsStepState extends State<ProjectsStep> {
       onTap: () => _showProjectForm(),
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 18),
+        padding: EdgeInsets.symmetric(vertical: 18.h),
         decoration: BoxDecoration(
-          color: const Color(0xFF00BCD4).withOpacity(0.06),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFF00BCD4).withOpacity(0.2)),
+          color: Color(0xFF00BCD4).withOpacity(0.06),
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(color: Color(0xFF00BCD4).withOpacity(0.2)),
         ),
-        child: const Row(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.add_rounded, color: Color(0xFF00BCD4), size: 22),
-            SizedBox(width: 8),
+            Icon(Icons.add_rounded, color: Color(0xFF00BCD4), size: 22.sp),
+            SizedBox(width: 8.w),
             Text(
               'Add Project',
               style: TextStyle(
                 color: Color(0xFF00BCD4),
-                fontSize: 14,
+                fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -262,37 +254,37 @@ class _ProjectsStepState extends State<ProjectsStep> {
             padding: EdgeInsets.only(
               bottom: MediaQuery.of(context).viewInsets.bottom,
             ),
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               color: Color(0xFF1A1F38),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
             ),
             child: Column(
               children: [
                 // ── Header ──
                 Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: EdgeInsets.all(20.r),
                   child: Column(
                     children: [
                       Container(
-                        width: 40,
-                        height: 4,
+                        width: 40.w,
+                        height: 4.h,
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(2),
+                          borderRadius: BorderRadius.circular(2.r),
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       Row(
                         children: [
                           Text(
                             isEditing ? 'Edit Project' : 'Add Project',
-                            style: const TextStyle(
+                            style: TextStyle(
                               color: Colors.white,
-                              fontSize: 20,
+                              fontSize: 20.sp,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
-                          const Spacer(),
+                          Spacer(),
                           IconButton(
                             onPressed: () => Navigator.pop(context),
                             icon: Icon(
@@ -309,7 +301,7 @@ class _ProjectsStepState extends State<ProjectsStep> {
                 // ── Form ──
                 Expanded(
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: EdgeInsets.symmetric(horizontal: 20.w),
                     child: Form(
                       key: formKey,
                       child: Column(
@@ -325,7 +317,7 @@ class _ProjectsStepState extends State<ProjectsStep> {
                                 ? 'Required'
                                 : null,
                           ),
-                          const SizedBox(height: 14),
+                          SizedBox(height: 14.h),
                           CVTextField(
                             controller: descCtrl,
                             label: 'Description',
@@ -338,7 +330,7 @@ class _ProjectsStepState extends State<ProjectsStep> {
                                 ? 'Required'
                                 : null,
                           ),
-                          const SizedBox(height: 14),
+                          SizedBox(height: 14.h),
                           CVTextField(
                             controller: linkCtrl,
                             label: 'Project Link (Optional)',
@@ -346,28 +338,28 @@ class _ProjectsStepState extends State<ProjectsStep> {
                             icon: Icons.link_rounded,
                             keyboardType: TextInputType.url,
                           ),
-                          const SizedBox(height: 18),
+                          SizedBox(height: 18.h),
 
                           // Technologies
                           Text(
                             'Technologies Used',
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.7),
-                              fontSize: 13,
+                              fontSize: 13.sp,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          SizedBox(height: 8.h),
                           Row(
                             children: [
                               Expanded(
                                 child: TextFormField(
                                   controller: techCtrl,
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 14,
+                                    fontSize: 14.sp,
                                   ),
-                                  cursorColor: const Color(0xFF00BCD4),
+                                  cursorColor: Color(0xFF00BCD4),
                                   onFieldSubmitted: (v) {
                                     if (v.trim().isNotEmpty) {
                                       setModalState(() {
@@ -380,36 +372,36 @@ class _ProjectsStepState extends State<ProjectsStep> {
                                     hintText: 'e.g. Flutter',
                                     hintStyle: TextStyle(
                                       color: Colors.white.withOpacity(0.2),
-                                      fontSize: 13,
+                                      fontSize: 13.sp,
                                     ),
                                     filled: true,
                                     fillColor: Colors.white.withOpacity(0.05),
-                                    contentPadding: const EdgeInsets.symmetric(
+                                    contentPadding: EdgeInsets.symmetric(
                                       horizontal: 14,
                                       vertical: 12,
                                     ),
                                     border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius: BorderRadius.circular(12.r),
                                       borderSide: BorderSide(
                                         color: Colors.white.withOpacity(0.08),
                                       ),
                                     ),
                                     enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
+                                      borderRadius: BorderRadius.circular(12.r),
                                       borderSide: BorderSide(
                                         color: Colors.white.withOpacity(0.08),
                                       ),
                                     ),
                                     focusedBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                      borderSide: const BorderSide(
+                                      borderRadius: BorderRadius.circular(12.r),
+                                      borderSide: BorderSide(
                                         color: Color(0xFF00BCD4),
                                       ),
                                     ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 10),
+                              SizedBox(width: 10.w),
                               GestureDetector(
                                 onTap: () {
                                   if (techCtrl.text.trim().isNotEmpty) {
@@ -420,15 +412,13 @@ class _ProjectsStepState extends State<ProjectsStep> {
                                   }
                                 },
                                 child: Container(
-                                  width: 46,
-                                  height: 46,
+                                  width: 46.r,
+                                  height: 46.r,
                                   decoration: BoxDecoration(
-                                    color: const Color(
-                                      0xFF00BCD4,
-                                    ).withOpacity(0.15),
-                                    borderRadius: BorderRadius.circular(12),
+                                    color: Color(0xFF00BCD4).withOpacity(0.15),
+                                    borderRadius: BorderRadius.circular(12.r),
                                   ),
-                                  child: const Icon(
+                                  child: Icon(
                                     Icons.add_rounded,
                                     color: Color(0xFF00BCD4),
                                   ),
@@ -436,7 +426,7 @@ class _ProjectsStepState extends State<ProjectsStep> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10.h),
 
                           // Tech Chips
                           Wrap(
@@ -444,19 +434,15 @@ class _ProjectsStepState extends State<ProjectsStep> {
                             runSpacing: 6,
                             children: technologies.asMap().entries.map((e) {
                               return Container(
-                                padding: const EdgeInsets.symmetric(
+                                padding: EdgeInsets.symmetric(
                                   horizontal: 10,
                                   vertical: 6,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(
-                                    0xFF00BCD4,
-                                  ).withOpacity(0.1),
-                                  borderRadius: BorderRadius.circular(8),
+                                  color: Color(0xFF00BCD4).withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8.r),
                                   border: Border.all(
-                                    color: const Color(
-                                      0xFF00BCD4,
-                                    ).withOpacity(0.2),
+                                    color: Color(0xFF00BCD4).withOpacity(0.2),
                                   ),
                                 ),
                                 child: Row(
@@ -464,22 +450,22 @@ class _ProjectsStepState extends State<ProjectsStep> {
                                   children: [
                                     Text(
                                       e.value,
-                                      style: const TextStyle(
+                                      style: TextStyle(
                                         color: Color(0xFF4DD0E1),
-                                        fontSize: 12,
+                                        fontSize: 12.sp,
                                       ),
                                     ),
-                                    const SizedBox(width: 4),
+                                    SizedBox(width: 4.w),
                                     GestureDetector(
                                       onTap: () {
                                         setModalState(() {
                                           technologies.removeAt(e.key);
                                         });
                                       },
-                                      child: const Icon(
+                                      child: Icon(
                                         Icons.close_rounded,
                                         color: Color(0xFF4DD0E1),
-                                        size: 14,
+                                        size: 14.sp,
                                       ),
                                     ),
                                   ],
@@ -488,7 +474,7 @@ class _ProjectsStepState extends State<ProjectsStep> {
                             }).toList(),
                           ),
 
-                          const SizedBox(height: 20),
+                          SizedBox(height: 20.h),
                         ],
                       ),
                     ),
@@ -498,19 +484,19 @@ class _ProjectsStepState extends State<ProjectsStep> {
                 // ── Save Button ──
                 Padding(
                   padding: EdgeInsets.only(
-                    left: 20,
-                    right: 20,
+                    left: 20.w,
+                    right: 20.w,
                     bottom: MediaQuery.of(context).viewPadding.bottom + 20,
                   ),
                   child: SizedBox(
                     width: double.infinity,
-                    height: 52,
+                    height: 52.h,
                     child: ElevatedButton(
                       onPressed: () {
                         if (!formKey.currentState!.validate()) return;
 
                         final data = {
-                          'id': existingData?['id'] ?? const Uuid().v4(),
+                          'id': existingData?['id'] ?? Uuid().v4(),
                           'title': titleCtrl.text.trim(),
                           'description': descCtrl.text.trim(),
                           'link': linkCtrl.text.trim(),
@@ -529,16 +515,16 @@ class _ProjectsStepState extends State<ProjectsStep> {
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF00BCD4),
+                        backgroundColor: Color(0xFF00BCD4),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
+                          borderRadius: BorderRadius.circular(14.r),
                         ),
                       ),
                       child: Text(
                         isEditing ? 'Update Project' : 'Add Project',
-                        style: const TextStyle(
-                          fontSize: 16,
+                        style: TextStyle(
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),

@@ -1,13 +1,14 @@
 // lib/screens/legal/terms_of_service_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class TermsOfServiceScreen extends StatelessWidget {
-  const TermsOfServiceScreen({super.key});
+  TermsOfServiceScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A0E21),
+      backgroundColor: Color(0xFF0A0E21),
       body: SafeArea(
         child: Column(
           children: [
@@ -17,26 +18,22 @@ class TermsOfServiceScreen extends StatelessWidget {
             // ── Content ──
             Expanded(
               child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(
-                  20, 8, 20, 40,
-                ),
+                physics: BouncingScrollPhysics(),
+                padding: EdgeInsets.fromLTRB(20, 8, 20, 40),
                 child: Column(
-                  crossAxisAlignment:
-                      CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // ── Header Card ──
                     _buildHeaderCard(),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
 
                     // ── Last Updated ──
                     _buildLastUpdated(),
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
 
                     // ══════════════════════════
                     // SECTIONS
                     // ══════════════════════════
-
                     _buildSection(
                       '1. Acceptance of Terms',
                       'By downloading, installing, or using the ATS CV Builder '
@@ -212,7 +209,7 @@ class TermsOfServiceScreen extends StatelessWidget {
                           'We will respond to your inquiry within 48 hours.',
                     ),
 
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
 
                     // ── Footer ──
                     _buildFooter(),
@@ -232,54 +229,44 @@ class TermsOfServiceScreen extends StatelessWidget {
 
   Widget _buildAppBar(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(8, 8, 16, 0),
+      padding: EdgeInsets.fromLTRB(8.w, 8.h, 16.w, 0),
       child: Row(
         children: [
           IconButton(
             onPressed: () => Navigator.pop(context),
-            icon: const Icon(
-              Icons.arrow_back_rounded,
-              color: Colors.white,
-            ),
+            icon: Icon(Icons.arrow_back_rounded, color: Colors.white),
           ),
-          const Expanded(
+          Expanded(
             child: Text(
               'Terms of Service',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 18,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
           ),
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 10,
-              vertical: 5,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: const Color(0xFF2196F3)
-                  .withOpacity(0.1),
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: const Color(0xFF2196F3)
-                    .withOpacity(0.2),
-              ),
+              color: Color(0xFF2196F3).withOpacity(0.1),
+              borderRadius: BorderRadius.circular(8.r),
+              border: Border.all(color: Color(0xFF2196F3).withOpacity(0.2)),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
                   Icons.gavel_rounded,
                   color: Color(0xFF2196F3),
-                  size: 14,
+                  size: 14.sp,
                 ),
-                SizedBox(width: 4),
+                SizedBox(width: 4.w),
                 Text(
                   'Legal',
                   style: TextStyle(
                     color: Color(0xFF2196F3),
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -294,55 +281,52 @@ class TermsOfServiceScreen extends StatelessWidget {
   Widget _buildHeaderCard() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
           colors: [
-            const Color(0xFF2196F3).withOpacity(0.1),
-            const Color(0xFF1565C0).withOpacity(0.05),
+            Color(0xFF2196F3).withOpacity(0.1),
+            Color(0xFF1565C0).withOpacity(0.05),
           ],
         ),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFF2196F3).withOpacity(0.15),
-        ),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(color: Color(0xFF2196F3).withOpacity(0.15)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 50,
-            height: 50,
+            width: 50.r,
+            height: 50.r,
             decoration: BoxDecoration(
-              color: const Color(0xFF2196F3)
-                  .withOpacity(0.15),
-              borderRadius: BorderRadius.circular(14),
+              color: Color(0xFF2196F3).withOpacity(0.15),
+              borderRadius: BorderRadius.circular(14.r),
             ),
-            child: const Icon(
+            child: Icon(
               Icons.description_rounded,
               color: Color(0xFF2196F3),
-              size: 26,
+              size: 26.sp,
             ),
           ),
-          const SizedBox(height: 14),
-          const Text(
+          SizedBox(height: 14.h),
+          Text(
             'Terms of Service',
             style: TextStyle(
               color: Colors.white,
-              fontSize: 22,
+              fontSize: 22.sp,
               fontWeight: FontWeight.w800,
             ),
           ),
-          const SizedBox(height: 6),
+          SizedBox(height: 6.h),
           Text(
             'Please read these terms carefully before using '
             'ATS CV Builder. By using our app, you agree to '
             'these terms.',
             style: TextStyle(
               color: Colors.white.withOpacity(0.5),
-              fontSize: 13,
+              fontSize: 13.sp,
               height: 1.5,
             ),
           ),
@@ -353,39 +337,34 @@ class TermsOfServiceScreen extends StatelessWidget {
 
   Widget _buildLastUpdated() {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 14,
-        vertical: 10,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.04),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.06),
-        ),
+        borderRadius: BorderRadius.circular(10.r),
+        border: Border.all(color: Colors.white.withOpacity(0.06)),
       ),
       child: Row(
         children: [
           Icon(
             Icons.update_rounded,
             color: Colors.white.withOpacity(0.4),
-            size: 16,
+            size: 16.sp,
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           Text(
             'Last Updated: January 1, 2025',
             style: TextStyle(
               color: Colors.white.withOpacity(0.4),
-              fontSize: 12,
+              fontSize: 12.sp,
               fontWeight: FontWeight.w500,
             ),
           ),
-          const Spacer(),
+          Spacer(),
           Text(
             'v1.0',
             style: TextStyle(
               color: Colors.white.withOpacity(0.3),
-              fontSize: 11,
+              fontSize: 11.sp,
             ),
           ),
         ],
@@ -395,42 +374,35 @@ class TermsOfServiceScreen extends StatelessWidget {
 
   Widget _buildSection(String title, String content) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 24),
+      padding: EdgeInsets.only(bottom: 24.h),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Section Title
           Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF2196F3)
-                  .withOpacity(0.06),
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: const Color(0xFF2196F3)
-                    .withOpacity(0.1),
-              ),
+              color: Color(0xFF2196F3).withOpacity(0.06),
+              borderRadius: BorderRadius.circular(10.r),
+              border: Border.all(color: Color(0xFF2196F3).withOpacity(0.1)),
             ),
             child: Text(
               title,
-              style: const TextStyle(
+              style: TextStyle(
                 color: Color(0xFF64B5F6),
-                fontSize: 15,
+                fontSize: 15.sp,
                 fontWeight: FontWeight.w700,
               ),
             ),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
 
           // Section Content
           Text(
             content,
             style: TextStyle(
               color: Colors.white.withOpacity(0.6),
-              fontSize: 13,
+              fontSize: 13.sp,
               height: 1.7,
             ),
           ),
@@ -442,36 +414,34 @@ class TermsOfServiceScreen extends StatelessWidget {
   Widget _buildFooter() {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.03),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(
-          color: Colors.white.withOpacity(0.06),
-        ),
+        borderRadius: BorderRadius.circular(14.r),
+        border: Border.all(color: Colors.white.withOpacity(0.06)),
       ),
       child: Column(
         children: [
           Icon(
             Icons.verified_user_outlined,
             color: Colors.white.withOpacity(0.3),
-            size: 28,
+            size: 28.sp,
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             'ATS CV Builder',
             style: TextStyle(
               color: Colors.white.withOpacity(0.5),
-              fontSize: 14,
+              fontSize: 14.sp,
               fontWeight: FontWeight.w600,
             ),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           Text(
             '© 2026 All Rights Reserved',
             style: TextStyle(
               color: Colors.white.withOpacity(0.3),
-              fontSize: 11,
+              fontSize: 11.sp,
             ),
           ),
         ],

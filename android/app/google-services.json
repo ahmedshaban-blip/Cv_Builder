@@ -31,6 +31,14 @@
           }
         },
         {
+          "client_id": "923867099296-t3i7pjjaocp9mjtduat6mof64n8sah3q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cv_builder",
+            "certificate_hash": "3d26c2507d2cf706f40ed17b89a4c58a56126042"
+          }
+        },
+        {
           "client_id": "923867099296-6tjhq43nu1518f71tgue3pothc1hdg59.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -66,6 +74,30 @@
         }
       },
       "oauth_client": [
+        {
+          "client_id": "923867099296-28ac5hmh0qq4fmdu72785n8gekd2q6i4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.quvlox.cvbuilder",
+            "certificate_hash": "5cc17e1cff49435e3b5f9d3c19cb27bc05994ce4"
+          }
+        },
+        {
+          "client_id": "923867099296-7olcqsem78q9rp6hrfci45co3fcpce3a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.quvlox.cvbuilder",
+            "certificate_hash": "5cbeb478a89a1ab6f264bedef24aa8a1b8605049"
+          }
+        },
+        {
+          "client_id": "923867099296-ibdgctvud64jpboo053clbeul2v2tur3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.quvlox.cvbuilder",
+            "certificate_hash": "3d26c2507d2cf706f40ed17b89a4c58a56126042"
+          }
+        },
         {
           "client_id": "923867099296-6tjhq43nu1518f71tgue3pothc1hdg59.apps.googleusercontent.com",
           "client_type": 3

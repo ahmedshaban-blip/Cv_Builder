@@ -8,15 +8,12 @@ import 'package:pdf/widgets.dart' as pw;
 import '../models/cv_model.dart';
 
 class PDFGenerator {
-
   // ══════════════════════════════════════════
   // 📄 TEMPLATE 1: CLASSIC ATS
   // ══════════════════════════════════════════
   // بسيط - خط واحد - بدون ألوان كتير
   // ══════════════════════════════════════════
-  static Future<pw.Document> generateClassicTemplate(
-    CVModel cv,
-  ) async {
+  static Future<pw.Document> generateClassicTemplate(CVModel cv) async {
     final pdf = pw.Document();
 
     pdf.addPage(
@@ -34,10 +31,7 @@ class PDFGenerator {
           if (cv.summary != null && cv.summary!.isNotEmpty) ...[
             _buildSectionTitle('PROFESSIONAL SUMMARY'),
             pw.SizedBox(height: 4),
-            pw.Text(
-              cv.summary!,
-              style: const pw.TextStyle(fontSize: 10),
-            ),
+            pw.Text(cv.summary!, style: const pw.TextStyle(fontSize: 10)),
             pw.SizedBox(height: 14),
           ],
 
@@ -45,9 +39,7 @@ class PDFGenerator {
           if (cv.experience.isNotEmpty) ...[
             _buildSectionTitle('WORK EXPERIENCE'),
             pw.SizedBox(height: 4),
-            ...cv.experience.map(
-              (exp) => _buildClassicExperience(exp),
-            ),
+            ...cv.experience.map((exp) => _buildClassicExperience(exp)),
             pw.SizedBox(height: 14),
           ],
 
@@ -55,9 +47,7 @@ class PDFGenerator {
           if (cv.education.isNotEmpty) ...[
             _buildSectionTitle('EDUCATION'),
             pw.SizedBox(height: 4),
-            ...cv.education.map(
-              (edu) => _buildClassicEducation(edu),
-            ),
+            ...cv.education.map((edu) => _buildClassicEducation(edu)),
             pw.SizedBox(height: 14),
           ],
 
@@ -76,9 +66,7 @@ class PDFGenerator {
           if (cv.projects.isNotEmpty) ...[
             _buildSectionTitle('PROJECTS'),
             pw.SizedBox(height: 4),
-            ...cv.projects.map(
-              (proj) => _buildClassicProject(proj),
-            ),
+            ...cv.projects.map((proj) => _buildClassicProject(proj)),
           ],
         ],
       ),
@@ -94,18 +82,12 @@ class PDFGenerator {
       children: [
         pw.Text(
           info.fullName.toUpperCase(),
-          style: pw.TextStyle(
-            fontSize: 22,
-            fontWeight: pw.FontWeight.bold,
-          ),
+          style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold),
         ),
         if (info.jobTitle != null)
           pw.Text(
             info.jobTitle!,
-            style: const pw.TextStyle(
-              fontSize: 12,
-              color: PdfColors.grey700,
-            ),
+            style: const pw.TextStyle(fontSize: 12, color: PdfColors.grey700),
           ),
         pw.SizedBox(height: 6),
         pw.Text(
@@ -122,10 +104,7 @@ class PDFGenerator {
             if (info.github != null) info.github,
             if (info.portfolio != null) info.portfolio,
           ].join('  |  '),
-          style: const pw.TextStyle(
-            fontSize: 9,
-            color: PdfColors.blue800,
-          ),
+          style: const pw.TextStyle(fontSize: 9, color: PdfColors.blue800),
         ),
       ],
     );
@@ -138,10 +117,7 @@ class PDFGenerator {
       children: [
         pw.Text(
           title,
-          style: pw.TextStyle(
-            fontSize: 13,
-            fontWeight: pw.FontWeight.bold,
-          ),
+          style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold),
         ),
         pw.Divider(thickness: 0.8),
       ],
@@ -156,8 +132,7 @@ class PDFGenerator {
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
           pw.Row(
-            mainAxisAlignment:
-                pw.MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
               pw.Text(
                 exp.position,
@@ -174,21 +149,13 @@ class PDFGenerator {
           ),
           pw.Text(
             '${exp.company}${exp.location != null ? " | ${exp.location}" : ""}',
-            style: const pw.TextStyle(
-              fontSize: 10,
-              color: PdfColors.grey700,
-            ),
+            style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
           ),
           pw.SizedBox(height: 3),
           ...exp.responsibilities.map(
             (r) => pw.Padding(
-              padding: const pw.EdgeInsets.only(
-                left: 12, bottom: 2,
-              ),
-              child: pw.Text(
-                '• $r',
-                style: const pw.TextStyle(fontSize: 10),
-              ),
+              padding: const pw.EdgeInsets.only(left: 12, bottom: 2),
+              child: pw.Text('• $r', style: const pw.TextStyle(fontSize: 10)),
             ),
           ),
         ],
@@ -201,8 +168,7 @@ class PDFGenerator {
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 8),
       child: pw.Row(
-        mainAxisAlignment:
-            pw.MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
           pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -214,10 +180,7 @@ class PDFGenerator {
                   fontWeight: pw.FontWeight.bold,
                 ),
               ),
-              pw.Text(
-                edu.institution,
-                style: const pw.TextStyle(fontSize: 10),
-              ),
+              pw.Text(edu.institution, style: const pw.TextStyle(fontSize: 10)),
             ],
           ),
           pw.Text(
@@ -238,22 +201,13 @@ class PDFGenerator {
         children: [
           pw.Text(
             proj.title,
-            style: pw.TextStyle(
-              fontSize: 11,
-              fontWeight: pw.FontWeight.bold,
-            ),
+            style: pw.TextStyle(fontSize: 11, fontWeight: pw.FontWeight.bold),
           ),
-          pw.Text(
-            proj.description,
-            style: const pw.TextStyle(fontSize: 10),
-          ),
+          pw.Text(proj.description, style: const pw.TextStyle(fontSize: 10)),
           if (proj.technologies.isNotEmpty)
             pw.Text(
               'Technologies: ${proj.technologies.join(", ")}',
-              style: const pw.TextStyle(
-                fontSize: 9,
-                color: PdfColors.grey700,
-              ),
+              style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
             ),
         ],
       ),
@@ -265,9 +219,7 @@ class PDFGenerator {
   // ══════════════════════════════════════════
   // فيه لمسة لون بسيطة - لكن لسه ATS-friendly
   // ══════════════════════════════════════════
-  static Future<pw.Document> generateModernTemplate(
-    CVModel cv,
-  ) async {
+  static Future<pw.Document> generateModernTemplate(CVModel cv) async {
     final pdf = pw.Document();
     const accentColor = PdfColors.blueGrey800;
 
@@ -281,13 +233,10 @@ class PDFGenerator {
             padding: const pw.EdgeInsets.all(16),
             decoration: const pw.BoxDecoration(
               color: PdfColors.grey100,
-              borderRadius: pw.BorderRadius.all(
-                pw.Radius.circular(4),
-              ),
+              borderRadius: pw.BorderRadius.all(pw.Radius.circular(4)),
             ),
             child: pw.Column(
-              crossAxisAlignment:
-                  pw.CrossAxisAlignment.start,
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 pw.Text(
                   cv.personalInfo.fullName.toUpperCase(),
@@ -310,20 +259,12 @@ class PDFGenerator {
                 pw.Wrap(
                   spacing: 16,
                   children: [
-                    _modernContactItem(
-                      cv.personalInfo.email,
-                    ),
-                    _modernContactItem(
-                      cv.personalInfo.phone,
-                    ),
+                    _modernContactItem(cv.personalInfo.email),
+                    _modernContactItem(cv.personalInfo.phone),
                     if (cv.personalInfo.linkedIn != null)
-                      _modernContactItem(
-                        cv.personalInfo.linkedIn!,
-                      ),
+                      _modernContactItem(cv.personalInfo.linkedIn!),
                     if (cv.personalInfo.github != null)
-                      _modernContactItem(
-                        cv.personalInfo.github!,
-                      ),
+                      _modernContactItem(cv.personalInfo.github!),
                   ],
                 ),
               ],
@@ -332,33 +273,22 @@ class PDFGenerator {
           pw.SizedBox(height: 16),
 
           // ── SUMMARY ──
-          if (cv.summary != null &&
-              cv.summary!.isNotEmpty) ...[
-            _buildModernSection('PROFESSIONAL SUMMARY',
-                accentColor),
+          if (cv.summary != null && cv.summary!.isNotEmpty) ...[
+            _buildModernSection('PROFESSIONAL SUMMARY', accentColor),
             pw.Padding(
-              padding: const pw.EdgeInsets.only(
-                left: 8, bottom: 12,
-              ),
+              padding: const pw.EdgeInsets.only(left: 8, bottom: 12),
               child: pw.Text(
                 cv.summary!,
-                style: const pw.TextStyle(
-                  fontSize: 10,
-                  lineSpacing: 2,
-                ),
+                style: const pw.TextStyle(fontSize: 10, lineSpacing: 2),
               ),
             ),
           ],
 
           // ── EXPERIENCE ──
           if (cv.experience.isNotEmpty) ...[
-            _buildModernSection(
-              'WORK EXPERIENCE', accentColor,
-            ),
+            _buildModernSection('WORK EXPERIENCE', accentColor),
             ...cv.experience.map(
-              (exp) => _buildModernExperience(
-                exp, accentColor,
-              ),
+              (exp) => _buildModernExperience(exp, accentColor),
             ),
           ],
 
@@ -366,9 +296,7 @@ class PDFGenerator {
           if (cv.education.isNotEmpty) ...[
             _buildModernSection('EDUCATION', accentColor),
             ...cv.education.map(
-              (edu) => _buildModernEducation(
-                edu, accentColor,
-              ),
+              (edu) => _buildModernEducation(edu, accentColor),
             ),
           ],
 
@@ -376,9 +304,7 @@ class PDFGenerator {
           if (cv.skills.isNotEmpty) ...[
             _buildModernSection('SKILLS', accentColor),
             pw.Padding(
-              padding: const pw.EdgeInsets.only(
-                left: 8, bottom: 12,
-              ),
+              padding: const pw.EdgeInsets.only(left: 8, bottom: 12),
               child: pw.Wrap(
                 spacing: 8,
                 runSpacing: 4,
@@ -389,21 +315,14 @@ class PDFGenerator {
                       vertical: 4,
                     ),
                     decoration: pw.BoxDecoration(
-                      border: pw.Border.all(
-                        color: accentColor,
-                        width: 0.5,
-                      ),
-                      borderRadius:
-                          const pw.BorderRadius.all(
+                      border: pw.Border.all(color: accentColor, width: 0.5),
+                      borderRadius: const pw.BorderRadius.all(
                         pw.Radius.circular(3),
                       ),
                     ),
                     child: pw.Text(
                       skill,
-                      style: pw.TextStyle(
-                        fontSize: 9,
-                        color: accentColor,
-                      ),
+                      style: pw.TextStyle(fontSize: 9, color: accentColor),
                     ),
                   );
                 }).toList(),
@@ -415,9 +334,7 @@ class PDFGenerator {
           if (cv.projects.isNotEmpty) ...[
             _buildModernSection('PROJECTS', accentColor),
             ...cv.projects.map(
-              (proj) => _buildModernProject(
-                proj, accentColor,
-              ),
+              (proj) => _buildModernProject(proj, accentColor),
             ),
           ],
         ],
@@ -428,15 +345,10 @@ class PDFGenerator {
   }
 
   static pw.Widget _modernContactItem(String text) {
-    return pw.Text(
-      text,
-      style: const pw.TextStyle(fontSize: 9),
-    );
+    return pw.Text(text, style: const pw.TextStyle(fontSize: 9));
   }
 
-  static pw.Widget _buildModernSection(
-    String title, PdfColor color,
-  ) {
+  static pw.Widget _buildModernSection(String title, PdfColor color) {
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 6),
       child: pw.Column(
@@ -450,24 +362,16 @@ class PDFGenerator {
               color: color,
             ),
           ),
-          pw.Container(
-            height: 2,
-            width: double.infinity,
-            color: color,
-          ),
+          pw.Container(height: 2, width: double.infinity, color: color),
           pw.SizedBox(height: 6),
         ],
       ),
     );
   }
 
-  static pw.Widget _buildModernExperience(
-    Experience exp, PdfColor color,
-  ) {
+  static pw.Widget _buildModernExperience(Experience exp, PdfColor color) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.only(
-        left: 8, bottom: 12,
-      ),
+      padding: const pw.EdgeInsets.only(left: 8, bottom: 12),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -480,8 +384,7 @@ class PDFGenerator {
             ),
           ),
           pw.Row(
-            mainAxisAlignment:
-                pw.MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
               pw.Text(
                 exp.company,
@@ -502,13 +405,8 @@ class PDFGenerator {
           pw.SizedBox(height: 3),
           ...exp.responsibilities.map(
             (r) => pw.Padding(
-              padding: const pw.EdgeInsets.only(
-                left: 8, bottom: 2,
-              ),
-              child: pw.Text(
-                '• $r',
-                style: const pw.TextStyle(fontSize: 10),
-              ),
+              padding: const pw.EdgeInsets.only(left: 8, bottom: 2),
+              child: pw.Text('• $r', style: const pw.TextStyle(fontSize: 10)),
             ),
           ),
         ],
@@ -516,20 +414,14 @@ class PDFGenerator {
     );
   }
 
-  static pw.Widget _buildModernEducation(
-    Education edu, PdfColor color,
-  ) {
+  static pw.Widget _buildModernEducation(Education edu, PdfColor color) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.only(
-        left: 8, bottom: 8,
-      ),
+      padding: const pw.EdgeInsets.only(left: 8, bottom: 8),
       child: pw.Row(
-        mainAxisAlignment:
-            pw.MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
           pw.Column(
-            crossAxisAlignment:
-                pw.CrossAxisAlignment.start,
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
             children: [
               pw.Text(
                 '${edu.degree} in ${edu.fieldOfStudy}',
@@ -549,23 +441,16 @@ class PDFGenerator {
           ),
           pw.Text(
             '${edu.startDate} - ${edu.isCurrently ? "Present" : edu.endDate}',
-            style: const pw.TextStyle(
-              fontSize: 9,
-              color: PdfColors.grey600,
-            ),
+            style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
           ),
         ],
       ),
     );
   }
 
-  static pw.Widget _buildModernProject(
-    Project proj, PdfColor color,
-  ) {
+  static pw.Widget _buildModernProject(Project proj, PdfColor color) {
     return pw.Padding(
-      padding: const pw.EdgeInsets.only(
-        left: 8, bottom: 8,
-      ),
+      padding: const pw.EdgeInsets.only(left: 8, bottom: 8),
       child: pw.Column(
         crossAxisAlignment: pw.CrossAxisAlignment.start,
         children: [
@@ -577,17 +462,11 @@ class PDFGenerator {
               color: color,
             ),
           ),
-          pw.Text(
-            proj.description,
-            style: const pw.TextStyle(fontSize: 10),
-          ),
+          pw.Text(proj.description, style: const pw.TextStyle(fontSize: 10)),
           if (proj.technologies.isNotEmpty)
             pw.Text(
               'Tech: ${proj.technologies.join(", ")}',
-              style: const pw.TextStyle(
-                fontSize: 9,
-                color: PdfColors.grey600,
-              ),
+              style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey600),
             ),
         ],
       ),

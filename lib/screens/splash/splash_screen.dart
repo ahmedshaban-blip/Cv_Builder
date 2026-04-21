@@ -1,5 +1,6 @@
 // lib/screens/splash/splash_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:async';
@@ -10,7 +11,7 @@ import '../home/home_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
-  static const routeName = '/splash';
+  static const String routeName = '/splash';
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -61,31 +62,31 @@ class _SplashScreenState extends State<SplashScreen>
     // ── Logo Animation Controller ──
     _logoController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1200),
+      duration: Duration(milliseconds: 1200),
     );
 
     // ── Content Animation Controller ──
     _contentController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: Duration(milliseconds: 1000),
     );
 
     // ── Pulse Animation Controller ──
     _pulseController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: Duration(milliseconds: 1500),
     )..repeat(reverse: true);
 
     // ── Progress Bar Controller ──
     _progressController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 2500),
+      duration: Duration(milliseconds: 2500),
     );
 
     // ── Particle Controller ──
     _particleController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3),
+      duration: Duration(seconds: 3),
     )..repeat();
 
     // ════════════════════════════════
@@ -119,7 +120,7 @@ class _SplashScreenState extends State<SplashScreen>
     _logoOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _logoController,
-        curve: const Interval(0.0, 0.5, curve: Curves.easeIn),
+        curve: Interval(0.0, 0.5, curve: Curves.easeIn),
       ),
     );
 
@@ -127,14 +128,14 @@ class _SplashScreenState extends State<SplashScreen>
     _titleSlide = Tween<double>(begin: 30.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _contentController,
-        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
+        curve: Interval(0.0, 0.6, curve: Curves.easeOut),
       ),
     );
 
     _titleOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _contentController,
-        curve: const Interval(0.0, 0.5, curve: Curves.easeIn),
+        curve: Interval(0.0, 0.5, curve: Curves.easeIn),
       ),
     );
 
@@ -142,14 +143,14 @@ class _SplashScreenState extends State<SplashScreen>
     _subtitleSlide = Tween<double>(begin: 30.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _contentController,
-        curve: const Interval(0.3, 0.8, curve: Curves.easeOut),
+        curve: Interval(0.3, 0.8, curve: Curves.easeOut),
       ),
     );
 
     _subtitleOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _contentController,
-        curve: const Interval(0.3, 0.7, curve: Curves.easeIn),
+        curve: Interval(0.3, 0.7, curve: Curves.easeIn),
       ),
     );
 
@@ -157,7 +158,7 @@ class _SplashScreenState extends State<SplashScreen>
     _taglineOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _contentController,
-        curve: const Interval(0.6, 1.0, curve: Curves.easeIn),
+        curve: Interval(0.6, 1.0, curve: Curves.easeIn),
       ),
     );
 
@@ -175,7 +176,7 @@ class _SplashScreenState extends State<SplashScreen>
     _bottomOpacity = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _contentController,
-        curve: const Interval(0.5, 1.0, curve: Curves.easeIn),
+        curve: Interval(0.5, 1.0, curve: Curves.easeIn),
       ),
     );
 
@@ -192,7 +193,7 @@ class _SplashScreenState extends State<SplashScreen>
   // 🧭 Navigation Logic
   // ══════════════════════════════════
   void _startNavigation() {
-    _navigationTimer = Timer(const Duration(seconds: 6), () {
+    _navigationTimer = Timer(Duration(seconds: 6), () {
       _navigateToNextScreen();
     });
   }
@@ -208,13 +209,13 @@ class _SplashScreenState extends State<SplashScreen>
       PageRouteBuilder(
         pageBuilder: (context, animation, secondaryAnimation) {
           return user != null
-              ? const HomeScreen() // ← غيّرها باسم شاشتك
-              : const LoginScreen(); // ← غيّرها باسم شاشتك
+              ? HomeScreen() // ← غيّرها باسم شاشتك
+              : LoginScreen(); // ← غيّرها باسم شاشتك
         },
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
           return FadeTransition(opacity: animation, child: child);
         },
-        transitionDuration: const Duration(milliseconds: 800),
+        transitionDuration: Duration(milliseconds: 800),
       ),
     );
   }
@@ -248,7 +249,7 @@ class _SplashScreenState extends State<SplashScreen>
         body: Container(
           width: double.infinity,
           height: double.infinity,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -272,37 +273,37 @@ class _SplashScreenState extends State<SplashScreen>
               SafeArea(
                 child: Column(
                   children: [
-                    const Spacer(flex: 2),
+                    Spacer(flex: 2),
 
                     // ── Logo Section ──
                     _buildLogo(),
 
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
 
                     // ── Title ──
                     _buildTitle(),
 
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
 
                     // ── Subtitle ──
                     _buildSubtitle(),
 
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
 
                     // ── Tagline ──
                     _buildTagline(),
 
-                    const Spacer(flex: 2),
+                    Spacer(flex: 2),
 
                     // ── Progress Bar ──
                     _buildProgressBar(),
 
-                    const SizedBox(height: 24),
+                    SizedBox(height: 24.h),
 
                     // ── Bottom Text ──
                     _buildBottomText(),
 
-                    const SizedBox(height: 40),
+                    SizedBox(height: 40.h),
                   ],
                 ),
               ),
@@ -340,14 +341,14 @@ class _SplashScreenState extends State<SplashScreen>
       builder: (context, child) {
         return Center(
           child: Container(
-            width: 250 * _pulseAnimation.value,
-            height: 250 * _pulseAnimation.value,
+            width: 250.w * _pulseAnimation.value,
+            height: 250.h * _pulseAnimation.value,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: RadialGradient(
                 colors: [
-                  const Color(0xFF2196F3).withOpacity(0.1),
-                  const Color(0xFF2196F3).withOpacity(0.05),
+                  Color(0xFF2196F3).withOpacity(0.1),
+                  Color(0xFF2196F3).withOpacity(0.05),
                   Colors.transparent,
                 ],
               ),
@@ -378,11 +379,11 @@ class _SplashScreenState extends State<SplashScreen>
                   );
                 },
                 child: Container(
-                  width: 120,
-                  height: 120,
+                  width: 120.r,
+                  height: 120.r,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    gradient: const LinearGradient(
+                    borderRadius: BorderRadius.circular(30.r),
+                    gradient: LinearGradient(
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                       colors: [
@@ -393,32 +394,32 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: const Color(0xFF2196F3).withOpacity(0.4),
+                        color: Color(0xFF2196F3).withOpacity(0.4),
                         blurRadius: 30,
                         spreadRadius: 5,
                       ),
                       BoxShadow(
-                        color: const Color(0xFF0D47A1).withOpacity(0.3),
+                        color: Color(0xFF0D47A1).withOpacity(0.3),
                         blurRadius: 60,
                         spreadRadius: 10,
                       ),
                     ],
                   ),
-                  child: const Center(
+                  child: Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
                           Icons.description_rounded,
                           color: Colors.white,
-                          size: 48,
+                          size: 48.sp,
                         ),
-                        SizedBox(height: 4),
+                        SizedBox(height: 4.h),
                         Text(
                           'CV',
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 22,
+                            fontSize: 22.sp,
                             fontWeight: FontWeight.w900,
                             letterSpacing: 3,
                           ),
@@ -446,14 +447,14 @@ class _SplashScreenState extends State<SplashScreen>
             offset: Offset(0, _titleSlide.value),
             child: ShaderMask(
               shaderCallback: (bounds) {
-                return const LinearGradient(
+                return LinearGradient(
                   colors: [Colors.white, Color(0xFF64B5F6)],
                 ).createShader(bounds);
               },
-              child: const Text(
+              child: Text(
                 'ATS CV Builder',
                 style: TextStyle(
-                  fontSize: 32,
+                  fontSize: 32.sp,
                   fontWeight: FontWeight.w800,
                   color: Colors.white,
                   letterSpacing: 1.5,
@@ -475,11 +476,11 @@ class _SplashScreenState extends State<SplashScreen>
           opacity: _subtitleOpacity.value,
           child: Transform.translate(
             offset: Offset(0, _subtitleSlide.value),
-            child: const Text(
+            child: Text(
               'Build Professional Resumes\nThat Beat ATS Systems',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 16.sp,
                 color: Color(0xFF90CAF9),
                 fontWeight: FontWeight.w400,
                 height: 1.5,
@@ -503,7 +504,7 @@ class _SplashScreenState extends State<SplashScreen>
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               _buildChip('📄 ATS Friendly'),
-              const SizedBox(width: 12),
+              SizedBox(width: 12.w),
               _buildChip('⚡ Fast & Easy'),
             ],
           ),
@@ -514,17 +515,17 @@ class _SplashScreenState extends State<SplashScreen>
 
   Widget _buildChip(String text) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(color: Colors.white.withOpacity(0.15)),
       ),
       child: Text(
         text,
-        style: const TextStyle(
+        style: TextStyle(
           color: Colors.white70,
-          fontSize: 12,
+          fontSize: 12.sp,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -537,14 +538,14 @@ class _SplashScreenState extends State<SplashScreen>
       animation: _progressController,
       builder: (context, child) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 60),
+          padding: EdgeInsets.symmetric(horizontal: 60.w),
           child: Column(
             children: [
               // Progress Bar
               Container(
-                height: 4,
+                height: 4.h,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(2),
+                  borderRadius: BorderRadius.circular(2.r),
                   color: Colors.white.withOpacity(0.1),
                 ),
                 child: FractionallySizedBox(
@@ -552,8 +553,8 @@ class _SplashScreenState extends State<SplashScreen>
                   widthFactor: _progressAnimation.value,
                   child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2),
-                      gradient: const LinearGradient(
+                      borderRadius: BorderRadius.circular(2.r),
+                      gradient: LinearGradient(
                         colors: [
                           Color(0xFF2196F3),
                           Color(0xFF64B5F6),
@@ -562,7 +563,7 @@ class _SplashScreenState extends State<SplashScreen>
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: const Color(0xFF2196F3).withOpacity(0.5),
+                          color: Color(0xFF2196F3).withOpacity(0.5),
                           blurRadius: 8,
                           spreadRadius: 1,
                         ),
@@ -571,14 +572,14 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
 
               // Loading Text
               Text(
                 _getLoadingText(_progressAnimation.value),
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.5),
-                  fontSize: 12,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -611,24 +612,24 @@ class _SplashScreenState extends State<SplashScreen>
                   Icon(
                     Icons.verified_rounded,
                     color: Colors.white.withOpacity(0.3),
-                    size: 14,
+                    size: 14.sp,
                   ),
-                  const SizedBox(width: 6),
+                  SizedBox(width: 6.w),
                   Text(
                     'Trusted by thousands of job seekers',
                     style: TextStyle(
                       color: Colors.white.withOpacity(0.3),
-                      fontSize: 11,
+                      fontSize: 11.sp,
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Text(
                 'v1.0.0',
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.2),
-                  fontSize: 10,
+                  fontSize: 10.sp,
                 ),
               ),
             ],
@@ -662,7 +663,7 @@ class ParticlePainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     for (var particle in particles) {
       final paint = Paint()
-        ..color = const Color(0xFF2196F3).withOpacity(particle.opacity)
+        ..color = Color(0xFF2196F3).withOpacity(particle.opacity)
         ..style = PaintingStyle.fill;
 
       double x = particle.x * size.width;

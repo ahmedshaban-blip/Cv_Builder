@@ -89,17 +89,14 @@ class AccountDeletionService {
   // ══════════════════════════════════════════
   // 🔐 Re-authenticate with Email/Password
   // ══════════════════════════════════════════
-  Future<ReauthResult> reauthenticateWithEmail(
-    String password,
-  ) async {
+  Future<ReauthResult> reauthenticateWithEmail(String password) async {
     try {
       final credential = EmailAuthProvider.credential(
         email: _currentUser!.email!,
         password: password,
       );
 
-      await _currentUser!
-          .reauthenticateWithCredential(credential);
+      await _currentUser!.reauthenticateWithCredential(credential);
 
       return ReauthResult(success: true);
     } on FirebaseAuthException catch (e) {
@@ -125,30 +122,31 @@ class AccountDeletionService {
   // 🔐 Re-authenticate with Google
   // ══════════════════════════════════════════
 
-Future<ReauthResult> reauthenticateWithGoogle() async {
-  try {
-    // ✅ authenticate() throws if cancelled — no null check needed
-    final googleUser = await _googleSignIn.authenticate();
+  Future<ReauthResult> reauthenticateWithGoogle() async {
+    try {
+      // ✅ authenticate() throws if cancelled — no null check needed
+      final googleUser = await _googleSignIn.authenticate();
 
-    // ✅ Synchronous, no await
-    final googleAuth = googleUser.authentication;
+      // ✅ Synchronous, no await
+      final googleAuth = googleUser.authentication;
 
-    // ✅ Only idToken
-    final credential = GoogleAuthProvider.credential(
-      idToken: googleAuth.idToken,
-    );
+      // ✅ Only idToken
+      final credential = GoogleAuthProvider.credential(
+        idToken: googleAuth.idToken,
+      );
 
-    await _currentUser!.reauthenticateWithCredential(credential);
+      await _currentUser!.reauthenticateWithCredential(credential);
 
-    return ReauthResult(success: true);
-  } catch (e) {
-    // ✅ This now handles BOTH cancellation and failures
-    return ReauthResult(
-      success: false,
-      error: 'Google re-authentication failed',
-    );
-  }
-}  // ══════════════════════════════════════════
+      return ReauthResult(success: true);
+    } catch (e) {
+      // ✅ This now handles BOTH cancellation and failures
+      return ReauthResult(
+        success: false,
+        error: 'Google re-authentication failed',
+      );
+    }
+  } // ══════════════════════════════════════════
+
   // 📊 Get Account Data Summary
   // ══════════════════════════════════════════
   Future<AccountDataSummary> getAccountDataSummary() async {
@@ -165,10 +163,7 @@ Future<ReauthResult> reauthenticateWithGoogle() async {
           .collection('cvs')
           .get();
 
-      final userDoc = await _firestore
-          .collection('users')
-          .doc(uid)
-          .get();
+      final userDoc = await _firestore.collection('users').doc(uid).get();
 
       String? authProvider;
       DateTime? createdAt;
@@ -212,10 +207,7 @@ class ReauthResult {
   final bool success;
   final String? error;
 
-  ReauthResult({
-    required this.success,
-    this.error,
-  });
+  ReauthResult({required this.success, this.error});
 }
 
 class AccountDataSummary {

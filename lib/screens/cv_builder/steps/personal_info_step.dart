@@ -1,5 +1,6 @@
 // lib/screens/cv_builder/steps/personal_info_step.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../widgets/builder_widgets.dart';
 
 class PersonalInfoStep extends StatelessWidget {
@@ -13,7 +14,7 @@ class PersonalInfoStep extends StatelessWidget {
   final TextEditingController githubController;
   final TextEditingController portfolioController;
 
-  const PersonalInfoStep({
+  PersonalInfoStep({
     super.key,
     required this.formKey,
     required this.fullNameController,
@@ -29,15 +30,15 @@ class PersonalInfoStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 20),
+      physics: BouncingScrollPhysics(),
+      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
       child: Form(
         key: formKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // ── Header ──
-            const StepHeader(
+            StepHeader(
               title: 'Personal Information',
               subtitle: 'Tell us about yourself',
               icon: Icons.person_outline_rounded,
@@ -61,7 +62,7 @@ class PersonalInfoStep extends StatelessWidget {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // ── Job Title ──
             CVTextField(
@@ -77,7 +78,7 @@ class PersonalInfoStep extends StatelessWidget {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // ── Email ──
             CVTextField(
@@ -91,15 +92,13 @@ class PersonalInfoStep extends StatelessWidget {
                 if (v == null || v.trim().isEmpty) {
                   return 'Email is required';
                 }
-                if (!RegExp(
-                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                ).hasMatch(v)) {
+                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(v)) {
                   return 'Enter a valid email';
                 }
                 return null;
               },
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // ── Phone ──
             CVTextField(
@@ -116,7 +115,7 @@ class PersonalInfoStep extends StatelessWidget {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // ── Address ──
             CVTextField(
@@ -125,11 +124,11 @@ class PersonalInfoStep extends StatelessWidget {
               hint: 'e.g. Cairo, Egypt',
               icon: Icons.location_on_outlined,
             ),
-            const SizedBox(height: 24),
+            SizedBox(height: 24.h),
 
             // ── Links Section ──
             _buildSectionDivider('Online Profiles'),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // ── LinkedIn ──
             CVTextField(
@@ -139,7 +138,7 @@ class PersonalInfoStep extends StatelessWidget {
               icon: Icons.link_rounded,
               keyboardType: TextInputType.url,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // ── GitHub ──
             CVTextField(
@@ -149,7 +148,7 @@ class PersonalInfoStep extends StatelessWidget {
               icon: Icons.code_rounded,
               keyboardType: TextInputType.url,
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
 
             // ── Portfolio ──
             CVTextField(
@@ -160,7 +159,7 @@ class PersonalInfoStep extends StatelessWidget {
               keyboardType: TextInputType.url,
             ),
 
-            const SizedBox(height: 30),
+            SizedBox(height: 30.h),
           ],
         ),
       ),
@@ -171,28 +170,25 @@ class PersonalInfoStep extends StatelessWidget {
     return Row(
       children: [
         Container(
-          width: 4,
-          height: 20,
+          width: 4.w,
+          height: 20.h,
           decoration: BoxDecoration(
-            color: const Color(0xFF2196F3),
-            borderRadius: BorderRadius.circular(2),
+            color: Color(0xFF2196F3),
+            borderRadius: BorderRadius.circular(2.r),
           ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.w),
         Text(
           title,
           style: TextStyle(
             color: Colors.white.withOpacity(0.6),
-            fontSize: 15,
+            fontSize: 15.sp,
             fontWeight: FontWeight.w600,
           ),
         ),
-        const SizedBox(width: 12),
+        SizedBox(width: 12.w),
         Expanded(
-          child: Container(
-            height: 1,
-            color: Colors.white.withOpacity(0.06),
-          ),
+          child: Container(height: 1.h, color: Colors.white.withOpacity(0.06)),
         ),
       ],
     );
