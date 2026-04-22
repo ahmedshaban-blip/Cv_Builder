@@ -524,11 +524,15 @@ class _LoginScreenState extends State<LoginScreen>
               color: Colors.white.withOpacity(0.25),
               fontSize: 14.sp,
             ),
-            prefixIcon: Icon(
-              icon,
-              color: Colors.white.withOpacity(0.4),
-              size: 20.sp,
+            prefixIcon: Padding(
+              padding: EdgeInsetsDirectional.only(start: 16.w, end: 12.w),
+              child: Icon(
+                icon,
+                color: Colors.white.withOpacity(0.4),
+                size: 20.sp,
+              ),
             ),
+            prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
             suffixIcon: isPassword
                 ? IconButton(
                     icon: Icon(
@@ -547,7 +551,10 @@ class _LoginScreenState extends State<LoginScreen>
                 : null,
             filled: true,
             fillColor: Colors.white.withOpacity(0.06),
-            contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 10.h,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(14.r),
               borderSide: BorderSide(color: Colors.white.withOpacity(0.1)),
@@ -761,14 +768,15 @@ class _LoginScreenState extends State<LoginScreen>
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(6.r),
                       ),
-                      padding: EdgeInsets.all(3.r),
+                      alignment: Alignment.center, // ← بدل padding
                       child: Text(
                         'G',
-                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF4285F4),
+                          height:
+                              1.0, // ← مهم عشان يشيل الـ line height الزيادة
                         ),
                       ),
                     ),
@@ -831,7 +839,12 @@ class _LoginScreenState extends State<LoginScreen>
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
       child: Container(
-        padding: EdgeInsets.all(24.r),
+        padding: EdgeInsets.only(
+          top: 24.r,
+          left: 24.r,
+          right: 24.r,
+          bottom: MediaQuery.of(context).viewPadding.bottom,
+        ),
         decoration: BoxDecoration(
           color: Color(0xFF1A1F38),
           borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
@@ -883,9 +896,17 @@ class _LoginScreenState extends State<LoginScreen>
               decoration: InputDecoration(
                 hintText: 'Enter your email',
                 hintStyle: TextStyle(color: Colors.white.withOpacity(0.25)),
-                prefixIcon: Icon(
-                  Icons.email_outlined,
-                  color: Colors.white.withOpacity(0.4),
+                prefixIcon: Padding(
+                  padding: EdgeInsetsDirectional.only(start: 16.w, end: 12.w),
+                  child: Icon(
+                    Icons.email_outlined,
+                    color: Colors.white.withOpacity(0.4),
+                    size: 20.sp,
+                  ),
+                ),
+                prefixIconConstraints: BoxConstraints(
+                  minWidth: 0,
+                  minHeight: 0,
                 ),
                 filled: true,
                 fillColor: Colors.white.withOpacity(0.06),

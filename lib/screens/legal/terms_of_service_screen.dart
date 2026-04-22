@@ -204,8 +204,8 @@ class TermsOfServiceScreen extends StatelessWidget {
                       '14. Contact Information',
                       'If you have any questions about these Terms of Service, '
                           'please contact us at:\n\n'
-                          '📧 Email: support@atscvbuilder.com\n'
-                          '🌐 Website: www.atscvbuilder.com\n\n'
+                          '📧 Email: quvloxstudio@gmail.com\n'
+                          '🌐 Website: ahmedshaban.wuaze.com\n\n'
                           'We will respond to your inquiry within 48 hours.',
                     ),
 
@@ -438,7 +438,7 @@ class TermsOfServiceScreen extends StatelessWidget {
           ),
           SizedBox(height: 4.h),
           Text(
-            '© 2026 All Rights Reserved',
+            '© 2024–${DateTime.now().year} All Rights Reserved',
             style: TextStyle(
               color: Colors.white.withOpacity(0.3),
               fontSize: 11.sp,

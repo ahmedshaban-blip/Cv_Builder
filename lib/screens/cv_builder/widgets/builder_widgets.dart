@@ -64,8 +64,16 @@ class CVTextField extends StatelessWidget {
               fontSize: 14.sp,
             ),
             prefixIcon: maxLines == 1
-                ? Icon(icon, color: Colors.white.withOpacity(0.3), size: 20.sp)
+                ? Padding(
+                    padding: EdgeInsetsDirectional.only(start: 10.w, end: 4.w),
+                    child: Icon(
+                      icon,
+                      color: Colors.white.withOpacity(0.4),
+                      size: 20.sp,
+                    ),
+                  )
                 : null,
+            prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
             filled: true,
             fillColor: Colors.white.withOpacity(0.05),
             contentPadding: EdgeInsets.symmetric(

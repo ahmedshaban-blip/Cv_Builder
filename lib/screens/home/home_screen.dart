@@ -7,10 +7,20 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'dart:math';
-
+import 'package:archive/archive.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+import 'dart:typed_data';
 import '../cv_builder/cv_builder_screen.dart';
 import '../preview/cv_preview_screen.dart';
 import '../settings/delete_account_screen.dart';
+
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
+import '../../models/cv_model.dart';
+import '../../utils/pdf_generator.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -38,6 +48,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
   late Animation<Offset> _slideAnim;
   late Animation<double> _fabScale;
 
+  bool get isTablet => MediaQuery.of(context).size.shortestSide >= 600;
   // ══════════════════════════════════
   // 🔄 State
   // ══════════════════════════════════
@@ -95,6 +106,510 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     _fabController.dispose();
     super.dispose();
   }
+
+  // ══════════════════════════════════════════
+  // 📤 SHARE CV AS WORD
+  // ══════════════════════════════════════════
+  Future<void> _shareCVAsWord(String cvId) async {
+    try {
+      // ── 1) جلب بيانات الـ CV ──
+      final doc = await _firestore
+          .collection('users')
+          .doc(_currentUser!.uid)
+          .collection('cvs')
+          .doc(cvId)
+          .get();
+
+      if (!doc.exists) {
+        if (mounted) {
+          _showSnackBar('❌ CV not found', const Color(0xFFEF5350));
+        }
+        return;
+      }
+
+      final cvData = doc.data() as Map<String, dynamic>;
+
+      // ── 2) توليد ملف Word ──
+      final wordBytes = _generateWordDocumentFromData(cvData);
+
+      // ── 3) حفظ مؤقت ──
+      final dir = await getTemporaryDirectory();
+      final rawTitle = cvData['cvTitle']?.toString().trim() ?? 'CV';
+      final safeTitle = rawTitle.replaceAll(
+        RegExp(r'[<>:"/\\|?*\x00-\x1F]'),
+        '_',
+      );
+      final fileName = '$safeTitle.docx';
+      final file = File('${dir.path}/$fileName');
+      await file.writeAsBytes(wordBytes, flush: true);
+
+      // ── 4) مشاركة ──
+      await Share.shareXFiles([XFile(file.path)], text: 'My Professional CV');
+    } catch (e) {
+      if (mounted) {
+        _showSnackBar('❌ Failed to share Word: $e', const Color(0xFFEF5350));
+      }
+    }
+  }
+
+  // ══════════════════════════════════════════
+  // 📝 GENERATE WORD FROM CV DATA
+  // ══════════════════════════════════════════
+  Uint8List _generateWordDocumentFromData(Map<String, dynamic> cvData) {
+    final personalInfo = cvData['personalInfo'] as Map<String, dynamic>? ?? {};
+    final education = List<Map<String, dynamic>>.from(
+      cvData['education'] ?? [],
+    );
+    final experience = List<Map<String, dynamic>>.from(
+      cvData['experience'] ?? [],
+    );
+    final skills = List<String>.from(cvData['skills'] ?? []);
+    final projects = List<Map<String, dynamic>>.from(cvData['projects'] ?? []);
+    final summary = cvData['summary'] ?? '';
+
+    final body = StringBuffer();
+
+    // ── HEADER ──
+    body.write(
+      _wordParagraph(
+        (personalInfo['fullName'] ?? '').toString().toUpperCase(),
+        fontSize: 28,
+        bold: true,
+        alignment: 'center',
+        spacingAfter: 40,
+      ),
+    );
+
+    if (personalInfo['jobTitle'] != null &&
+        personalInfo['jobTitle'].toString().isNotEmpty) {
+      body.write(
+        _wordParagraph(
+          personalInfo['jobTitle'],
+          fontSize: 14,
+          color: '555555',
+          alignment: 'center',
+          spacingAfter: 80,
+        ),
+      );
+    }
+
+    // Contact
+    final contactParts = <String>[];
+    if (personalInfo['email'] != null &&
+        personalInfo['email'].toString().isNotEmpty) {
+      contactParts.add(personalInfo['email']);
+    }
+    if (personalInfo['phone'] != null &&
+        personalInfo['phone'].toString().isNotEmpty) {
+      contactParts.add(personalInfo['phone']);
+    }
+    if (personalInfo['address'] != null &&
+        personalInfo['address'].toString().isNotEmpty) {
+      contactParts.add(personalInfo['address']);
+    }
+    if (contactParts.isNotEmpty) {
+      body.write(
+        _wordParagraph(
+          contactParts.join('  |  '),
+          fontSize: 10,
+          color: '666666',
+          alignment: 'center',
+          spacingAfter: 20,
+        ),
+      );
+    }
+
+    // Links
+    final linksParts = <String>[];
+    if (personalInfo['linkedIn'] != null &&
+        personalInfo['linkedIn'].toString().isNotEmpty) {
+      linksParts.add(personalInfo['linkedIn']);
+    }
+    if (personalInfo['github'] != null &&
+        personalInfo['github'].toString().isNotEmpty) {
+      linksParts.add(personalInfo['github']);
+    }
+    if (personalInfo['portfolio'] != null &&
+        personalInfo['portfolio'].toString().isNotEmpty) {
+      linksParts.add(personalInfo['portfolio']);
+    }
+    if (linksParts.isNotEmpty) {
+      body.write(
+        _wordParagraph(
+          linksParts.join('  |  '),
+          fontSize: 9,
+          color: '1155CC',
+          alignment: 'center',
+          spacingAfter: 60,
+        ),
+      );
+    }
+
+    body.write(_wordHorizontalLine());
+
+    // ── SUMMARY ──
+    if (summary.toString().isNotEmpty) {
+      body.write(_wordSectionTitle('PROFESSIONAL SUMMARY'));
+      body.write(_wordParagraph(summary, fontSize: 11, spacingAfter: 160));
+    }
+
+    // ── EXPERIENCE ──
+    if (experience.isNotEmpty) {
+      body.write(_wordSectionTitle('WORK EXPERIENCE'));
+      for (final exp in experience) {
+        final dateRange =
+            '${exp['startDate'] ?? ''} - ${exp['isCurrently'] == true ? 'Present' : exp['endDate'] ?? ''}';
+
+        body.write(
+          _wordTwoColumnRow(
+            exp['position'] ?? '',
+            dateRange,
+            leftBold: true,
+            leftSize: 12,
+            rightSize: 10,
+            rightColor: '666666',
+          ),
+        );
+
+        final companyLine = StringBuffer(exp['company'] ?? '');
+        if (exp['location'] != null && exp['location'].toString().isNotEmpty) {
+          companyLine.write('  |  ${exp['location']}');
+        }
+        body.write(
+          _wordParagraph(
+            companyLine.toString(),
+            fontSize: 10,
+            color: '555555',
+            spacingAfter: 40,
+          ),
+        );
+
+        final responsibilities = List<String>.from(
+          exp['responsibilities'] ?? [],
+        );
+        for (final r in responsibilities) {
+          body.write(_wordBulletPoint(r, fontSize: 10));
+        }
+        body.write(_wordParagraph('', fontSize: 8, spacingAfter: 120));
+      }
+    }
+
+    // ── EDUCATION ──
+    if (education.isNotEmpty) {
+      body.write(_wordSectionTitle('EDUCATION'));
+      for (final edu in education) {
+        final dateRange =
+            '${edu['startDate'] ?? ''} - ${edu['isCurrently'] == true ? 'Present' : edu['endDate'] ?? ''}';
+        final degree = '${edu['degree'] ?? ''} in ${edu['fieldOfStudy'] ?? ''}';
+
+        body.write(
+          _wordTwoColumnRow(
+            degree,
+            dateRange,
+            leftBold: true,
+            leftSize: 12,
+            rightSize: 10,
+            rightColor: '666666',
+          ),
+        );
+
+        body.write(
+          _wordParagraph(
+            edu['institution'] ?? '',
+            fontSize: 10,
+            color: '555555',
+            spacingAfter: 20,
+          ),
+        );
+
+        if (edu['gpa'] != null && edu['gpa'].toString().isNotEmpty) {
+          body.write(
+            _wordParagraph(
+              'GPA: ${edu['gpa']}',
+              fontSize: 9,
+              color: '666666',
+              spacingAfter: 40,
+            ),
+          );
+        }
+        body.write(_wordParagraph('', fontSize: 8, spacingAfter: 100));
+      }
+    }
+
+    // ── SKILLS ──
+    if (skills.isNotEmpty) {
+      body.write(_wordSectionTitle('SKILLS'));
+      body.write(
+        _wordParagraph(skills.join('  •  '), fontSize: 11, spacingAfter: 160),
+      );
+    }
+
+    // ── PROJECTS ──
+    if (projects.isNotEmpty) {
+      body.write(_wordSectionTitle('PROJECTS'));
+      for (final proj in projects) {
+        final titleLine = StringBuffer(proj['title'] ?? '');
+        if (proj['link'] != null && proj['link'].toString().isNotEmpty) {
+          titleLine.write('  (${proj['link']})');
+        }
+
+        body.write(
+          _wordParagraph(
+            titleLine.toString(),
+            fontSize: 12,
+            bold: true,
+            spacingAfter: 20,
+          ),
+        );
+
+        if (proj['description'] != null &&
+            proj['description'].toString().isNotEmpty) {
+          body.write(
+            _wordParagraph(proj['description'], fontSize: 10, spacingAfter: 20),
+          );
+        }
+
+        final technologies = List<String>.from(proj['technologies'] ?? []);
+        if (technologies.isNotEmpty) {
+          body.write(
+            _wordParagraph(
+              'Technologies: ${technologies.join(", ")}',
+              fontSize: 9,
+              color: '666666',
+              spacingAfter: 40,
+            ),
+          );
+        }
+        body.write(_wordParagraph('', fontSize: 8, spacingAfter: 80));
+      }
+    }
+
+    return _buildDocx(body.toString());
+  }
+
+  // ══════════════════════════════════════════
+  // 📦 BUILD DOCX FILE
+  // ══════════════════════════════════════════
+  Uint8List _buildDocx(String bodyContent) {
+    final archive = Archive();
+
+    archive.addFile(
+      ArchiveFile(
+        '[Content_Types].xml',
+        _contentTypesXml.length,
+        _contentTypesXml.codeUnits,
+      ),
+    );
+    archive.addFile(
+      ArchiveFile('_rels/.rels', _relsXml.length, _relsXml.codeUnits),
+    );
+    archive.addFile(
+      ArchiveFile(
+        'word/_rels/document.xml.rels',
+        _documentRelsXml.length,
+        _documentRelsXml.codeUnits,
+      ),
+    );
+    archive.addFile(
+      ArchiveFile('word/styles.xml', _stylesXml.length, _stylesXml.codeUnits),
+    );
+
+    final documentXml =
+        '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+  xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math"
+  xmlns:v="urn:schemas-microsoft-com:vml"
+  xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"
+  xmlns:w10="urn:schemas-microsoft-com:office:word"
+  xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+  xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml"
+  xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup"
+  xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape"
+  mc:Ignorable="w14">
+  <w:body>
+    $bodyContent
+    <w:sectPr>
+      <w:pgSz w:w="11906" w:h="16838"/>
+      <w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134"
+               w:header="709" w:footer="709" w:gutter="0"/>
+    </w:sectPr>
+  </w:body>
+</w:document>''';
+
+    archive.addFile(
+      ArchiveFile(
+        'word/document.xml',
+        documentXml.length,
+        documentXml.codeUnits,
+      ),
+    );
+
+    final zipData = ZipEncoder().encode(archive);
+    return Uint8List.fromList(zipData!);
+  }
+
+  // ══════════════════════════════════════════
+  // 🔤 WORD XML HELPERS
+  // ══════════════════════════════════════════
+  String _escapeXml(String text) {
+    return text
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&apos;');
+  }
+
+  String _wordParagraph(
+    String text, {
+    int fontSize = 11,
+    bool bold = false,
+    String color = '000000',
+    String alignment = 'left',
+    int spacingAfter = 60,
+  }) {
+    final halfPoints = fontSize * 2;
+    return '''
+<w:p>
+  <w:pPr>
+    <w:jc w:val="$alignment"/>
+    <w:spacing w:after="$spacingAfter"/>
+  </w:pPr>
+  <w:r>
+    <w:rPr>
+      <w:sz w:val="$halfPoints"/>
+      <w:szCs w:val="$halfPoints"/>
+      ${bold ? '<w:b/><w:bCs/>' : ''}
+      ${color != '000000' ? '<w:color w:val="$color"/>' : ''}
+    </w:rPr>
+    <w:t xml:space="preserve">${_escapeXml(text)}</w:t>
+  </w:r>
+</w:p>''';
+  }
+
+  String _wordSectionTitle(String title) {
+    return '''
+<w:p>
+  <w:pPr>
+    <w:spacing w:before="200" w:after="40"/>
+    <w:pBdr>
+      <w:bottom w:val="single" w:sz="8" w:space="1" w:color="333333"/>
+    </w:pBdr>
+  </w:pPr>
+  <w:r>
+    <w:rPr>
+      <w:b/><w:bCs/>
+      <w:sz w:val="24"/>
+      <w:szCs w:val="24"/>
+      <w:color w:val="333333"/>
+    </w:rPr>
+    <w:t>${_escapeXml(title)}</w:t>
+  </w:r>
+</w:p>''';
+  }
+
+  String _wordBulletPoint(String text, {int fontSize = 10}) {
+    final halfPoints = fontSize * 2;
+    return '''
+<w:p>
+  <w:pPr>
+    <w:spacing w:after="20"/>
+    <w:ind w:left="480" w:hanging="240"/>
+  </w:pPr>
+  <w:r>
+    <w:rPr>
+      <w:sz w:val="$halfPoints"/>
+      <w:szCs w:val="$halfPoints"/>
+    </w:rPr>
+    <w:t xml:space="preserve">•  ${_escapeXml(text)}</w:t>
+  </w:r>
+</w:p>''';
+  }
+
+  String _wordTwoColumnRow(
+    String leftText,
+    String rightText, {
+    bool leftBold = false,
+    int leftSize = 11,
+    int rightSize = 10,
+    String rightColor = '666666',
+  }) {
+    final leftHalf = leftSize * 2;
+    final rightHalf = rightSize * 2;
+    return '''
+<w:p>
+  <w:pPr>
+    <w:tabs>
+      <w:tab w:val="right" w:pos="9638"/>
+    </w:tabs>
+    <w:spacing w:after="20"/>
+  </w:pPr>
+  <w:r>
+    <w:rPr>
+      <w:sz w:val="$leftHalf"/>
+      <w:szCs w:val="$leftHalf"/>
+      ${leftBold ? '<w:b/><w:bCs/>' : ''}
+    </w:rPr>
+    <w:t xml:space="preserve">${_escapeXml(leftText)}</w:t>
+  </w:r>
+  <w:r>
+    <w:rPr>
+      <w:sz w:val="$rightHalf"/>
+      <w:szCs w:val="$rightHalf"/>
+      <w:color w:val="$rightColor"/>
+    </w:rPr>
+    <w:tab/>
+    <w:t>${_escapeXml(rightText)}</w:t>
+  </w:r>
+</w:p>''';
+  }
+
+  String _wordHorizontalLine() {
+    return '''
+<w:p>
+  <w:pPr>
+    <w:pBdr>
+      <w:bottom w:val="single" w:sz="12" w:space="1" w:color="000000"/>
+    </w:pBdr>
+    <w:spacing w:after="120"/>
+  </w:pPr>
+</w:p>''';
+  }
+
+  static const String _contentTypesXml =
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
+      '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
+      '<Default Extension="xml" ContentType="application/xml"/>'
+      '<Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/>'
+      '<Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/>'
+      '</Types>';
+
+  static const String _relsXml =
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/>'
+      '</Relationships>';
+
+  static const String _documentRelsXml =
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+      '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
+      '</Relationships>';
+
+  static const String _stylesXml =
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+      '<w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">'
+      '<w:docDefaults>'
+      '<w:rPrDefault><w:rPr>'
+      '<w:rFonts w:ascii="Calibri" w:hAnsi="Calibri" w:cs="Calibri"/>'
+      '<w:sz w:val="22"/><w:szCs w:val="22"/>'
+      '</w:rPr></w:rPrDefault>'
+      '</w:docDefaults>'
+      '</w:styles>';
 
   // ══════════════════════════════════════════
   // 🗑️ DELETE CV
@@ -1337,9 +1852,19 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
               Color(0xFF9C27B0),
               () {
                 Navigator.pop(context);
-                // Share functionality
+                _shareCV(cvId);
               },
             ),
+            _buildOptionTile(
+              Icons.description_outlined,
+              'Share as Word',
+              Color(0xFF2979FF),
+              () {
+                Navigator.pop(context);
+                _shareCVAsWord(cvId);
+              },
+            ),
+
             // ── Delete ──
             _buildOptionTile(
               Icons.delete_outline_rounded,
@@ -1364,26 +1889,31 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     Color color,
     VoidCallback onTap,
   ) {
-    return ListTile(
-      onTap: onTap,
-      leading: Container(
-        width: 40.r,
-        height: 40.r,
-        decoration: BoxDecoration(
-          color: color.withOpacity(0.1),
+    return Padding(
+      padding: EdgeInsets.only(bottom: isTablet ? 25.0 : 0.0),
+      child: ListTile(
+        onTap: onTap,
+        leading: Container(
+          width: 40.r,
+          height: 40.r,
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Icon(icon, color: color, size: 20.sp),
+        ),
+        title: Text(
+          label,
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
+        ),
+        trailing: Icon(
+          Icons.chevron_right_rounded,
+          color: Colors.white.withOpacity(0.3),
+        ),
+        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12.r),
         ),
-        child: Icon(icon, color: color, size: 20.sp),
       ),
-      title: Text(
-        label,
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
-      ),
-      trailing: Icon(
-        Icons.chevron_right_rounded,
-        color: Colors.white.withOpacity(0.3),
-      ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
     );
   }
 
@@ -1580,6 +2110,56 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     } catch (e) {
       if (mounted) {
         _showSnackBar('❌ Failed to duplicate CV', Color(0xFFEF5350));
+      }
+    }
+  }
+
+  // ══════════════════════════════════════════
+  // 📤 SHARE CV
+  // ══════════════════════════════════════════
+  Future<void> _shareCV(String cvId) async {
+    try {
+      // 1. Get CV data from Firestore
+      final doc = await _firestore
+          .collection('users')
+          .doc(_currentUser!.uid)
+          .collection('cvs')
+          .doc(cvId)
+          .get();
+
+      if (!doc.exists) {
+        if (mounted) {
+          _showSnackBar('❌ CV not found', Color(0xFFEF5350));
+        }
+        return;
+      }
+
+      final cv = CVModel.fromMap(doc.data() as Map<String, dynamic>);
+
+      // 2. Generate PDF using utility
+      final templateId = cv.templateId;
+      final pdf = templateId == 'modern'
+          ? await PDFGenerator.generateModernTemplate(cv)
+          : await PDFGenerator.generateClassicTemplate(cv);
+
+      final bytes = await pdf.save();
+
+      // 3. Save to temporary file for sharing
+      final dir = await getTemporaryDirectory();
+      // Clean file name: remove special characters except spaces and hyphens
+      final cleanTitle = cv.cvTitle.replaceAll(RegExp(r'[^\w\s-]'), '');
+      final file = File('${dir.path}/$cleanTitle.pdf');
+      await file.writeAsBytes(bytes);
+
+      // 4. Share using share_plus
+      if (mounted) {
+        await Share.shareXFiles([
+          XFile(file.path),
+        ], text: 'Check out my professional CV: ${cv.cvTitle}');
+      }
+    } catch (e) {
+      if (mounted) {
+        _showSnackBar('❌ Failed to share PDF: $e', Color(0xFFEF5350));
       }
     }
   }

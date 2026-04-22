@@ -613,7 +613,7 @@ class PrivacyPolicyScreen extends StatelessWidget {
           ),
           SizedBox(height: 2.h),
           Text(
-            '© 2025 All Rights Reserved',
+            '© 2024–${DateTime.now().year} All Rights Reserved',
             style: TextStyle(
               color: Colors.white.withOpacity(0.2),
               fontSize: 10.sp,

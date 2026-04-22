@@ -1295,14 +1295,15 @@ class _RegisterScreenState extends State<RegisterScreen>
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(6.r),
                       ),
-                      padding: EdgeInsets.all(3.r),
+                      alignment: Alignment.center, 
                       child: Text(
                         'G',
-                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 14.sp,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF4285F4),
+                          height:
+                              1.0, 
                         ),
                       ),
                     ),
