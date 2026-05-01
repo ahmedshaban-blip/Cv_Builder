@@ -15,6 +15,7 @@ class SkillsStep extends StatefulWidget {
 
 class _SkillsStepState extends State<SkillsStep> {
   final _skillController = TextEditingController();
+  int? _dragHoverIndex;
 
   // ── Suggested Skills Categories ──
   final Map<String, List<String>> _suggestedSkills = {
@@ -128,35 +129,23 @@ class _SkillsStepState extends State<SkillsStep> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Header ──
           StepHeader(
             title: 'Skills',
             subtitle: 'Showcase your abilities',
             icon: Icons.psychology_outlined,
             color: Color(0xFF9C27B0),
           ),
-
-          // ── Add Skill Input ──
           _buildSkillInput(),
           SizedBox(height: 20.h),
-
-          // ── Added Skills ──
           if (widget.skillsList.isNotEmpty) ...[
             _buildAddedSkills(),
             SizedBox(height: 24.h),
           ],
-
-          // ── Category Selector ──
           _buildCategorySelector(),
           SizedBox(height: 14.h),
-
-          // ── Suggested Skills ──
           _buildSuggestedSkills(),
-
-          // ── Tips ──
           SizedBox(height: 24.h),
           _buildTips(),
-
           SizedBox(height: 30.h),
         ],
       ),
@@ -270,11 +259,62 @@ class _SkillsStepState extends State<SkillsStep> {
           spacing: 8,
           runSpacing: 8,
           children: widget.skillsList.asMap().entries.map((entry) {
-            return _buildSkillChip(entry.value, entry.key);
+            return _buildDraggableSkillChip(entry.value, entry.key);
           }).toList(),
         ),
       ],
     );
+  }
+
+  Widget _buildDraggableSkillChip(String skill, int index) {
+    return DragTarget<int>(
+      onWillAcceptWithDetails: (details) {
+        final shouldAccept = details.data != index;
+        if (shouldAccept) {
+          setState(() => _dragHoverIndex = index);
+        }
+        return shouldAccept;
+      },
+      onLeave: (_) {
+        if (_dragHoverIndex == index) {
+          setState(() => _dragHoverIndex = null);
+        }
+      },
+      onAcceptWithDetails: (details) {
+        _moveSkill(details.data, index);
+      },
+      builder: (context, candidateData, rejectedData) {
+        return LongPressDraggable<int>(
+          data: index,
+          dragAnchorStrategy: pointerDragAnchorStrategy,
+          feedback: Material(
+            color: Colors.transparent,
+            child: Opacity(opacity: 0.9, child: _buildSkillChip(skill, index)),
+          ),
+          childWhenDragging: Opacity(
+            opacity: 0.35,
+            child: _buildSkillChip(skill, index),
+          ),
+          onDragStarted: () => setState(() => _dragHoverIndex = index),
+          onDragEnd: (_) => setState(() => _dragHoverIndex = null),
+          child: _buildSkillChip(skill, index),
+        );
+      },
+    );
+  }
+
+  void _moveSkill(int oldIndex, int targetIndex) {
+    if (oldIndex == targetIndex) {
+      setState(() => _dragHoverIndex = null);
+      return;
+    }
+
+    setState(() {
+      final item = widget.skillsList.removeAt(oldIndex);
+      widget.skillsList.insert(targetIndex, item);
+      _dragHoverIndex = null;
+    });
+    widget.onUpdate(widget.skillsList);
   }
 
   Widget _buildSkillChip(String skill, int index) {

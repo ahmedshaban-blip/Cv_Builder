@@ -8,7 +8,7 @@ class ExperienceStep extends StatefulWidget {
   final List<Map<String, dynamic>> experienceList;
   final Function(List<Map<String, dynamic>>) onUpdate;
 
-  ExperienceStep({
+  const ExperienceStep({
     super.key,
     required this.experienceList,
     required this.onUpdate,
@@ -19,36 +19,59 @@ class ExperienceStep extends StatefulWidget {
 }
 
 class _ExperienceStepState extends State<ExperienceStep> {
+  static const List<String> _employmentTypes = [
+    'Full Time',
+    'Part Time',
+    'Contract',
+    'Internship',
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return CustomScrollView(
       physics: BouncingScrollPhysics(),
-      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Header ──
-          StepHeader(
-            title: 'Work Experience',
-            subtitle: 'Add your professional history',
-            icon: Icons.work_outline_rounded,
-            color: Color(0xFFFFA726),
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
+            child: StepHeader(
+              title: 'Work Experience',
+              subtitle: 'Add your professional history',
+              icon: Icons.work_outline_rounded,
+              color: Color(0xFFFFA726),
+            ),
           ),
-
-          // ── Experience Cards ──
-          ...widget.experienceList.asMap().entries.map(
-            (entry) => _buildExperienceCard(entry.value, entry.key),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          sliver: SliverReorderableList(
+            itemCount: widget.experienceList.length,
+            onReorder: _onReorder,
+            itemBuilder: (context, index) {
+              final exp = widget.experienceList[index];
+              return ReorderableDelayedDragStartListener(
+                key: ValueKey(exp['id'] ?? 'exp_$index'),
+                index: index,
+                child: _buildExperienceCard(exp, index),
+              );
+            },
           ),
-
-          // ── Add Button ──
-          _buildAddButton(),
-
-          // ── Tips ──
-          if (widget.experienceList.isEmpty) _buildTips(),
-
-          SizedBox(height: 30.h),
-        ],
-      ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: _buildAddButton(),
+          ),
+        ),
+        if (widget.experienceList.isEmpty)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: _buildTips(),
+            ),
+          ),
+        SliverToBoxAdapter(child: SizedBox(height: 30.h)),
+      ],
     );
   }
 
@@ -57,6 +80,17 @@ class _ExperienceStepState extends State<ExperienceStep> {
   // ══════════════════════════════════════════
   Widget _buildExperienceCard(Map<String, dynamic> exp, int index) {
     final responsibilities = List<String>.from(exp['responsibilities'] ?? []);
+    final location = (exp['location'] ?? '').toString().trim();
+    final employmentType = (exp['employmentType'] ?? '').toString().trim();
+
+    String? locationAndType;
+    if (location.isNotEmpty && employmentType.isNotEmpty) {
+      locationAndType = '$location - $employmentType';
+    } else if (location.isNotEmpty) {
+      locationAndType = location;
+    } else if (employmentType.isNotEmpty) {
+      locationAndType = employmentType;
+    }
 
     return Container(
       margin: EdgeInsets.only(bottom: 14.h),
@@ -100,58 +134,60 @@ class _ExperienceStepState extends State<ExperienceStep> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    Row(
+                    Wrap(
+                      spacing: 6.w,
+                      runSpacing: 2.h,
+                      crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        Flexible(
-                          child: Text(
-                            exp['company'] ?? 'Company',
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.5),
-                              fontSize: 12.sp,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                        Text(
+                          exp['company'] ?? 'Company',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.6),
+                            fontSize: 12.sp,
                           ),
                         ),
-                        if (exp['location'] != null &&
-                            exp['location'].toString().isNotEmpty) ...[
+                        if (locationAndType != null)
                           Text(
-                            '  •  ',
+                            '• $locationAndType',
                             style: TextStyle(
-                              color: Colors.white.withOpacity(0.3),
+                              color: Colors.white.withOpacity(0.55),
                               fontSize: 12.sp,
                             ),
                           ),
-                          Text(
-                            exp['location'],
-                            style: TextStyle(
-                              color: Colors.white.withOpacity(0.4),
-                              fontSize: 12.sp,
-                            ),
-                          ),
-                        ],
                       ],
                     ),
                   ],
                 ),
               ),
+              Icon(
+                Icons.drag_handle_rounded,
+                color: Colors.white.withOpacity(0.35),
+                size: 20,
+              ),
               // Edit
               IconButton(
                 onPressed: () =>
                     _showExperienceForm(existingData: exp, index: index),
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(),
+                iconSize: 20,
                 icon: Icon(
                   Icons.edit_outlined,
                   color: Colors.white.withOpacity(0.4),
-                  size: 18.sp,
+                  size: 20,
                 ),
               ),
+              SizedBox(width: 8.w),
               // Delete
               IconButton(
                 onPressed: () => _deleteExperience(index),
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(),
+                iconSize: 20,
                 icon: Icon(
                   Icons.delete_outline_rounded,
                   color: Color(0xFFEF5350),
-                  size: 18.sp,
+                  size: 20,
                 ),
               ),
             ],
@@ -353,6 +389,16 @@ class _ExperienceStepState extends State<ExperienceStep> {
     final locationCtrl = TextEditingController(
       text: existingData?['location'] ?? '',
     );
+    String? selectedEmploymentType =
+        (existingData?['employmentType'] ?? '').toString().trim().isEmpty
+        ? null
+        : existingData?['employmentType'];
+
+    if (selectedEmploymentType != null &&
+        !_employmentTypes.contains(selectedEmploymentType)) {
+      selectedEmploymentType = null;
+    }
+
     final startDateCtrl = TextEditingController(
       text: existingData?['startDate'] ?? '',
     );
@@ -465,6 +511,66 @@ class _ExperienceStepState extends State<ExperienceStep> {
                             label: 'Location (Optional)',
                             hint: 'e.g. Cairo, Egypt',
                             icon: Icons.location_on_outlined,
+                          ),
+                          SizedBox(height: 14.h),
+
+                          DropdownButtonFormField<String>(
+                            initialValue: selectedEmploymentType,
+                            dropdownColor: Color(0xFF1A1F38),
+                            iconEnabledColor: Colors.white.withOpacity(0.7),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14.sp,
+                            ),
+                            decoration: InputDecoration(
+                              labelText: 'Employment Type (Optional)',
+                              labelStyle: TextStyle(
+                                color: Colors.white.withOpacity(0.6),
+                                fontSize: 12.sp,
+                              ),
+                              hintText: 'Select employment type',
+                              hintStyle: TextStyle(
+                                color: Colors.white.withOpacity(0.2),
+                                fontSize: 13.sp,
+                              ),
+                              filled: true,
+                              fillColor: Colors.white.withOpacity(0.05),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 12,
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12.r),
+                                borderSide: BorderSide(
+                                  color: Colors.white.withOpacity(0.08),
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12.r),
+                                borderSide: BorderSide(
+                                  color: Colors.white.withOpacity(0.08),
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12.r),
+                                borderSide: BorderSide(
+                                  color: Color(0xFFFFA726),
+                                ),
+                              ),
+                            ),
+                            items: _employmentTypes
+                                .map(
+                                  (type) => DropdownMenuItem<String>(
+                                    value: type,
+                                    child: Text(type),
+                                  ),
+                                )
+                                .toList(),
+                            onChanged: (value) {
+                              setModalState(() {
+                                selectedEmploymentType = value;
+                              });
+                            },
                           ),
                           SizedBox(height: 14.h),
 
@@ -702,6 +808,7 @@ class _ExperienceStepState extends State<ExperienceStep> {
                           'company': companyCtrl.text.trim(),
                           'position': positionCtrl.text.trim(),
                           'location': locationCtrl.text.trim(),
+                          'employmentType': selectedEmploymentType ?? '',
                           'startDate': startDateCtrl.text.trim(),
                           'endDate': endDateCtrl.text.trim(),
                           'isCurrently': isCurrently,
@@ -811,6 +918,19 @@ class _ExperienceStepState extends State<ExperienceStep> {
     setState(() {
       widget.experienceList.removeAt(index);
     });
+    widget.onUpdate(widget.experienceList);
+  }
+
+  void _onReorder(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    setState(() {
+      final item = widget.experienceList.removeAt(oldIndex);
+      widget.experienceList.insert(newIndex, item);
+    });
+
     widget.onUpdate(widget.experienceList);
   }
 }

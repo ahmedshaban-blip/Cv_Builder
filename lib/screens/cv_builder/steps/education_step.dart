@@ -8,7 +8,7 @@ class EducationStep extends StatefulWidget {
   final List<Map<String, dynamic>> educationList;
   final Function(List<Map<String, dynamic>>) onUpdate;
 
-  EducationStep({
+  const EducationStep({
     super.key,
     required this.educationList,
     required this.onUpdate,
@@ -21,34 +21,59 @@ class EducationStep extends StatefulWidget {
 class _EducationStepState extends State<EducationStep> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return CustomScrollView(
       physics: BouncingScrollPhysics(),
-      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Header ──
-          StepHeader(
-            title: 'Education',
-            subtitle: 'Add your academic background',
-            icon: Icons.school_outlined,
-            color: Color(0xFF66BB6A),
+      slivers: [
+        // ── Header ──
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
+            child: StepHeader(
+              title: 'Education',
+              subtitle: 'Add your academic background',
+              icon: Icons.school_outlined,
+              color: Color(0xFF66BB6A),
+            ),
+          ),
+        ),
+
+        // ── Education Cards (Reorderable) ──
+        SliverPadding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          sliver: SliverReorderableList(
+            itemCount: widget.educationList.length,
+            onReorder: _onReorder,
+            itemBuilder: (context, index) {
+              final edu = widget.educationList[index];
+              return ReorderableDelayedDragStartListener(
+                key: ValueKey(edu['id'] ?? 'edu_$index'),
+                index: index,
+                child: _buildEducationCard(edu, index),
+              );
+            },
+          ),
+        ),
+
+        // ── Add Button ──
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: _buildAddButton(),
+          ),
+        ),
+
+        // ── Tips ──
+        if (widget.educationList.isEmpty)
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.w),
+              child: _buildTips(),
+            ),
           ),
 
-          // ── Education Cards ──
-          ...widget.educationList.asMap().entries.map(
-            (entry) => _buildEducationCard(entry.value, entry.key),
-          ),
-
-          // ── Add Button ──
-          _buildAddButton(),
-
-          // ── Tips ──
-          if (widget.educationList.isEmpty) _buildTips(),
-
-          SizedBox(height: 30.h),
-        ],
-      ),
+        // ── Bottom Padding ──
+        SliverToBoxAdapter(child: SizedBox(height: 30.h)),
+      ],
     );
   }
 
@@ -107,23 +132,35 @@ class _EducationStepState extends State<EducationStep> {
                   ],
                 ),
               ),
+              Icon(
+                Icons.drag_handle_rounded,
+                color: Colors.white.withOpacity(0.35),
+                size: 20,
+              ),
               // Edit
               IconButton(
                 onPressed: () =>
                     _showEducationForm(existingData: edu, index: index),
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(),
+                iconSize: 20,
                 icon: Icon(
                   Icons.edit_outlined,
                   color: Colors.white.withOpacity(0.4),
-                  size: 18.sp,
+                  size: 20,
                 ),
               ),
+              SizedBox(width: 8.w),
               // Delete
               IconButton(
                 onPressed: () => _deleteEducation(index),
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(),
+                iconSize: 20,
                 icon: Icon(
                   Icons.delete_outline_rounded,
                   color: Color(0xFFEF5350),
-                  size: 18.sp,
+                  size: 20,
                 ),
               ),
             ],
@@ -547,6 +584,19 @@ class _EducationStepState extends State<EducationStep> {
     setState(() {
       widget.educationList.removeAt(index);
     });
+    widget.onUpdate(widget.educationList);
+  }
+
+  void _onReorder(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    setState(() {
+      final item = widget.educationList.removeAt(oldIndex);
+      widget.educationList.insert(newIndex, item);
+    });
+
     widget.onUpdate(widget.educationList);
   }
 }

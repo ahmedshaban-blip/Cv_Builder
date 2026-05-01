@@ -8,7 +8,11 @@ class ProjectsStep extends StatefulWidget {
   final List<Map<String, dynamic>> projectsList;
   final Function(List<Map<String, dynamic>>) onUpdate;
 
-  ProjectsStep({super.key, required this.projectsList, required this.onUpdate});
+  const ProjectsStep({
+    super.key,
+    required this.projectsList,
+    required this.onUpdate,
+  });
 
   @override
   State<ProjectsStep> createState() => _ProjectsStepState();
@@ -17,61 +21,75 @@ class ProjectsStep extends StatefulWidget {
 class _ProjectsStepState extends State<ProjectsStep> {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return CustomScrollView(
       physics: BouncingScrollPhysics(),
-      padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 20.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // ── Header ──
-          StepHeader(
-            title: 'Projects',
-            subtitle: 'Showcase your work (Optional)',
-            icon: Icons.folder_outlined,
-            color: Color(0xFF00BCD4),
-          ),
-
-          // ── Optional Note ──
-          Container(
-            padding: EdgeInsets.all(12.r),
-            margin: EdgeInsets.only(bottom: 16.h),
-            decoration: BoxDecoration(
-              color: Color(0xFF00BCD4).withOpacity(0.06),
-              borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(color: Color(0xFF00BCD4).withOpacity(0.15)),
+      slivers: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(20.w, 16.h, 20.w, 0),
+            child: StepHeader(
+              title: 'Projects',
+              subtitle: 'Showcase your work (Optional)',
+              icon: Icons.folder_outlined,
+              color: Color(0xFF00BCD4),
             ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.info_outline_rounded,
-                  color: Color(0xFF00BCD4).withOpacity(0.7),
-                  size: 18.sp,
-                ),
-                SizedBox(width: 10.w),
-                Expanded(
-                  child: Text(
-                    'This section is optional but highly recommended for developers',
-                    style: TextStyle(
-                      color: Colors.white.withOpacity(0.5),
-                      fontSize: 12.sp,
+          ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(20.w, 0, 20.w, 16.h),
+            child: Container(
+              padding: EdgeInsets.all(12.r),
+              decoration: BoxDecoration(
+                color: Color(0xFF00BCD4).withOpacity(0.06),
+                borderRadius: BorderRadius.circular(12.r),
+                border: Border.all(color: Color(0xFF00BCD4).withOpacity(0.15)),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.info_outline_rounded,
+                    color: Color(0xFF00BCD4).withOpacity(0.7),
+                    size: 18.sp,
+                  ),
+                  SizedBox(width: 10.w),
+                  Expanded(
+                    child: Text(
+                      'This section is optional but highly recommended for developers',
+                      style: TextStyle(
+                        color: Colors.white.withOpacity(0.5),
+                        fontSize: 12.sp,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-
-          // ── Project Cards ──
-          ...widget.projectsList.asMap().entries.map(
-            (entry) => _buildProjectCard(entry.value, entry.key),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.symmetric(horizontal: 20.w),
+          sliver: SliverReorderableList(
+            itemCount: widget.projectsList.length,
+            onReorder: _onReorder,
+            itemBuilder: (context, index) {
+              final project = widget.projectsList[index];
+              return ReorderableDelayedDragStartListener(
+                key: ValueKey(project['id'] ?? 'project_$index'),
+                index: index,
+                child: _buildProjectCard(project, index),
+              );
+            },
           ),
-
-          // ── Add Button ──
-          _buildAddButton(),
-
-          SizedBox(height: 30.h),
-        ],
-      ),
+        ),
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.w),
+            child: _buildAddButton(),
+          ),
+        ),
+        SliverToBoxAdapter(child: SizedBox(height: 30.h)),
+      ],
     );
   }
 
@@ -116,6 +134,8 @@ class _ProjectsStepState extends State<ProjectsStep> {
                         fontSize: 15.sp,
                         fontWeight: FontWeight.w600,
                       ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                     if (project['link'] != null &&
                         project['link'].toString().isNotEmpty)
@@ -131,21 +151,33 @@ class _ProjectsStepState extends State<ProjectsStep> {
                   ],
                 ),
               ),
+              Icon(
+                Icons.drag_handle_rounded,
+                color: Colors.white.withOpacity(0.35),
+                size: 20,
+              ),
               IconButton(
                 onPressed: () =>
                     _showProjectForm(existingData: project, index: index),
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(),
+                iconSize: 20,
                 icon: Icon(
                   Icons.edit_outlined,
                   color: Colors.white.withOpacity(0.4),
-                  size: 18.sp,
+                  size: 20,
                 ),
               ),
+              SizedBox(width: 8.w),
               IconButton(
                 onPressed: () => _deleteProject(index),
+                padding: EdgeInsets.zero,
+                constraints: BoxConstraints(),
+                iconSize: 20,
                 icon: Icon(
                   Icons.delete_outline_rounded,
                   color: Color(0xFFEF5350),
-                  size: 18.sp,
+                  size: 20,
                 ),
               ),
             ],
@@ -543,6 +575,19 @@ class _ProjectsStepState extends State<ProjectsStep> {
     setState(() {
       widget.projectsList.removeAt(index);
     });
+    widget.onUpdate(widget.projectsList);
+  }
+
+  void _onReorder(int oldIndex, int newIndex) {
+    if (oldIndex < newIndex) {
+      newIndex -= 1;
+    }
+
+    setState(() {
+      final item = widget.projectsList.removeAt(oldIndex);
+      widget.projectsList.insert(newIndex, item);
+    });
+
     widget.onUpdate(widget.projectsList);
   }
 }

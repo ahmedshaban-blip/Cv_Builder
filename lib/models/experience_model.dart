@@ -7,6 +7,7 @@ class Experience {
   final bool isCurrently;
   final List<String> responsibilities;
   final String? location;
+  final String? employmentType;
 
   Experience({
     required this.id,
@@ -17,6 +18,7 @@ class Experience {
     this.isCurrently = false,
     required this.responsibilities,
     this.location,
+    this.employmentType,
   });
 
   Map<String, dynamic> toMap() => {
@@ -28,6 +30,7 @@ class Experience {
     'isCurrently': isCurrently,
     'responsibilities': responsibilities,
     'location': location,
+    'employmentType': employmentType,
   };
 
   factory Experience.fromMap(Map<String, dynamic> map) {
@@ -40,6 +43,7 @@ class Experience {
       isCurrently: map['isCurrently'] ?? false,
       responsibilities: List<String>.from(map['responsibilities'] ?? []),
       location: map['location'],
+      employmentType: map['employmentType'],
     );
   }
 }

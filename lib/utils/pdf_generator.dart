@@ -126,6 +126,18 @@ class PDFGenerator {
 
   // ── Classic Experience Item ──
   static pw.Widget _buildClassicExperience(Experience exp) {
+    final location = (exp.location ?? '').trim();
+    final employmentType = (exp.employmentType ?? '').trim();
+
+    String? locationAndType;
+    if (location.isNotEmpty && employmentType.isNotEmpty) {
+      locationAndType = '$location - $employmentType';
+    } else if (location.isNotEmpty) {
+      locationAndType = location;
+    } else if (employmentType.isNotEmpty) {
+      locationAndType = employmentType;
+    }
+
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 10),
       child: pw.Column(
@@ -148,7 +160,9 @@ class PDFGenerator {
             ],
           ),
           pw.Text(
-            '${exp.company}${exp.location != null ? " | ${exp.location}" : ""}',
+            locationAndType != null
+                ? '${exp.company} | $locationAndType'
+                : exp.company,
             style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
           ),
           pw.SizedBox(height: 3),
@@ -370,6 +384,18 @@ class PDFGenerator {
   }
 
   static pw.Widget _buildModernExperience(Experience exp, PdfColor color) {
+    final location = (exp.location ?? '').trim();
+    final employmentType = (exp.employmentType ?? '').trim();
+
+    String? locationAndType;
+    if (location.isNotEmpty && employmentType.isNotEmpty) {
+      locationAndType = '$location - $employmentType';
+    } else if (location.isNotEmpty) {
+      locationAndType = location;
+    } else if (employmentType.isNotEmpty) {
+      locationAndType = employmentType;
+    }
+
     return pw.Padding(
       padding: const pw.EdgeInsets.only(left: 8, bottom: 12),
       child: pw.Column(
@@ -387,7 +413,9 @@ class PDFGenerator {
             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
             children: [
               pw.Text(
-                exp.company,
+                locationAndType != null
+                    ? '${exp.company} | $locationAndType'
+                    : exp.company,
                 style: const pw.TextStyle(
                   fontSize: 10,
                   color: PdfColors.grey700,

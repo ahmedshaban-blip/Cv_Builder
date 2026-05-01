@@ -448,7 +448,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
     );
 
     final zipData = ZipEncoder().encode(archive);
-    return Uint8List.fromList(zipData!);
+    return Uint8List.fromList(zipData);
   }
 
   // ══════════════════════════════════════════
@@ -760,7 +760,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       child: Image.network(
                         _currentUser!.photoURL!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => _buildAvatarText(),
+                        errorBuilder: (_, _, _) => _buildAvatarText(),
                       ),
                     )
                   : _buildAvatarText(),
@@ -1456,7 +1456,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                     child: ListView.separated(
                       scrollDirection: Axis.horizontal,
                       itemCount: skillsList.length > 4 ? 4 : skillsList.length,
-                      separatorBuilder: (_, __) => SizedBox(width: 6.w),
+                      separatorBuilder: (_, _) => SizedBox(width: 6.w),
                       itemBuilder: (_, i) {
                         if (i == 3 && skillsList.length > 4) {
                           return Container(
@@ -1778,106 +1778,108 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
           color: Color(0xFF1A1F38),
           borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Handle
-            Container(
-              width: 40.w,
-              height: 4.h,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(2.r),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Handle
+              Container(
+                width: 40.w,
+                height: 4.h,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(2.r),
+                ),
               ),
-            ),
-            SizedBox(height: 20.h),
+              SizedBox(height: 20.h),
 
-            Text(
-              title,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w700,
+              Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            SizedBox(height: 20.h),
+              SizedBox(height: 20.h),
 
-            // ── Edit ──
-            _buildOptionTile(
-              Icons.edit_outlined,
-              'Edit CV',
-              Color(0xFF2196F3),
-              () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => CVBuilderScreen(cvId: cvId),
-                  ),
-                );
-              },
-            ),
+              // ── Edit ──
+              _buildOptionTile(
+                Icons.edit_outlined,
+                'Edit CV',
+                Color(0xFF2196F3),
+                () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CVBuilderScreen(cvId: cvId),
+                    ),
+                  );
+                },
+              ),
 
-            // ── Preview ──
-            _buildOptionTile(
-              Icons.visibility_outlined,
-              'Preview CV',
-              Color(0xFF66BB6A),
-              () {
-                Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => CVPreviewScreen(cvId: cvId),
-                  ),
-                );
-              },
-            ),
+              // ── Preview ──
+              _buildOptionTile(
+                Icons.visibility_outlined,
+                'Preview CV',
+                Color(0xFF66BB6A),
+                () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => CVPreviewScreen(cvId: cvId),
+                    ),
+                  );
+                },
+              ),
 
-            // ── Duplicate ──
-            _buildOptionTile(
-              Icons.copy_outlined,
-              'Duplicate CV',
-              Color(0xFFFFA726),
-              () {
-                Navigator.pop(context);
-                _duplicateCV(cvId);
-              },
-            ),
+              // ── Duplicate ──
+              _buildOptionTile(
+                Icons.copy_outlined,
+                'Duplicate CV',
+                Color(0xFFFFA726),
+                () {
+                  Navigator.pop(context);
+                  _duplicateCV(cvId);
+                },
+              ),
 
-            // ── Share ──
-            _buildOptionTile(
-              Icons.share_outlined,
-              'Share as PDF',
-              Color(0xFF9C27B0),
-              () {
-                Navigator.pop(context);
-                _shareCV(cvId);
-              },
-            ),
-            _buildOptionTile(
-              Icons.description_outlined,
-              'Share as Word',
-              Color(0xFF2979FF),
-              () {
-                Navigator.pop(context);
-                _shareCVAsWord(cvId);
-              },
-            ),
+              // ── Share ──
+              _buildOptionTile(
+                Icons.share_outlined,
+                'Share as PDF',
+                Color(0xFF9C27B0),
+                () {
+                  Navigator.pop(context);
+                  _shareCV(cvId);
+                },
+              ),
+              _buildOptionTile(
+                Icons.description_outlined,
+                'Share as Word',
+                Color(0xFF2979FF),
+                () {
+                  Navigator.pop(context);
+                  _shareCVAsWord(cvId);
+                },
+              ),
 
-            // ── Delete ──
-            _buildOptionTile(
-              Icons.delete_outline_rounded,
-              'Delete CV',
-              Color(0xFFEF5350),
-              () {
-                Navigator.pop(context);
-                _deleteCV(cvId);
-              },
-            ),
+              // ── Delete ──
+              _buildOptionTile(
+                Icons.delete_outline_rounded,
+                'Delete CV',
+                Color(0xFFEF5350),
+                () {
+                  Navigator.pop(context);
+                  _deleteCV(cvId);
+                },
+              ),
 
-            SizedBox(height: 10.h),
-          ],
+              SizedBox(height: 10.h),
+            ],
+          ),
         ),
       ),
     );
@@ -1968,7 +1970,7 @@ class _HomeScreenState extends State<HomeScreen> with TickerProviderStateMixin {
                       child: Image.network(
                         _currentUser!.photoURL!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => Center(
+                        errorBuilder: (_, _, _) => Center(
                           child: Text(
                             _currentUser!.displayName
                                     ?.substring(0, 1)

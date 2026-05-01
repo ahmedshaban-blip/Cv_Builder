@@ -314,6 +314,17 @@ class _CVPreviewScreenState extends State<CVPreviewScreen>
 
   pw.Widget _classicExperience(Map<String, dynamic> exp) {
     final responsibilities = List<String>.from(exp['responsibilities'] ?? []);
+    final location = (exp['location'] ?? '').toString().trim();
+    final employmentType = (exp['employmentType'] ?? '').toString().trim();
+
+    String? locationAndType;
+    if (location.isNotEmpty && employmentType.isNotEmpty) {
+      locationAndType = '$location - $employmentType';
+    } else if (location.isNotEmpty) {
+      locationAndType = location;
+    } else if (employmentType.isNotEmpty) {
+      locationAndType = employmentType;
+    }
 
     return pw.Padding(
       padding: pw.EdgeInsets.only(bottom: 10),
@@ -342,10 +353,9 @@ class _CVPreviewScreenState extends State<CVPreviewScreen>
                 exp['company'] ?? '',
                 style: pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
               ),
-              if (exp['location'] != null &&
-                  exp['location'].toString().isNotEmpty)
+              if (locationAndType != null)
                 pw.Text(
-                  '  |  ${exp['location']}',
+                  '  |  $locationAndType',
                   style: pw.TextStyle(fontSize: 9, color: PdfColors.grey500),
                 ),
             ],
@@ -645,6 +655,17 @@ class _CVPreviewScreenState extends State<CVPreviewScreen>
 
   pw.Widget _modernExperience(Map<String, dynamic> exp, PdfColor color) {
     final responsibilities = List<String>.from(exp['responsibilities'] ?? []);
+    final location = (exp['location'] ?? '').toString().trim();
+    final employmentType = (exp['employmentType'] ?? '').toString().trim();
+
+    String? locationAndType;
+    if (location.isNotEmpty && employmentType.isNotEmpty) {
+      locationAndType = '$location - $employmentType';
+    } else if (location.isNotEmpty) {
+      locationAndType = location;
+    } else if (employmentType.isNotEmpty) {
+      locationAndType = employmentType;
+    }
 
     return pw.Padding(
       padding: pw.EdgeInsets.only(left: 8, bottom: 12),
@@ -668,10 +689,9 @@ class _CVPreviewScreenState extends State<CVPreviewScreen>
                     exp['company'] ?? '',
                     style: pw.TextStyle(fontSize: 10, color: PdfColors.grey700),
                   ),
-                  if (exp['location'] != null &&
-                      exp['location'].toString().isNotEmpty)
+                  if (locationAndType != null)
                     pw.Text(
-                      '  |  ${exp['location']}',
+                      '  |  $locationAndType',
                       style: pw.TextStyle(
                         fontSize: 9,
                         color: PdfColors.grey500,
@@ -916,9 +936,20 @@ class _CVPreviewScreenState extends State<CVPreviewScreen>
           ),
         );
 
+        final location = (exp['location'] ?? '').toString().trim();
+        final employmentType = (exp['employmentType'] ?? '').toString().trim();
+        String? locationAndType;
+        if (location.isNotEmpty && employmentType.isNotEmpty) {
+          locationAndType = '$location - $employmentType';
+        } else if (location.isNotEmpty) {
+          locationAndType = location;
+        } else if (employmentType.isNotEmpty) {
+          locationAndType = employmentType;
+        }
+
         final companyLine = StringBuffer(exp['company'] ?? '');
-        if (exp['location'] != null && exp['location'].toString().isNotEmpty) {
-          companyLine.write('  |  ${exp['location']}');
+        if (locationAndType != null) {
+          companyLine.write('  |  $locationAndType');
         }
         body.write(
           _wordParagraph(
@@ -1113,7 +1144,7 @@ class _CVPreviewScreenState extends State<CVPreviewScreen>
     );
 
     final zipData = ZipEncoder().encode(archive);
-    return Uint8List.fromList(zipData!);
+    return Uint8List.fromList(zipData);
   }
 
   // ══════════════════════════════════════════
@@ -2204,120 +2235,122 @@ class _CVPreviewScreenState extends State<CVPreviewScreen>
           color: Color(0xFF1A1F38),
           borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 40.w,
-              height: 4.h,
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(2.r),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 40.w,
+                height: 4.h,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(2.r),
+                ),
               ),
-            ),
-            SizedBox(height: 20.h),
-            Text(
-              'More Options',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 18.sp,
-                fontWeight: FontWeight.w700,
+              SizedBox(height: 20.h),
+              Text(
+                'More Options',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
-            ),
-            SizedBox(height: 20.h),
-
-            // ── Switch Template ──
-            _buildOptionTile(
-              Icons.palette_outlined,
-              'Switch Template',
-              'Change between Classic and Modern',
-              const Color(0xFFE91E63),
-              () async {
-                Navigator.pop(context);
-                final currentTemplate = _cvData!['templateId'] ?? 'classic';
-                final newTemplate = currentTemplate == 'classic'
-                    ? 'modern'
-                    : 'classic';
-
-                // Update in Firestore
-                await _firestore
-                    .collection('users')
-                    .doc(_currentUser!.uid)
-                    .collection('cvs')
-                    .doc(widget.cvId)
-                    .update({'templateId': newTemplate});
-
-                // Reload
-                setState(() {
-                  _isLoading = true;
-                  _pdfBytes = null;
-                });
-                _loadCV();
-              },
-            ),
-
-            // ── Duplicate ──
-            _buildOptionTile(
-              Icons.copy_outlined,
-              'Duplicate CV',
-              'Create a copy of this CV',
-              const Color(0xFF00BCD4),
-              () async {
-                Navigator.pop(context);
-                await _duplicateCV();
-              },
-            ),
-
-            // ── Download ──
-            _buildOptionTile(
-              Icons.picture_as_pdf_outlined,
-              'Save as PDF',
-              'Download to your device',
-              const Color(0xFF2196F3),
-              () {
-                Navigator.pop(context);
-                _downloadPDF();
-              },
-            ),
-
-            // ── Save as Word ──
-            _buildOptionTile(
-              Icons.description_outlined,
-              'Save as Word',
-              'Download as .docx file',
-              const Color(0xFF2196F3),
-              () {
-                Navigator.pop(context);
-                _downloadWord();
-              },
-            ),
-
-            // ── Print ──
-            _buildOptionTile(
-              Icons.print_outlined,
-              'Print CV',
-              'Send to printer',
-              const Color(0xFFFFA726),
-              () {
-                Navigator.pop(context);
-                _printPDF();
-              },
-            ),
-
-            // ── Delete ──
-            _buildOptionTile(
-              Icons.delete_outline_rounded,
-              'Delete CV',
-              'Permanently remove this CV',
-              const Color(0xFFEF5350),
-              () {
-                Navigator.pop(context);
-                _showDeleteDialog();
-              },
-            ),
-
-            SizedBox(height: 10.h),
-          ],
+              SizedBox(height: 20.h),
+          
+              // ── Switch Template ──
+              _buildOptionTile(
+                Icons.palette_outlined,
+                'Switch Template',
+                'Change between Classic and Modern',
+                const Color(0xFFE91E63),
+                () async {
+                  Navigator.pop(context);
+                  final currentTemplate = _cvData!['templateId'] ?? 'classic';
+                  final newTemplate = currentTemplate == 'classic'
+                      ? 'modern'
+                      : 'classic';
+          
+                  // Update in Firestore
+                  await _firestore
+                      .collection('users')
+                      .doc(_currentUser!.uid)
+                      .collection('cvs')
+                      .doc(widget.cvId)
+                      .update({'templateId': newTemplate});
+          
+                  // Reload
+                  setState(() {
+                    _isLoading = true;
+                    _pdfBytes = null;
+                  });
+                  _loadCV();
+                },
+              ),
+          
+              // ── Duplicate ──
+              _buildOptionTile(
+                Icons.copy_outlined,
+                'Duplicate CV',
+                'Create a copy of this CV',
+                const Color(0xFF00BCD4),
+                () async {
+                  Navigator.pop(context);
+                  await _duplicateCV();
+                },
+              ),
+          
+              // ── Download ──
+              _buildOptionTile(
+                Icons.picture_as_pdf_outlined,
+                'Save as PDF',
+                'Download to your device',
+                const Color(0xFF2196F3),
+                () {
+                  Navigator.pop(context);
+                  _downloadPDF();
+                },
+              ),
+          
+              // ── Save as Word ──
+              _buildOptionTile(
+                Icons.description_outlined,
+                'Save as Word',
+                'Download as .docx file',
+                const Color(0xFF2196F3),
+                () {
+                  Navigator.pop(context);
+                  _downloadWord();
+                },
+              ),
+          
+              // ── Print ──
+              _buildOptionTile(
+                Icons.print_outlined,
+                'Print CV',
+                'Send to printer',
+                const Color(0xFFFFA726),
+                () {
+                  Navigator.pop(context);
+                  _printPDF();
+                },
+              ),
+          
+              // ── Delete ──
+              _buildOptionTile(
+                Icons.delete_outline_rounded,
+                'Delete CV',
+                'Permanently remove this CV',
+                const Color(0xFFEF5350),
+                () {
+                  Navigator.pop(context);
+                  _showDeleteDialog();
+                },
+              ),
+          
+              SizedBox(height: 10.h),
+            ],
+          ),
         ),
       ),
     );
