@@ -7,7 +7,11 @@ class SkillsStep extends StatefulWidget {
   final List<String> skillsList;
   final Function(List<String>) onUpdate;
 
-  SkillsStep({super.key, required this.skillsList, required this.onUpdate});
+  const SkillsStep({
+    super.key,
+    required this.skillsList,
+    required this.onUpdate,
+  });
 
   @override
   State<SkillsStep> createState() => _SkillsStepState();
@@ -16,6 +20,7 @@ class SkillsStep extends StatefulWidget {
 class _SkillsStepState extends State<SkillsStep> {
   final _skillController = TextEditingController();
   int? _dragHoverIndex;
+  int? _dragFromIndex;
 
   // ── Suggested Skills Categories ──
   final Map<String, List<String>> _suggestedSkills = {
@@ -284,20 +289,46 @@ class _SkillsStepState extends State<SkillsStep> {
         _moveSkill(details.data, index);
       },
       builder: (context, candidateData, rejectedData) {
-        return LongPressDraggable<int>(
-          data: index,
-          dragAnchorStrategy: pointerDragAnchorStrategy,
-          feedback: Material(
-            color: Colors.transparent,
-            child: Opacity(opacity: 0.9, child: _buildSkillChip(skill, index)),
+        final isHoverTarget =
+            _dragHoverIndex == index && _dragFromIndex != index;
+
+        return AnimatedSlide(
+          duration: Duration(milliseconds: 140),
+          curve: Curves.easeOut,
+          offset: isHoverTarget ? Offset(0.06, 0) : Offset.zero,
+          child: AnimatedScale(
+            duration: Duration(milliseconds: 140),
+            curve: Curves.easeOut,
+            scale: isHoverTarget ? 1.03 : 1,
+            child: LongPressDraggable<int>(
+              data: index,
+              dragAnchorStrategy: pointerDragAnchorStrategy,
+              feedback: Material(
+                color: Colors.transparent,
+                child: Opacity(
+                  opacity: 0.92,
+                  child: _buildSkillChip(skill, index),
+                ),
+              ),
+              childWhenDragging: Opacity(
+                opacity: 0.35,
+                child: _buildSkillChip(skill, index),
+              ),
+              onDragStarted: () {
+                setState(() {
+                  _dragFromIndex = index;
+                  _dragHoverIndex = index;
+                });
+              },
+              onDragEnd: (_) {
+                setState(() {
+                  _dragFromIndex = null;
+                  _dragHoverIndex = null;
+                });
+              },
+              child: _buildSkillChip(skill, index),
+            ),
           ),
-          childWhenDragging: Opacity(
-            opacity: 0.35,
-            child: _buildSkillChip(skill, index),
-          ),
-          onDragStarted: () => setState(() => _dragHoverIndex = index),
-          onDragEnd: (_) => setState(() => _dragHoverIndex = null),
-          child: _buildSkillChip(skill, index),
         );
       },
     );
@@ -313,6 +344,7 @@ class _SkillsStepState extends State<SkillsStep> {
       final item = widget.skillsList.removeAt(oldIndex);
       widget.skillsList.insert(targetIndex, item);
       _dragHoverIndex = null;
+      _dragFromIndex = null;
     });
     widget.onUpdate(widget.skillsList);
   }
@@ -321,9 +353,15 @@ class _SkillsStepState extends State<SkillsStep> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
-        color: Color(0xFF9C27B0).withOpacity(0.1),
+        color: _dragHoverIndex == index && _dragFromIndex != index
+            ? Color(0xFF9C27B0).withOpacity(0.18)
+            : Color(0xFF9C27B0).withOpacity(0.1),
         borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(color: Color(0xFF9C27B0).withOpacity(0.25)),
+        border: Border.all(
+          color: _dragHoverIndex == index && _dragFromIndex != index
+              ? Color(0xFFCE93D8).withOpacity(0.9)
+              : Color(0xFF9C27B0).withOpacity(0.25),
+        ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
